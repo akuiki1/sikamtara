@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Website Desa</title>
-    @vite('resources/css/app.css') {{-- Pastikan menggunakan Tailwind --}}
-    @livewireStyles {{-- Jika menggunakan Livewire --}}
+    @vite('resources/css/app.css')
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sikamtara</title>
+    <link rel="icon" type="image/png" href="/img/LogoHST.png">
 </head>
 <body class="bg-gray-100">
     <div class="flex h-screen">
         {{-- Sidebar --}}
         <div class="w-64 bg-gray-800 text-white">
-            <x-admin.components.admin-sidebar />
+            <x-admin-sidebar />
         </div>
 
         {{-- Konten utama --}}
         <div class="flex-1 flex flex-col">
             {{-- Header --}}
-            <x-admin.components.admin-header />
+            <x-admin-header />
 
             {{-- Body Konten --}}
             <main class="flex-1 p-6 overflow-y-auto">
@@ -25,11 +29,9 @@
             </main>
 
             {{-- Footer --}}
-            <x-admin.components.admin-footer />
+            <x-admin-footer />
         </div>
     </div>
 
-    @livewireScripts {{-- Jika menggunakan Livewire --}}
-    @vite('resources/js/app.js') {{-- Pastikan menggunakan JS --}}
 </body>
 </html>
