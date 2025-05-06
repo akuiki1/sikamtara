@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\Berita;
 use Illuminate\Support\Facades\DB;
@@ -12,9 +14,10 @@ class BeritaSeeder extends Seeder
     {
         DB::table('beritas')->insert([
             [
+                'id_berita' => 1,
                 'judul_berita' => 'Pelatihan Ekonomi Rumah Tangga untuk Masyarakat Desa',
                 'isi_berita' => 'Desa kita menyelenggarakan pelatihan ekonomi rumah tangga yang bertujuan meningkatkan kesejahteraan keluarga.',
-                'gambar_cover' => 'https://via.placeholder.com/640x360.png?text=Berita+1',
+                'gambar_cover' => 'gambar',
                 'tanggal_publish' => Carbon::create(2025, 1, 20),
                 'penulis' => 1,
                 'status' => 'published',
@@ -23,9 +26,10 @@ class BeritaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id_berita' => 2,
                 'judul_berita' => 'Gotong Royong Pembangunan Posyandu Baru',
                 'isi_berita' => 'Warga desa bergotong-royong membangun Posyandu baru sebagai bentuk kepedulian terhadap kesehatan balita dan ibu hamil.',
-                'gambar_cover' => 'https://via.placeholder.com/640x360.png?text=Berita+2',
+                'gambar_cover' => 'gambar',
                 'tanggal_publish' => Carbon::create(2025, 2, 15),
                 'penulis' => 1,
                 'status' => 'published',
@@ -34,9 +38,10 @@ class BeritaSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id_berita' => 3,
                 'judul_berita' => 'Peresmian Jalan Baru Penghubung Antar Dusun',
                 'isi_berita' => 'Jalan baru yang menghubungkan Dusun A dan Dusun B resmi dibuka, memudahkan akses transportasi warga.',
-                'gambar_cover' => 'https://via.placeholder.com/640x360.png?text=Berita+3',
+                'gambar_cover' => 'gambar',
                 'tanggal_publish' => Carbon::create(2025, 3, 5),
                 'penulis' => 1,
                 'status' => 'published',
