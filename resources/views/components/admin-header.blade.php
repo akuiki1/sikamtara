@@ -1,8 +1,9 @@
 <header class="bg-gray-100 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between shadow-sm">
     <!-- Kiri: Sapaan dan Judul -->
-    <div>
-        <p class="text-sm text-gray-500">Hello Dave, Welcome back</p>
-        <h1 class="text-2xl font-semibold text-gray-900">{{ $slot }}</h1>
+    <div class="px-0 py-0 text-gray-400">
+        {{-- <p class="text-sm text-gray-500">Selamat Datang, Admin</p> --}}
+        <div class="text-xs font-regular">Halaman</div>
+        <div class="text-lg font-regular">{{ $slot }}</div>
     </div>
 
     <!-- Kanan: Ikon -->
