@@ -76,5 +76,27 @@ Route::get('/keuangan', function () {
 
 // halaman admin
 Route::get('/dashboard', function () {
-    return view('admin.dashboard', ['title' => 'Dashboard Admin']);
+    return view('admin.dashboard', ['title' => 'Dashboard']);
 });
+
+// halaman profil admin
+Route::get('/profil/demografi', function () {
+    return view('admin.profil.demografi', ['title' => 'Kelola Sejarah']);
+});
+
+Route::get('/profil/infrastruktur-desa', function () {
+    return view('admin.profil.infrastruktur', ['title' => 'Kelola Sejarah']);
+});
+Route::get('/profil/sejarah-desa', function () {
+    return view('admin.profil.sejarah', ['title' => 'Kelola Sejarah']);
+});
+
+Route::get('/profil/struktur-pemerintahan', function () {
+    return view('admin.profil.struktur-pemerintahan', ['title' => 'Kelola Sejarah']);
+});
+
+Route::get('/profil/visi-misi', function () {
+    return view('admin.profil.visi-misi', ['title' => 'Kelola Sejarah']);
+});
+
+// halaman kelola layanan admin
