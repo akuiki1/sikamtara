@@ -1,4 +1,4 @@
-<x-layouts-admin>
+<x-admin-layout>
     <x-slot:title>{{ $title }}</x-slot>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <!-- Card 1 -->
@@ -48,4 +48,4 @@
             </tbody>
         </table>
     </div>
-</x-layouts-admin>
+</x-admin-layout>
