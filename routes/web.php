@@ -81,22 +81,22 @@ Route::get('/dashboard', function () {
 
 // halaman profil admin
 Route::get('/profil/demografi', function () {
-    return view('admin.profil.demografi', ['title' => 'Kelola Sejarah']);
+    return view('admin.profil.demografi', ['title' => 'Demografi']);
 });
 
 Route::get('/profil/infrastruktur-desa', function () {
-    return view('admin.profil.infrastruktur', ['title' => 'Kelola Sejarah']);
+    return view('admin.profil.infrastruktur', ['title' => 'Infrastruktur Desa']);
 });
 Route::get('/profil/sejarah-desa', function () {
-    return view('admin.profil.sejarah', ['title' => 'Kelola Sejarah']);
+    return view('admin.profil.sejarah', ['title' => 'Sejarah Desa']);
 });
 
 Route::get('/profil/struktur-pemerintahan', function () {
-    return view('admin.profil.struktur-pemerintahan', ['title' => 'Kelola Sejarah']);
+    return view('admin.profil.struktur-pemerintahan', ['title' => 'Struktur Pemerintahan']);
 });
 
 Route::get('/profil/visi-misi', function () {
-    return view('admin.profil.visi-misi', ['title' => 'Kelola Sejarah']);
+    return view('admin.profil.visi-misi', ['title' => 'Visi & Misi']);
 });
 
 // halaman kelola layanan admin

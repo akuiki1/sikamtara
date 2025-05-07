@@ -1,4 +1,4 @@
-<header class="bg-gray-100 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between">
+<header class="bg-gray-100 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between shadow-sm">
     <!-- Kiri: Sapaan dan Judul -->
     <div>
         <p class="text-sm text-gray-500">Hello Dave, Welcome back</p>
