@@ -103,7 +103,7 @@
             </div>
         </div>
 
-        <!-- Informasi -->
+        <!-- Berita & Pengumuman -->
         <div x-data="{ open: false }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
@@ -119,12 +119,12 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="#"
+                <a href="/admin/berita"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-newspaper-icon lucide-newspaper"><path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/></svg>
                     <span>Berita Desa</span>
                 </a>
-                <a href="#"
+                <a href="/admin/pengumuman"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
                     <span>Pengumuman</span>
