@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\VisiMisiController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
@@ -98,5 +99,16 @@ Route::get('/profil/struktur-pemerintahan', function () {
 Route::get('/profil/visi-misi', function () {
     return view('admin.profil.visi-misi', ['title' => 'Visi & Misi']);
 });
+Route::get('visi-misi', [VisiMisiController::class, 'index'])->name('admin.visimisi.index');
+Route::put('visi-misi', [VisiMisiController::class, 'update'])->name('admin.visimisi.update');
 
+Route::get('/profil/wilayah', function () {
+    return view('admin.profil.wilayah', ['title' => 'Wilayah Administrasi']);
+});
 // halaman kelola layanan admin
+Route::get('/admin/layanan/administrasi', function () {
+    return view('admin.layanan.administrasi', ['title' => 'Kelola Layanan Administrasi']);
+});
+Route::get('/admin/layanan/pengaduan', function () {
+    return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
+});
