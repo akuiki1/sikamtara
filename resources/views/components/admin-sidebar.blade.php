@@ -148,12 +148,12 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="#"
+                <a href="/admin/akun"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
                     <span>Profil</span>
                 </a>
-                <a href="#"
+                <a href="/admin/akun-warga"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-pen-icon lucide-user-pen"><path d="M11.5 15H7a4 4 0 0 0-4 4v2"/><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><circle cx="10" cy="7" r="4"/></svg>
                     <span>Kelola Akun Warga</span>

@@ -105,6 +105,8 @@ Route::put('visi-misi', [VisiMisiController::class, 'update'])->name('admin.visi
 Route::get('/profil/wilayah', function () {
     return view('admin.profil.wilayah', ['title' => 'Wilayah Administrasi']);
 });
+
+
 // halaman kelola layanan admin
 Route::get('/admin/layanan/administrasi', function () {
     return view('admin.layanan.administrasi', ['title' => 'Kelola Layanan Administrasi']);
@@ -120,4 +122,13 @@ Route::get('/admin/berita', function () {
 
 Route::get('/admin/pengumuman', function () {
     return view('admin.berita.pengumuman', ['title' => 'Kelola Pengumuman Desa']);
+});
+
+//halaman admin - akun
+Route::get('/admin/akun', function () {
+    return view('admin.akun.profil', ['title' => 'Setelan Akun']);
+});
+
+Route::get('/admin/akun-warga', function () {
+    return view('admin.akun.akun-warga', ['title' => 'Kelola Akun Warga']);
 });

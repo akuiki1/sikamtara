@@ -1,3 +1,3 @@
-<footer class="bg-gray-800 text-white text-center p-4 mt-6">
+<footer class="bg-gray-800 text-white text-sm font-semibold text-center p-2 mt-6">
     <p>&copy; 2025 Website Desa - All Rights Reserved</p>
 </footer>
