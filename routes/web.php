@@ -132,3 +132,8 @@ Route::get('/admin/akun', function () {
 Route::get('/admin/akun-warga', function () {
     return view('admin.akun.akun-warga', ['title' => 'Kelola Akun Warga']);
 });
+
+//halaman admin - kependudukan
+Route::get('/admin/kependudukan', function () {
+    return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
+});

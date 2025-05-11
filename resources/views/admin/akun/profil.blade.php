@@ -1,112 +1,124 @@
 <x-admin-layout>
-    <x-slot:title>Edit Profil</x-slot:title>
+    <x-slot:title>Edit Profil</x-slot>
 
-    <div x-data="profileForm()" class="p-6 max-w-6xl mx-auto">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Your personal profile info</h1>
+    @push('styles')
+    <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
+    @endpush
 
-        <!-- FOTO PROFIL -->
-        <div class="flex items-center gap-6 mb-8">
+    <div x-data="profileEditor()" class="p-6 bg-white rounded-xl shadow-xl">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Your personal profile info</h2>
+
+        <!-- Foto Profil -->
+        <div class="flex items-center space-x-4 mb-8">
             <div class="relative">
-                <img :src="previewUrl || '{{ asset('images/default-avatar.jpg') }}'" alt="Foto Profil"
-                    class="w-28 h-28 rounded-full object-cover ring-2 ring-indigo-500 shadow">
+                <img :src="photoPreview || '/img/default-avatar.png'" alt="Preview" class="w-24 h-24 rounded-full object-cover border border-gray-300" />
+                <input type="file" accept="image/jpeg,image/png,image/jpg"
+                       @change="handleImageUpload" class="absolute inset-0 opacity-0 cursor-pointer" />
             </div>
             <div>
-                <label class="block font-medium text-sm text-gray-700 mb-2">Edit Foto Profil</label>
-                <input type="file" @change="previewImage" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                <div class="mt-2">
-                    <button @click="showCrop = true"
-                        class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-                        Crop Foto
-                    </button>
-                </div>
+                <p class="text-sm text-gray-500">Click photo to change</p>
             </div>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8 bg-white p-6 rounded-xl shadow-lg">
-            <!-- Form Profil -->
-            <div class="space-y-4">
-                <h2 class="font-semibold text-lg text-indigo-600">1. PROFILE</h2>
+        <!-- Form -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- PROFILE -->
+            <div>
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">1</span> PROFILE</h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <x-input label="First name" placeholder="Name"/>
-                    <x-input label="Last name" placeholder="Surname"/>
-                    <x-input label="Username (not email)" placeholder="Username"/>
-                    <x-input label="Country, City" placeholder="Indonesia, Hulu Sungai Tengah"/>
-                    <x-input label="Your e-mail" placeholder="mail@example.com"/>
-                    <x-input label="Organization" placeholder="Nama Organisasi"/>
-                    <div class="col-span-1">
-                        <label class="block text-sm text-gray-700 mb-1">Personal phone</label>
-                        <div class="flex gap-2">
-                            <select class="w-1/3 rounded-lg border-gray-300">
-                                <option>+62</option>
-                                <option>+60</option>
-                            </select>
-                            <input type="text" class="w-full rounded-lg border-gray-300" placeholder="0812xxx"/>
-                        </div>
+                    <x-form.input label="First name" />
+                    <x-form.input label="Last name" />
+                    <x-form.input label="Username (not your e-mail)" />
+                    <x-form.input label="Country, City" />
+                    <x-form.input label="Your e-mail" type="email" />
+                    <x-form.input label="Organization" />
+                    <div class="col-span-2 flex gap-4">
+                        <x-form.select label="Personal phone number" :options="['+62', '+1', '+44']" />
+                        <x-form.input label="" placeholder="812 345 678" />
                     </div>
-                    <div class="col-span-1">
-                        <label class="block text-sm text-gray-700 mb-1">Work phone</label>
-                        <div class="flex gap-2">
-                            <select class="w-1/3 rounded-lg border-gray-300">
-                                <option>+62</option>
-                                <option>+60</option>
-                            </select>
-                            <input type="text" class="w-full rounded-lg border-gray-300" placeholder="0812xxx"/>
-                        </div>
+                    <div class="col-span-2 flex gap-4">
+                        <x-form.select label="Work phone number" :options="['+62', '+1', '+44']" />
+                        <x-form.input label="" placeholder="812 345 678" />
                     </div>
                 </div>
             </div>
 
-            <!-- Form Password -->
-            <div class="space-y-4">
-                <h2 class="font-semibold text-lg text-indigo-600">2. PASSWORD</h2>
-                <x-input label="Old password" type="password" required/>
-                <x-input label="New password" type="password" required/>
-                <x-input label="Confirm new password" type="password" required/>
-                <div class="pt-4">
-                    <button
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">
-                        Correct. Save info
-                    </button>
+            <!-- PASSWORD -->
+            <div>
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">2</span> PASSWORD</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <x-form.input label="Old password" type="password" />
+                    <x-form.input label="New password" type="password" />
+                    <x-form.input label="Confirm new password" type="password" />
                 </div>
+                <button class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition">
+                    Correct. Save info
+                </button>
             </div>
         </div>
 
-        <!-- Modal Crop Foto -->
-        <div x-show="showCrop" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-            <div @click.away="showCrop = false"
-                class="bg-white p-6 rounded-xl w-full max-w-lg shadow-xl space-y-4">
-                <h3 class="text-xl font-bold text-gray-800">Crop Foto Profil</h3>
-                <img :src="previewUrl" class="rounded-xl w-full h-auto object-cover" alt="Preview">
-                <div class="flex justify-end gap-3">
-                    <button @click="showCrop = false"
-                        class="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
-                        Batal
-                    </button>
-                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                        Simpan & Terapkan
-                    </button>
+        <!-- Modal Cropper -->
+        <div x-show="showCrop" class="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-xl w-full max-w-md">
+                <h2 class="text-xl font-semibold mb-4">Crop your photo</h2>
+                <div>
+                    <img id="cropper-image" class="max-w-full rounded-md" />
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button @click="cancelCrop" class="px-4 py-2 text-gray-600 border rounded">Cancel</button>
+                    <button @click="applyCrop" class="px-4 py-2 bg-blue-600 text-white rounded">Apply</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Alpine.js logic -->
+    @push('scripts')
+    <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
     <script>
-        function profileForm() {
+        function profileEditor() {
             return {
-                previewUrl: null,
+                photoPreview: null,
                 showCrop: false,
-                previewImage(event) {
-                    const input = event.target;
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.previewUrl = e.target.result;
-                        };
-                        reader.readAsDataURL(input.files[0]);
+                imageFile: null,
+                cropper: null,
+
+                handleImageUpload(e) {
+                    const file = e.target.files[0];
+                    if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                        alert("File harus JPG, JPEG, atau PNG.");
+                        return;
                     }
+                    this.imageFile = file;
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        document.getElementById('cropper-image').src = event.target.result;
+                        this.showCrop = true;
+                        this.$nextTick(() => {
+                            this.cropper = new Cropper(document.getElementById('cropper-image'), {
+                                aspectRatio: 1,
+                                viewMode: 1
+                            });
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                cancelCrop() {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                    this.showCrop = false;
+                },
+
+                applyCrop() {
+                    const canvas = this.cropper.getCroppedCanvas({ width: 300, height: 300 });
+                    this.photoPreview = canvas.toDataURL();
+                    this.cropper.destroy();
+                    this.cropper = null;
+                    this.showCrop = false;
                 }
             }
         }
     </script>
+    @endpush
+
 </x-admin-layout>
