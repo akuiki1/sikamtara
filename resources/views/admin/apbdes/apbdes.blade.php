@@ -144,7 +144,6 @@
             </button>
         </div>
 
-        {{-- table --}}
         <!-- Table -->
         <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
             <table class="min-w-full divide-y divide-gray-200">
@@ -181,7 +180,6 @@
             </table>
         </div>
 
-
         {{-- modal tambah --}}
         <template x-if="openModal === 'tambah'">
             <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -205,18 +203,6 @@
                                         min="1900" max="2099"
                                         class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         required>
-
-                                    <!-- Tombol Up/Down -->
-                                    {{-- <div class="absolute inset-y-0 right-2 flex flex-col justify-center">
-                                        <button type="button" @click="tahun++"
-                                            class="text-gray-600 hover:text-black">
-                                            ▲
-                                        </button>
-                                        <button type="button" @click="tahun--"
-                                            class="text-gray-600 hover:text-black">
-                                            ▼
-                                        </button>
-                                    </div> --}}
                                 </div>
                             </div>
 
@@ -232,37 +218,39 @@
             </div>
         </template>
 
-        <!-- Modal edit -->
-        <template x-if="openModal === 'edit' && selectedApbdes">
+        <!-- Modal Edit -->
+        <template x-if="openModal === 'edit'">
             <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-                    <h2 class="text-xl font-bold mb-4">Edit Berita</h2>
-                    <form :action="`/berita/${selectedBerita.id_berita}`" method="POST"
-                        enctype="multipart/form-data">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative" x-data="{ tahun: selectedApbdes?.tahun || new Date().getFullYear() }">
+                    <h2 class="text-xl font-bold mb-4">Edit Tahun APBDes</h2>
+                    <form action="#" method="POST" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')
                         <div class="grid grid-cols-1 gap-4">
-                            <input type="text" name="judul_berita" :value="selectedBerita.judul_berita"
-                                class="border p-2 rounded" required>
-                            <textarea name="isi_berita" rows="5" class="border p-2 rounded" x-text="selectedBerita.isi_berita"></textarea>
-                            <input type="file" name="gambar_cover" class="border p-2 rounded">
-                            <input type="date" name="tanggal_publish" :value="selectedBerita.tanggal_publish"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="penulis" :value="selectedBerita.penulis"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="tags" :value="selectedBerita.tags"
-                                class="border p-2 rounded">
-                            <select name="status" class="border p-2 rounded" :value="selectedBerita.status">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+                            <div class="flex items-center gap-3 w-full">
+                                <!-- Ikon Kalender -->
+                                <svg class="w-6 h-6 text-gray-800 shrink-0" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
+                                </svg>
+
+                                <!-- Input Tahun -->
+                                <div class="relative w-full">
+                                    <input type="number" name="tahun" x-model="tahun" :placeholder="tahun"
+                                        min="1900" max="2099" class="border w-full p-2 rounded-lg" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="mt-4 flex justify-end gap-2">
+
+                        <!-- Tombol Aksi -->
+                        <div class="mt-6 flex justify-end gap-2">
                             <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                            <button type="submit"
-                                class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Update</button>
+                                class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white">
+                                Simpan Perubahan
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -274,12 +262,12 @@
             <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                 <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-lg">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Berita'"></h3>
+                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Data Apbdes'"></h3>
                         <button @click="openModal = ''"
                             class="text-gray-500 hover:text-red-500 text-xl">&times;</button>
                     </div>
-                    <p class="text-sm text-gray-700 mb-6">Apakah Anda yakin ingin menghapus berita <strong><span
-                                x-text="selectedBerita.judul_berita"></span></strong> ?</p>
+                    <p class="text-sm text-gray-700 mb-6">Apakah Anda yakin ingin menghapus data APBDes tahun <strong><span
+                                x-text="selectedApbdes.tahun"></span></strong> ?</p>
                     <p class="text-sm text-gray-700 mb-6">Tindakan ini tidak dapat dibatalkan.</p>
                     <div class="flex justify-end space-x-3">
                         <button @click="openModal = ''"
@@ -289,6 +277,5 @@
                 </div>
             </div>
         </template>
-
     </div>
 </x-admin-layout>
