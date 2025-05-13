@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('keluarga', function (Blueprint $table) {
-            $table->id();
+            $table->char('kode_keluarga', 16)->primary();
+            $table->string('kepala_keluarga', 100);
+            $table->text('alamat');
+            $table->string('dusun', 50)->nullable();
+            $table->string('rt', 3)->nullable();
+            $table->string('rw', 3)->nullable();
+            $table->date('tanggal_dibuat')->nullable();
             $table->timestamps();
         });
     }

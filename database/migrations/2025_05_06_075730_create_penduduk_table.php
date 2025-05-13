@@ -12,12 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('penduduk', function (Blueprint $table) {
-            $table->id('id_keluarga');
-            $table->string('kode_keluarga')->unique();
-            $table->string('alamat');
-            $table->string('dusun')->nullable();
-            $table->string('rt')->nullable();
-            $table->string('rw')->nullable();
+            $table->char('nik', 16)->primary();
+            $table->string('nama', 100);
+            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->string('tempat_lahir', 100)->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('agama', 20)->nullable();
+            $table->string('pendidikan', 50)->nullable();
+            $table->string('pekerjaan', 50)->nullable();
+            $table->enum('status_perkawinan', ['Belum Kawin', 'Kawin', 'Cerai'])->nullable();
+            $table->string('golongan_darah', 3)->nullable();
+            $table->string('kewarganegaraan', 10)->default('WNI');
+
+            $table->char('kode_keluarga', 16); // Foreign key ke KK
+            $table->foreign('kode_keluarga')->references('kode_keluarga')->on('keluarga')->onDelete('cascade');
+
+            $table->string('dusun', 50)->nullable();
+            $table->string('rt', 3)->nullable();
+            $table->string('rw', 3)->nullable();
+            $table->text('alamat')->nullable();
+
+            $table->enum('status_tinggal', ['Tetap', 'Pindah', 'Meninggal'])->default('Tetap');
+
             $table->timestamps();
             
         });

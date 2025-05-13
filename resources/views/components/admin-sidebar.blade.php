@@ -357,7 +357,7 @@
         </div>
 
         <!-- LogOut -->
-        <a href="#"
+        <a href="/"
             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"

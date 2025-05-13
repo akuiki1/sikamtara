@@ -37,7 +37,7 @@
             <div class="flex flex-col md:flex-row items-center gap-4">
                 {{-- search bar --}}
                 <div class="relative">
-                    <input type="text" placeholder="Cari nama atau judul..." x-model="search"
+                    <input type="text" placeholder="Cari tahun..." x-model="search"
                         class="w-full md:w-80 pl-10 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
 
                     <svg class="w-6 h-6 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
@@ -140,7 +140,7 @@
             {{-- button tambah berita --}}
             <button @click="openModal = 'tambah'"
                 class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                + Tambah Berita
+                + Tambah Data APBDes
             </button>
         </div>
 

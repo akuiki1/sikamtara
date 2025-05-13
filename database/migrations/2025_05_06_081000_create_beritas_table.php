@@ -17,13 +17,11 @@ return new class extends Migration
         $table->text('isi_berita');
         $table->string('gambar_cover');
         $table->date('tanggal_publish');
-        $table->unsignedBigInteger('penulis'); // FK ke tabel users misalnya
+        $table->unsignedBigInteger('penulis');
+        $table->foreign('penulis')->references('id_user')->on('users');
         $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
         $table->string('tags')->nullable();
         $table->timestamps();
-
-        // Kalau penulis mengacu ke tabel users:
-        // $table->foreign('penulis')->references('id')->on('users')->onDelete('cascade');
     });
 }
 
