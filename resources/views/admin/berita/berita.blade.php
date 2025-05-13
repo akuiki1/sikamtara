@@ -243,32 +243,74 @@
         {{-- modal tambah --}}
         <template x-if="openModal === 'tambah'">
             <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-                    <h2 class="text-xl font-bold mb-4">Tambah Berita</h2>
-                    <form action="#" method="POST" enctype="multipart/form-data">
-                        {{-- <form action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data"> --}}
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative max-h-screen overflow-y-auto">
+                    <h2 class="text-xl font-bold mb-6 text-gray-800">Tambah APBDes</h2>
+
+                    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
-                        <div class="grid grid-cols-1 gap-4">
-                            <input type="text" name="judul_berita" placeholder="Judul Berita"
-                                class="border p-2 rounded" required>
-                            <textarea name="isi_berita" placeholder="Isi Berita" rows="5" class="border p-2 rounded" required></textarea>
-                            <input type="file" name="gambar_cover" class="border p-2 rounded">
-                            <input type="date" name="tanggal_publish" class="border p-2 rounded" required>
-                            <input type="text" name="penulis" placeholder="Penulis" class="border p-2 rounded"
-                                required>
-                            <input type="text" name="tags" placeholder="Tag (pisahkan dengan koma)"
-                                class="border p-2 rounded">
-                            <select name="status" class="border p-2 rounded" required>
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+
+                        <!-- Grid 2 kolom -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900">
+                            <!-- Judul Berita -->
+                            <div>
+                                <label for="judul_berita" class="block mb-2 font-semibold">Judul Berita</label>
+                                <input type="text" name="judul_berita" id="judul_berita"
+                                    placeholder="Judul Berita" class="w-full border p-3 rounded-lg" required>
+                            </div>
+
+                            <!-- Tanggal (sub_judul) -->
+                            <div>
+                                <label for="sub_judul" class="block mb-2 font-semibold">Tanggal</label>
+                                <input type="date" name="sub_judul" id="sub_judul"
+                                    class="w-full border p-3 rounded-lg" required>
+                            </div>
+
+                            <!-- Anggaran -->
+                            <div>
+                                <label for="anggaran" class="block mb-2 font-semibold">Anggaran</label>
+                                <input type="text" name="anggaran" id="anggaran" placeholder="Anggaran"
+                                    class="w-full border p-3 rounded-lg" required>
+                            </div>
+
+                            <!-- Tags -->
+                            <div>
+                                <label for="tags" class="block mb-2 font-semibold">Tags</label>
+                                <input type="text" name="tags" id="tags"
+                                    placeholder="Tag (pisahkan dengan koma)" class="w-full border p-3 rounded-lg">
+                            </div>
+
+                            <!-- Upload Gambar -->
+                            <div>
+                                <label for="gambar_cover" class="block mb-2 font-semibold">Upload Gambar</label>
+                                <input type="file" name="judul" id="gambar_cover"
+                                    class="w-full border p-3 rounded-lg file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-yellow-600 file:text-white hover:file:bg-yellow-700" />
+                            </div>
+
+                            <!-- Kategori -->
+                            <div>
+                                <label for="kategori" class="block mb-2 font-semibold">Kategori</label>
+                                <select name="kategori" id="kategori" class="w-full border p-3 rounded-lg" required>
+                                    <option value="Pendapatan">Pendapatan</option>
+                                    <option value="Belanja">Belanja</option>
+                                    <option value="Pembiayaan">Pembiayaan</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="mt-4 flex justify-end gap-2">
+
+                        <!-- Full Width: Isi Berita -->
+                        <div class="text-gray-900">
+                            <label for="isi_berita" class="block mb-2 font-semibold">Isi Berita</label>
+                            <textarea name="isi_berita" id="isi_berita" rows="5"
+                                class="w-full border p-3 rounded-lg resize-y focus:ring-2 focus:ring-blue-600"
+                                placeholder="Masukkan isi berita lengkap di sini..." required></textarea>
+                        </div>
+
+                        <!-- Tombol Aksi -->
+                        <div class="mt-6 flex justify-end gap-3">
                             <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Batal</button>
+                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Batal</button>
                             <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan</button>
+                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
                         </div>
                     </form>
                 </div>

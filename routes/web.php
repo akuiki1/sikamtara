@@ -137,3 +137,12 @@ Route::get('/admin/akun-warga', function () {
 Route::get('/admin/kependudukan', function () {
     return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
 });
+
+//halaman admin - apbdes
+Route::get('/admin/apbdes', function () {
+    return view('admin.apbdes.apbdes', ['title' => 'Kelola Data APBDes']);
+});
+
+Route::get('/admin/detail-apbdes', function () {
+    return view('admin.apbdes.detail-apbdes', ['title' => 'Kelola Data APBDes']);
+});
