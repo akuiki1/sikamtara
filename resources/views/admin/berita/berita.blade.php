@@ -42,6 +42,7 @@
     
                 return matchesSearch && matchesFilter && matchesTanggal && matchesBulan && matchesTahun;
             });
+            {{-- .sort((a, b) => new Date(b.tanggal_publish) - new Date(a.tanggal_publish)); --}}
         }
     }">
 
@@ -160,85 +161,16 @@
         </div>
 
         {{-- table --}}
-        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Judul</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Tanggal</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Penulis</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200" x-show="filteredBerita.length > 0">
-                    <template x-for="item in filteredBerita" :key="item.id_berita">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm" x-text="item.judul_berita"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.tanggal_publish"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.penulis"></td>
-                            <td class="px-6 py-4 text-sm">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold"
-                                    :class="{
-                                        'bg-yellow-100 text-yellow-800': item.status === 'draft',
-                                        'bg-green-100 text-green-800': item.status === 'published',
-                                        'bg-gray-200 text-gray-600': item.status === 'archived'
-                                    }"
-                                    x-text="item.status"></span>
-                            </td>
-                            <td class="px-6 py-4 text-center space-x-2">
-                                <!-- Tombol Lihat -->
-                                <button @click="selectedBerita = item; openModal = 'detail'"
-                                    class="text-blue-500 hover:underline">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-eye-icon lucide-eye">
-                                        <path
-                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </button>
-
-                                <!-- Tombol Edit -->
-                                <button @click="selectedBerita = item; openModal = 'edit'" title="edit"
-                                    class="text-yellow-500 hover:text-yellow-600 rounded-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil-icon lucide-pencil">
-                                        <path
-                                            d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                                        <path d="m15 5 4 4" />
-                                    </svg>
-                                </button>
-
-                                <!-- Tombol Hapus -->
-                                <button @click="selectedBerita = item; openModal = 'hapus'" title="Hapus"
-                                    class="text-red-500 hover:text-red-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 hover:text-lg">
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                        <line x1="14" x2="14" y1="11" y2="17" />
-                                    </svg>
-                                </button>
-
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-                <tbody x-show="filteredBerita.length === 0">
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada berita
-                            ditemukan.</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        @foreach ($beritas as $berita)
+            <div class="card">
+                <img src="{{ asset('storage/' . $berita->gambar_cover) }}" alt="Gambar Berita">
+                <h2>{{ $berita->judul_berita }}</h2>
+                <p>{{ Str::limit($berita->isi_berita, 150) }}</p>
+                <p><strong>Tanggal:</strong> {{ $berita->tanggal_publish->format('d M Y') }}</p>
+                <p><strong>Penulis:</strong> {{ $berita->penulisUser->nama ?? 'Tidak diketahui' }}</p>
+                <a href="{{ route('berita.show', $berita->id_berita) }}">Baca Selengkapnya</a>
+            </div>
+        @endforeach
 
         {{-- modal tambah --}}
         <template x-if="openModal === 'tambah'">
@@ -254,8 +186,8 @@
                             <!-- Judul Berita -->
                             <div>
                                 <label for="judul_berita" class="block mb-2 font-semibold">Judul Berita</label>
-                                <input type="text" name="judul_berita" id="judul_berita"
-                                    placeholder="Judul Berita" class="w-full border p-3 rounded-lg" required>
+                                <input type="text" name="judul_berita" id="judul_berita" placeholder="Judul Berita"
+                                    class="w-full border p-3 rounded-lg" required>
                             </div>
 
                             <!-- Tanggal (sub_judul) -->

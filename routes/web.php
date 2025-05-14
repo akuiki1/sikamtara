@@ -116,9 +116,9 @@ Route::get('/admin/layanan/pengaduan', function () {
     return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
 });
 
-Route::get('/admin/berita', function () {
-    return view('admin.berita.berita', ['title' => 'Kelola Berita Desa']);
-});
+Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
+
 
 Route::get('/admin/pengumuman', function () {
     return view('admin.berita.pengumuman', ['title' => 'Kelola Pengumuman Desa']);

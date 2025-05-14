@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class keluarga extends Model
+class Keluarga extends Model
 {
     use HasFactory;
 
@@ -28,8 +28,8 @@ class keluarga extends Model
     ];
 
     // Relasi ke penduduk-penduduk dalam KK ini
-    public function penduduk()
+    public function Penduduk()
     {
-        return $this->hasMany(penduduk::class, 'kode_keluarga', 'kode_keluarga');
+        return $this->hasMany(Penduduk::class, 'kode_keluarga', 'kode_keluarga');
     }
 }

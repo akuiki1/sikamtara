@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\keluarga;
+use App\Models\penduduk;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +24,18 @@ class BeritaFactory extends Factory
             'isi_berita' => fake()->text(),
             'gambar_cover' => fake()->image(),
             'tanggal_publish' => now(),
-            'penulis' => 'admin',
+            'penulis_id' => function () {
+                // Ambil ID User yang sudah ada atau buat baru
+                $user = User::factory()->create();
+
+                // Pastikan User punya Penduduk yang terkait
+                $penduduk = penduduk::factory()->create([
+                    'nik' => $user->nik,
+                    'kode_keluarga' => keluarga::factory()->create()->kode_keluarga, // Relasi ke Keluarga
+                ]);
+
+                return $user->id_user; // Relasi ke User
+            },
             'status' => 'published',
             'tags' => fake()->lexify(),
         ];

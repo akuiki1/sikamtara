@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('google_id')->nullable();
             $table->string('foto')->nullable();
             $table->boolean('verified_is')->default(false);
+            $table->rememberToken();
             $table->timestamps();
         });
 
