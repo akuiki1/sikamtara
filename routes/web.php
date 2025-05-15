@@ -1,19 +1,20 @@
 <?php
 
-use App\Http\Controllers\Admin\VisiMisiController;
-use App\Http\Controllers\AdministrasiController;
-use App\Http\Controllers\SocialiteController;
+use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PendudukController;
-use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\KeuanganController;
-use App\Models\Apbdes;
+use App\Http\Controllers\PendudukController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\AdministrasiController;
+use App\Http\Controllers\admin\KeluargaController;
+use App\Http\Controllers\Admin\VisiMisiController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -134,9 +135,18 @@ Route::get('/admin/akun-warga', function () {
 });
 
 //halaman admin - kependudukan
-Route::get('/admin/kependudukan', function () {
+Route::get('/admin/penduduk', function () {
     return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
 });
+
+// Route::get('/admin/keluarga', function () {
+//     return view('admin.penduduk.keluarga', ['title' => 'Kelola Data Keluarga']);
+// });
+
+Route::get('/admin/keluarga', [KeluargaController::class, 'index'])->name('keluarga.index');
+Route::post('/admin/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
+Route::put('/admin/keluarga/{id}', [KeluargaController::class, 'update'])->name('keluarga.update');
+Route::delete('/admin/keluarga/{id}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 
 //halaman admin - apbdes
 Route::get('/admin/apbdes', function () {

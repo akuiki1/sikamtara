@@ -53,12 +53,12 @@
                 </div>
 
                 {{-- Filter --}}
-                {{-- <div class="relative">
+                <div class="relative">
                     <button @click="filter = filter ? '' : 'Aktif'"
                         class="px-4 py-2 border border-gray-300 rounded-full bg-white text-sm text-gray-700 focus:outline-none">
                         Filter: <span x-text="filter ? filter : 'Semua'"></span>
                     </button>
-                </div> --}}
+                </div>
             </div>
 
             {{-- Button tambah penduduk --}}
@@ -91,7 +91,9 @@
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.status"></td>
                             <td class="px-6 py-4 text-center">
                                 <button @click="openModal = true; selectedPenduduk = item"
-                                    class="text-blue-600 hover:text-blue-800">Edit</button>
+                                    class="text-blue-600 hover:text-blue-800">View</button>
+                                <button @click="openModal = true; selectedPenduduk = item"
+                                    class="text-yellow-600 hover:text-yellow-800">Edit</button>
                                 <button @click="openModal = true; selectedPenduduk = item"
                                     class="text-red-600 hover:text-red-800">Hapus</button>
                             </td>
