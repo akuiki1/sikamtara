@@ -1,5 +1,5 @@
 <x-admin-layout>
-    <x-slot:title>{{ $title }}</x-slot>
+    <x-slot:title>{{ 'kelola penduduk' }}</x-slot>
 
     {{-- Logika tabel penduduk --}}
     <div class="p-6" x-data="{
@@ -7,24 +7,7 @@
         filter: '',
         openModal: false,
         selectedPenduduk: null,
-        penduduk: [
-            {
-                id_penduduk: 1,
-                nama: 'Ahmad Yani',
-                alamat: 'Jl. Raya Kambat Utara',
-                tanggal_lahir: '1990-05-12',
-                status: 'Aktif',
-                jenis_kelamin: 'Laki-laki',
-            },
-            {
-                id_penduduk: 2,
-                nama: 'Siti Mariam',
-                alamat: 'Jl. Raya Selatan Kambat',
-                tanggal_lahir: '1985-07-20',
-                status: 'Aktif',
-                jenis_kelamin: 'Perempuan',
-            },
-        ],
+        penduduk: @js($penduduk),
         get filteredPenduduk() {
             return this.penduduk.filter(item => {
                 const matchesSearch = item.nama.toLowerCase().includes(this.search.toLowerCase());
@@ -62,8 +45,7 @@
             </div>
 
             {{-- Button tambah penduduk --}}
-            <button @click="openModal = true"
-                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
+            <button @click="openModal = true" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
                 + Tambah Penduduk
             </button>
         </div>
@@ -86,7 +68,7 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm font-medium text-gray-700" x-text="item.nama"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.tanggal_lahir"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.alamat"></td>
+                            <td class="px-6 py-4 text-sm text-gray-500" x-text="Str::limit(item.alamat), 50"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.jenis_kelamin"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.status"></td>
                             <td class="px-6 py-4 text-center">
@@ -121,7 +103,8 @@
                     </div>
                     <div>
                         <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                        <input type="date" id="tanggal_lahir" x-model="selectedPenduduk ? selectedPenduduk.tanggal_lahir : ''"
+                        <input type="date" id="tanggal_lahir"
+                            x-model="selectedPenduduk ? selectedPenduduk.tanggal_lahir : ''"
                             class="w-full px-4 py-2 text-sm border rounded-lg focus:ring focus:border-blue-500">
                     </div>
                     <div>

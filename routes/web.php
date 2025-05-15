@@ -6,7 +6,6 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\KeuanganController;
-use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -15,6 +14,8 @@ use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
 use App\Http\Controllers\Admin\VisiMisiController;
+use App\Http\Controllers\admin\PendudukController;
+
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -135,9 +136,13 @@ Route::get('/admin/akun-warga', function () {
 });
 
 //halaman admin - kependudukan
-Route::get('/admin/penduduk', function () {
-    return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
+// Route::get('/admin/penduduk', function () {
+//     return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
+// });
+Route::prefix('admin')->group(function () {
+    Route::resource('penduduk', PendudukController::class);
 });
+    Route::get('/admin/penduduk', [PendudukController::class, 'index']);
 
 // Route::get('/admin/keluarga', function () {
 //     return view('admin.penduduk.keluarga', ['title' => 'Kelola Data Keluarga']);

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Penduduk;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PendudukController extends Controller
 {
@@ -12,7 +13,18 @@ class PendudukController extends Controller
      */
     public function index()
     {
-        //
+        $penduduk = Penduduk::with('keluarga')->get()->map(function ($item) {
+            return [
+                'id_penduduk' => $item->nik, // kalau nik dijadikan ID
+                'nama' => $item->nama,
+                'tanggal_lahir' => $item->tanggal_lahir,
+                'jenis_kelamin' => $item->jenis_kelamin,
+                'alamat' => $item->keluarga->alamat ?? 'Alamat tidak ada', // relasi
+                'status' => 'Aktif', // sementara hardcoded
+            ];
+        });
+
+        return view('admin.penduduk.penduduk', compact('penduduk'));
     }
 
     /**
