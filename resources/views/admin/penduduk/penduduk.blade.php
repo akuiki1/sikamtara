@@ -46,8 +46,8 @@
                 </form>
 
                 <a href="{{ url()->current() }}"
-                    class="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg text-sm">
-                    Set Default
+                    class="bg-gray-300 hover:bg-gray-400 text-black w-auto px-4 py-2 rounded-full text-sm">
+                    Tampilkan Semua
                 </a>
             </div>
             {{-- Button tambah penduduk --}}
