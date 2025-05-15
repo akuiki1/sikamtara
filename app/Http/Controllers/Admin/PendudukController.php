@@ -15,7 +15,7 @@ class PendudukController extends Controller
     {
         $penduduk = Penduduk::with('keluarga')->get()->map(function ($item) {
             return [
-                'id_penduduk' => $item->nik, // kalau nik dijadikan ID
+                'id_penduduk' => $item->nik,
                 'nama' => $item->nama,
                 'tanggal_lahir' => $item->tanggal_lahir,
                 'jenis_kelamin' => $item->jenis_kelamin,
