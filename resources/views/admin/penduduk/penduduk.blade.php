@@ -7,7 +7,7 @@
         filter: '',
         openModal: false,
         selectedPenduduk: null,
-        penduduk: @js($penduduk),
+        penduduk: @js($pendudukJs),
         get filteredPenduduk() {
             return this.penduduk.filter(item => {
                 const matchesSearch = item.nama.toLowerCase().includes(this.search.toLowerCase());
@@ -17,33 +17,39 @@
         }
     }">
 
+
         {{-- Search bar + filter + tambah penduduk --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+            <div class="flex items-center gap-2">
+                <form method="GET" class="flex flex-col md:flex-row items-center gap-4">
+                    <div class="relative w-full md:w-80">
+                        <!-- Ikon kaca pembesar -->
+                        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                            <svg class="w-6 h-6 text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </span>
 
-            {{-- Kontainer search dan filter --}}
-            <div class="flex flex-col md:flex-row items-center gap-4">
-                {{-- Search bar --}}
-                <div class="relative">
-                    <input type="text" placeholder="Cari nama penduduk..." x-model="search"
-                        class="w-full md:w-80 pl-10 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
+                        <!-- Input pencarian -->
+                        <input type="text" name="search" placeholder="Cari nama penduduk..."
+                            value="{{ request('search') }}"
+                            class="w-full pl-10 pr-20 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
 
-                    <svg class="w-6 h-6 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                        fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                    </svg>
-                </div>
+                        <!-- Tombol Cari di dalam input -->
+                        <button type="submit"
+                            class="absolute right-1 top-1 bottom-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-sm">
+                            Cari
+                        </button>
+                    </div>
+                </form>
 
-                {{-- Filter --}}
-                <div class="relative">
-                    <button @click="filter = filter ? '' : 'Aktif'"
-                        class="px-4 py-2 border border-gray-300 rounded-full bg-white text-sm text-gray-700 focus:outline-none">
-                        Filter: <span x-text="filter ? filter : 'Semua'"></span>
-                    </button>
-                </div>
+                <a href="{{ url()->current() }}"
+                    class="bg-gray-300 hover:bg-gray-400 text-black px-3 py-1 rounded-lg text-sm">
+                    Set Default
+                </a>
             </div>
-
             {{-- Button tambah penduduk --}}
             <button @click="openModal = true" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
                 + Tambah Penduduk
@@ -68,9 +74,10 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm font-medium text-gray-700" x-text="item.nama"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.tanggal_lahir"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="Str::limit(item.alamat), 50"></td>
+                            <td class="px-6 py-4 text-sm text-gray-500"
+                                x-text="item.alamat.length > 50 ? item.alamat.slice(0, 50) + '...' : item.alamat"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.jenis_kelamin"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.status"></td>
+                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.status_tinggal"></td>
                             <td class="px-6 py-4 text-center">
                                 <button @click="openModal = true; selectedPenduduk = item"
                                     class="text-blue-600 hover:text-blue-800">View</button>
@@ -83,6 +90,9 @@
                     </template>
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $penduduk->links() }}
         </div>
 
         {{-- Modal Tambah/Edit Penduduk --}}

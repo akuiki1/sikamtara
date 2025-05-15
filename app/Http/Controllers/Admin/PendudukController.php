@@ -11,20 +11,37 @@ class PendudukController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $penduduk = Penduduk::with('keluarga')->get()->map(function ($item) {
+        $query = Penduduk::with('keluarga');
+
+        if ($request->has('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('filter') && $request->filter !== '') {
+            $query->where('status_tinggal', $request->filter);
+        }
+
+        $penduduk = $query->paginate(20)->appends($request->query());
+
+        $transformed = collect($penduduk->items())->map(function ($item) {
             return [
-                'id_penduduk' => $item->nik,
-                'nama' => $item->nama,
+                'id_penduduk'   => $item->nik,
+                'nama'          => $item->nama,
                 'tanggal_lahir' => $item->tanggal_lahir,
                 'jenis_kelamin' => $item->jenis_kelamin,
-                'alamat' => $item->keluarga->alamat ?? 'Alamat tidak ada', // relasi
-                'status' => 'Aktif', // sementara hardcoded
+                'alamat'        => $item->keluarga->alamat ?? 'Alamat tidak ada',
+                'status'        => $item->status_tinggal,
             ];
         });
 
-        return view('admin.penduduk.penduduk', compact('penduduk'));
+        return view('admin.penduduk.penduduk', [
+            'penduduk' => $penduduk,
+            'pendudukJs' => $transformed,
+            'search' => $request->search,
+            'filter' => $request->filter,
+        ]);
     }
 
     /**
