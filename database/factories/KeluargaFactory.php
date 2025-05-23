@@ -20,10 +20,8 @@ class KeluargaFactory extends Factory
             'kode_keluarga' => $this->faker->unique()->numerify('###############'), // 16 digit
             'kepala_keluarga' => $this->faker->name(),
             'alamat' => $this->faker->address(),
-            'dusun' => $this->faker->randomElement(['Dusun I', 'Dusun II', 'Dusun III']),
             'rt' => $this->faker->numberBetween(1, 10),
             'rw' => $this->faker->numberBetween(1, 5),
-            'tanggal_dibuat' => $this->faker->date(),
         ];
     }
 }

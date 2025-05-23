@@ -27,7 +27,6 @@ return new class extends Migration
             $table->char('kode_keluarga', 16); // Foreign key ke KK
             $table->foreign('kode_keluarga')->references('kode_keluarga')->on('keluarga')->onDelete('cascade');
 
-            $table->string('dusun', 50)->nullable();
             $table->string('rt', 3)->nullable();
             $table->string('rw', 3)->nullable();
             $table->text('alamat')->nullable();

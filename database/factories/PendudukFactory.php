@@ -32,7 +32,6 @@ class PendudukFactory extends Factory
 
             'kode_keluarga' => keluarga::inRandomOrder()->first()?->kode_keluarga ?? keluarga::factory(), // relasi ke KK
 
-            'dusun' => $this->faker->randomElement(['Dusun I', 'Dusun II', 'Dusun III']),
             'rt' => $this->faker->numberBetween(1, 10),
             'rw' => $this->faker->numberBetween(1, 5),
             'alamat' => $this->faker->address(),
