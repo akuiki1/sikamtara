@@ -12,10 +12,36 @@ class KeluargaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $keluargas = Keluarga::all();
-        return view('admin.penduduk.keluarga', compact('keluargas'));
+        $query = Keluarga::with('penduduk');
+
+        if ($request->has('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('filter') && $request->filter !== '') {
+            $query->where('status_tinggal', $request->filter);
+        }
+
+        $keluarga = $query->paginate(20)->appends($request->query());
+
+        $transformed = collect($keluarga->items())->map(function ($item) {
+            return [
+                'kode_keluarga'     => $item->kode_keluarga,
+                'kepala_keluarga'   => $item->kepala_keluarga,
+                'alamat'            => $item->alamat,
+                'rt'                => $item->rt,
+                'rw'                => $item->rw,
+            ];
+        });
+
+        return view('admin.penduduk.keluarga', [
+            'keluarga'      => $keluarga,
+            'keluargaJs'    => $transformed,
+            'search'        => $request->search,
+            'filter'        => $request->filter,
+        ]);
     }
 
     /**
