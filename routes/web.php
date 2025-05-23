@@ -142,7 +142,8 @@ Route::get('/admin/akun-warga', function () {
 Route::prefix('admin')->group(function () {
     Route::resource('penduduk', PendudukController::class);
 });
-    Route::get('/admin/penduduk', [PendudukController::class, 'index']);
+Route::get('/admin/penduduk', [PendudukController::class, 'index']);
+Route::put('/penduduk/{id}', [PendudukController::class, 'update']);
 
 // Route::get('/admin/keluarga', function () {
 //     return view('admin.penduduk.keluarga', ['title' => 'Kelola Data Keluarga']);

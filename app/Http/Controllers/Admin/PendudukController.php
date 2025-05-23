@@ -27,20 +27,30 @@ class PendudukController extends Controller
 
         $transformed = collect($penduduk->items())->map(function ($item) {
             return [
-                'id_penduduk'   => $item->nik,
-                'nama'          => $item->nama,
-                'tanggal_lahir' => $item->tanggal_lahir,
-                'jenis_kelamin' => $item->jenis_kelamin,
-                'alamat'        => $item->keluarga->alamat ?? 'Alamat tidak ada',
-                'status'        => $item->status_tinggal,
+                'id_penduduk'       => $item->nik,
+                'nama'              => $item->nama,
+                'tempat_lahir'      => $item->tempat_lahir,
+                'tanggal_lahir'     => $item->tanggal_lahir,
+                'jenis_kelamin'     => $item->jenis_kelamin,
+                'agama'             => $item->agama,
+                'pendidikan'        => $item->pendidikan,
+                'pekerjaan'         => $item->pekerjaan,
+                'status_perkawinan' => $item->status_perkawinan,
+                'golongan_darah'    => $item->golongan_darah,
+                'kewarganegaraan'   => $item->kewarganegaraan,
+                'kode_keluarga'     => $item->kode_keluarga,
+                'alamat'            => $item->keluarga->alamat ?? 'Alamat tidak ada',
+                'rt'                => $item->rt,
+                'rw'                => $item->rw,
+                'status'            => $item->status_tinggal,
             ];
         });
 
         return view('admin.penduduk.penduduk', [
-            'penduduk' => $penduduk,
-            'pendudukJs' => $transformed,
-            'search' => $request->search,
-            'filter' => $request->filter,
+            'penduduk'      => $penduduk,
+            'pendudukJs'    => $transformed,
+            'search'        => $request->search,
+            'filter'        => $request->filter,
         ]);
     }
 
