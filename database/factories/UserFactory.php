@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'role' => $this->faker->randomElement(['admin', 'user', 'kepala desa']),
             'google_id' => $this->faker->uuid,
             'foto' => $this->faker->imageUrl(640, 480, 'people', true),
-            'verified_is' => $this->faker->boolean,
+            'status_verifikasi' => $this->faker->randomElement(['Terverifikasi', 'Belum Terverifikasi']),
             'remember_token' => Str::random(10),
         ];
     }

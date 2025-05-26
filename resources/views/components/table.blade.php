@@ -4,7 +4,7 @@
             {{ $head }}
         </thead>
         <tbody class="divide-y divide-gray-50">
-            {{ $slot }}
+            {{ $body }}
         </tbody>
     </table>
 </div>

@@ -20,8 +20,6 @@
         }
     }">
 
-
-
         {{-- Search bar + filter + tambah penduduk --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
             <div class="flex items-center gap-2">

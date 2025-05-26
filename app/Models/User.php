@@ -15,7 +15,14 @@ class User extends Authenticatable
     protected $primaryKey = 'id_user';
 
     protected $fillable = [
-        'nama', 'nik', 'email', 'password', 'role', 'google_id', 'foto', 'verified_is'
+        'nama',
+        'nik',
+        'email',
+        'password',
+        'role',
+        'google_id',
+        'foto',
+        'verified_is'
     ];
 
     protected $hidden = [
@@ -25,5 +32,11 @@ class User extends Authenticatable
     public function getAuthIdentifierName()
     {
         return 'id_user';
+    }
+
+    // User.php
+    public function penduduk()
+    {
+        return $this->belongsTo(Penduduk::class, 'nik', 'nik');
     }
 }

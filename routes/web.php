@@ -15,7 +15,7 @@ use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
 use App\Http\Controllers\Admin\VisiMisiController;
 use App\Http\Controllers\admin\PendudukController;
-
+use App\Http\Controllers\admin\UserController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -131,9 +131,8 @@ Route::get('/admin/akun', function () {
     return view('admin.akun.profil', ['title' => 'Setelan Akun']);
 });
 
-Route::get('/admin/akun-warga', function () {
-    return view('admin.akun.akun-warga', ['title' => 'Kelola Akun Warga']);
-});
+Route::get('/admin/akun-warga', [UserController::class, 'index']);
+
 
 //halaman admin - kependudukan
 // Route::get('/admin/penduduk', function () {

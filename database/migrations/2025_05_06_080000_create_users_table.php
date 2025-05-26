@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'user', 'kepala desa'])->default('user');
             $table->string('google_id')->nullable();
             $table->string('foto')->nullable();
-            $table->boolean('verified_is')->default(false);
+            $table->enum('status_verifikasi', ['Belum Terverifikasi', 'Terverifikasi'])->default('Belum Terverifikasi');
             $table->rememberToken();
             $table->timestamps();
         });
