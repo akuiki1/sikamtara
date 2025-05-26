@@ -5,7 +5,10 @@
     <div class="p-6" x-data="{
         search: '',
         filter: '',
-        openModal: '',
+        showAddModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
+        showDetailModal: false,
         tanggal: '',
         bulan: '',
         tahun: '',
@@ -153,211 +156,211 @@
                 </div>
             </div>
             {{-- button tambah berita --}}
-            <button @click="openModal = 'tambah'"
-                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                + Tambah Berita
+            <button @click="selectedPenduduk = null; showAddModal = true"
+                class="flex items-center gap-2 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-2 rounded-full transition duration-200 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus-icon lucide-plus">
+                    <path d="M5 12h14" />
+                    <path d="M12 5v14" />
+                </svg>
+                <span>Tambah Akun</span>
             </button>
         </div>
 
         {{-- table --}}
-        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Judul</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Tanggal</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Penulis</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200" x-show="filteredBerita.length > 0">
-                    <template x-for="item in filteredBerita" :key="item.id_berita">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm" x-text="item.judul_berita"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.tanggal_publish"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.penulis"></td>
-                            <td class="px-6 py-4 text-sm">
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold"
-                                    :class="{
-                                        'bg-yellow-100 text-yellow-800': item.status === 'draft',
-                                        'bg-green-100 text-green-800': item.status === 'published',
-                                        'bg-gray-200 text-gray-600': item.status === 'archived'
-                                    }"
-                                    x-text="item.status"></span>
-                            </td>
-                            <td class="px-6 py-4 text-center space-x-2">
-                                <!-- Tombol Lihat -->
-                                <button @click="selectedBerita = item; openModal = 'detail'"
-                                    class="text-blue-500 hover:underline">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-eye-icon lucide-eye">
-                                        <path
-                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </button>
+        <x-table>
+            {{-- SLOT HEADER --}}
+            <x-slot name="head">
+                <tr>
+                    <th class="px-4 py-3 text-center">nama</th>
+                    <th class="px-4 py-3 text-center">email</th>
+                    <th class="px-4 py-3 text-center">role</th>
+                    <th class="px-4 py-3 text-center">status verifikasi</th>
+                    <th class="px-4 py-3 text-center">Aksi</th>
+                </tr>
+            </x-slot>
 
-                                <!-- Tombol Edit -->
-                                <button @click="selectedBerita = item; openModal = 'edit'" title="edit"
-                                    class="text-yellow-500 hover:text-yellow-600 rounded-lg">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil-icon lucide-pencil">
-                                        <path
-                                            d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
-                                        <path d="m15 5 4 4" />
-                                    </svg>
-                                </button>
+            {{-- SLOT BODY --}}
+            <template x-for="item in filteredBerita" :key="item.id_berita">
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm" x-text="item.judul_berita"></td>
+                    <td class="px-6 py-4 text-center" x-text="item.tanggal_publish"></td>
+                    <td class="px-6 py-4 text-center" x-text="item.penulis"></td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                            :class="{
+                                'bg-yellow-100 text-yellow-800': item.status === 'draft',
+                                'bg-green-100 text-green-800': item.status === 'published',
+                                'bg-gray-200 text-gray-600': item.status === 'archived'
+                            }"
+                            x-text="item.status"></span>
+                    </td>
+                    <!-- Tombol Aksi -->
+                    <td class="px-6 py-4 text-center space-x-2">
+                        <button @click="selectedPenduduk = item; showDetailModal = true"
+                            class="text-blue-500 hover:text-blue-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-eye-icon lucide-eye">
+                                <path
+                                    d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                        <!-- Edit -->
+                        <button @click="selectedPenduduk = {...item}; showEditModal = true"
+                            class="text-yellow-500 hover:text-yellow-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-pencil-icon lucide-pencil">
+                                <path
+                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                                <path d="m15 5 4 4" />
+                            </svg>
+                        </button>
+                        <!-- Delete -->
+                        <button @click="selectedPenduduk = item; showDeleteModal = true"
+                            class="text-red-500 hover:text-red-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-trash2-icon lucide-trash-2">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            </template>
 
-                                <!-- Tombol Hapus -->
-                                <button @click="selectedBerita = item; openModal = 'hapus'" title="Hapus"
-                                    class="text-red-500 hover:text-red-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 hover:text-lg">
-                                        <path d="M3 6h18" />
-                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                        <line x1="14" x2="14" y1="11" y2="17" />
-                                    </svg>
-                                </button>
+            {{-- Jika tidak ada data --}}
+            <tr x-show="filteredBerita.length === 0">
+                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                    Tidak ada berita ditemukan.
+                </td>
+            </tr>
+        </x-table>
 
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-                <tbody x-show="filteredBerita.length === 0">
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada berita
-                            ditemukan.</td>
-                    </tr>
-                </tbody>
-            </table>
+        {{-- modal status --}}
+        <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
+            showSuccess = false;
+            showError = false
+        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
+
+            <!-- Berhasil -->
+            <div x-show="showSuccess" x-transition
+                class="flex items-center gap-3 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ session('success') }}</span>
+            </div>
+
+            <!-- Gagal -->
+            <div x-show="showError" x-transition
+                class="flex items-center gap-3 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
         </div>
 
         {{-- modal tambah --}}
-        <template x-if="openModal === 'tambah'">
-            <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-                    <h2 class="text-xl font-bold mb-4">Tambah Berita</h2>
-                    <form action="#" method="POST" enctype="multipart/form-data">
-                        {{-- <form action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data"> --}}
-                        @csrf
-                        <div class="grid grid-cols-1 gap-4">
-                            <input type="text" name="judul_berita" placeholder="Judul Berita"
-                                class="border p-2 rounded" required>
-                            <textarea name="isi_berita" placeholder="Isi Berita" rows="5" class="border p-2 rounded" required></textarea>
-                            <input type="file" name="gambar_cover" class="border p-2 rounded">
-                            <input type="date" name="tanggal_publish" class="border p-2 rounded" required>
-                            <input type="text" name="penulis" placeholder="Penulis" class="border p-2 rounded"
-                                required>
-                            <input type="text" name="tags" placeholder="Tag (pisahkan dengan koma)"
-                                class="border p-2 rounded">
-                            <select name="status" class="border p-2 rounded" required>
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+        <x-modal show="showAddModal" title="Tambah Akun Baru">
+            <form action="#" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <div class="">
+                            <label for="nik" class="block text-sm font-medium">NIK</label>
+                            <input type="text" id="nik" name="nik" x-model="selectedPenduduk?.nik"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
-                        <div class="mt-4 flex justify-end gap-2">
-                            <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                            <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Simpan</button>
+                    </div>
+
+                </div>
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <button type="button" @click="{{ 'showAddModal' }} = false"
+                        class="inline-flex items-center rounded-full text-base px-5 py-3 focus:outline-none transition duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-700">Batal</button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- modal detail --}}
+        <x-modal show="showDetailModal" title="Detail Akun">
+            <form action="#" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <div class="">
+                            <label for="nik" class="block text-sm font-medium">NIK</label>
+                            <input type="text" id="nik" name="nik" x-model="selectedPenduduk?.nik"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
-                    </form>
-                </div>
-            </div>
-        </template>
+                    </div>
 
-        <!-- Modal detail -->
-        <template x-if="openModal === 'detail' && selectedBerita">
-            <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Berita'"></h3>
-                        <button @click="openModal = ''"
-                            class="text-xl text-gray-500 hover:text-red-500">&times;</button>
-                    </div>
-                    <div class="space-y-3 text-sm text-gray-700">
-                        <img :src="selectedBerita.gambar_cover" class="w-full rounded-xl" alt="Gambar Berita">
-                        <p><strong>Judul:</strong> <span x-text="selectedBerita.judul_berita"></span></p>
-                        <p><strong>Tanggal:</strong> <span x-text="selectedBerita.tanggal_publish"></span></p>
-                        <p><strong>Penulis:</strong> <span x-text="selectedBerita.penulis"></span></p>
-                        <p><strong>Status:</strong> <span x-text="selectedBerita.status"></span></p>
-                        <p><strong>Isi:</strong> <span x-text="selectedBerita.isi_berita"></span></p>
-                        <p><strong>Tags:</strong> <span x-text="selectedBerita.tags.join(', ')"></span></p>
-                    </div>
-                    <div class="flex justify-end mt-4">
-                        <button @click="openModal = ''"
-                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tutup</button>
-                    </div>
                 </div>
-            </div>
-        </template>
 
-        <!-- Modal edit -->
-        <template x-if="openModal === 'edit' && selectedBerita">
-            <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-                    <h2 class="text-xl font-bold mb-4">Edit Berita</h2>
-                    <form :action="`/berita/${selectedBerita.id_berita}`" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="grid grid-cols-1 gap-4">
-                            <input type="text" name="judul_berita" :value="selectedBerita.judul_berita"
-                                class="border p-2 rounded" required>
-                            <textarea name="isi_berita" rows="5" class="border p-2 rounded" x-text="selectedBerita.isi_berita"></textarea>
-                            <input type="file" name="gambar_cover" class="border p-2 rounded">
-                            <input type="date" name="tanggal_publish" :value="selectedBerita.tanggal_publish"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="penulis" :value="selectedBerita.penulis"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="tags" :value="selectedBerita.tags"
-                                class="border p-2 rounded">
-                            <select name="status" class="border p-2 rounded" :value="selectedBerita.status">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
+                <div class="mt-6 flex justify-end gap-2">
+                    <button type="button" @click="{{ 'showDetailModal' }} = false"
+                        class="inline-flex items-center rounded-full text-base px-5 py-3 focus:outline-none transition duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-700">Batal</button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- modal edit --}}
+        <x-modal show="showEditModal" title="Edit Akun">
+            <form action="#" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-2">
+                        <div class="">
+                            <label for="nik" class="block text-sm font-medium">NIK</label>
+                            <input type="text" id="nik" name="nik" x-model="selectedPenduduk?.nik"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
-                        <div class="mt-4 flex justify-end gap-2">
-                            <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                            <button type="submit"
-                                class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </template>
-
-        <!-- Modal hapus -->
-        <template x-if="openModal === 'hapus' && selectedBerita">
-            <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Berita'"></h3>
-                        <button @click="openModal = ''"
-                            class="text-gray-500 hover:text-red-500 text-xl">&times;</button>
                     </div>
-                    <p class="text-sm text-gray-700 mb-6">Apakah Anda yakin ingin menghapus berita <strong><span
-                                x-text="selectedBerita.judul_berita"></span></strong> ?</p>
-                    <p class="text-sm text-gray-700 mb-6">Tindakan ini tidak dapat dibatalkan.</p>
-                    <div class="flex justify-end space-x-3">
-                        <button @click="openModal = ''"
-                            class="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200">Batal</button>
-                        <button class="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700">Hapus</button>
-                    </div>
-                </div>
-            </div>
-        </template>
 
+                </div>
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <button type="button" @click="{{ 'showEditModal' }} = false"
+                        class="inline-flex items-center rounded-full text-base px-5 py-3 focus:outline-none transition duration-150 ease-in-out bg-gray-200 hover:bg-gray-300 text-gray-700">Batal</button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- modal hapus --}}
+        <div x-show="showDeleteModal" @click.away="showDeleteModal = false" x-transition
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white rounded-xl shadow-2xl w-96 p-6 text-center">
+                <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus Penduduk?</h2>
+                <p class="mb-4">Apakah Anda yakin ingin menghapus data <strong
+                        x-text="selectedPenduduk.nama"></strong>?</p>
+
+                <form :action="`/admin/penduduk/${selectedPenduduk.nik}`" method="POST" x-ref="deleteForm">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="flex justify-center gap-4">
+                        <button type="button" @click="showDeleteModal = false"
+                            class="px-4 py-2 bg-gray-300 rounded-lg text-sm hover:bg-gray-400">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </x-admin-layout>
