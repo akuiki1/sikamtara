@@ -26,7 +26,7 @@ class KeluargaController extends Controller
         }
 
 
-        $keluarga = $query->paginate(20)->appends($request->query());
+        $keluarga = $query->paginate(10)->appends($request->query());
 
         $transformed = collect($keluarga->items())->map(function ($item) {
             return [
@@ -107,22 +107,16 @@ class KeluargaController extends Controller
     public function update(Request $request, $kode_keluarga)
     {
         try {
-            $validated = $request->validate([
-                'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga,' . $kode_keluarga . ',kode_keluarga',
-                'nik_kepala_keluarga' => 'required|digits:16',
-                'alamat' => 'required|string',
-                'rt' => 'required|digits:3',
-                'rw' => 'required|digits:3',
-            ]);
-
             $keluarga = Keluarga::where('kode_keluarga', $kode_keluarga)->firstOrFail();
-            $keluarga->update($validated);
+            $keluarga->update($request->all());
 
-            return redirect()->back()->with('success', 'Data keluarga berhasil diperbarui!');
+            // Balik ke halaman utama keluarga aja
+            return redirect()->to('/admin/keluarga?search=' . $kode_keluarga)->with('success', 'Data keluarga berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return redirect()->to('/admin/keluarga?search=' . $kode_keluarga)->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
+
 
 
     /**

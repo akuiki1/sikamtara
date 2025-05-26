@@ -42,46 +42,52 @@
 
                         <!-- Tombol Cari di dalam input -->
                         <button type="submit"
-                            class="absolute right-1 top-1 bottom-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-sm">
+                            class="absolute right-1 top-1 bottom-1 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
                             Cari
                         </button>
                     </div>
                 </form>
 
                 <a href="{{ url()->current() }}"
-                    class="bg-gray-300 hover:bg-gray-400 text-black w-auto px-4 py-2 rounded-full text-sm">
-                    Tampilkan Semua
+                   class="bg-gray-200 hover:bg-gray-300 text-indigo-500 w-auto p-2 rounded-full text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </a>
             </div>
             {{-- Button tambah Keluarga --}}
             <button @click="selectedKeluarga = null; showAddModal = true"
-                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                + Tambah Keluarga
+                class="flex items-center gap-2 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-2 rounded-full transition duration-200 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus-icon lucide-plus">
+                    <path d="M5 12h14" />
+                    <path d="M12 5v14" />
+                </svg>
+                <span>Tambah Keluarga</span>
             </button>
         </div>
 
         {{-- Tabel Keluarga --}}
-        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
+        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-indigo-400 text-gray-50 uppercase text-xs font-semibold tracking-wider">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Kode Keluarga</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Kepala Keluarga</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Alamat</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">RT</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">RW</th>
-                        <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
+                        <th class="px-4 py-3 text-left">Kode Keluarga</th>
+                        <th class="px-4 py-3 text-left">Kepala Keluarga</th>
+                        <th class="px-4 py-3 text-left">Alamat</th>
+                        <th class="px-6 py-3 text-center">RT</th>
+                        <th class="px-6 py-3 text-center">RW</th>
+                        <th class="px-6 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200" x-show="filteredKeluarga.length > 0">
+                <tbody class="divide-y divide-gray-50" x-show="filteredKeluarga.length > 0">
                     <template x-for="item in filteredKeluarga" :key="item.kode_keluarga">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-700" x-text="item.kode_keluarga"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.kepala_keluarga"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500"
+                         <tr class="even:bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-3 text-gray-800 font-medium" x-text="item.kode_keluarga"></td>
+                            <td class="px-4 py-3 text-gray-600" x-text="item.kepala_keluarga"></td>
+                            <td class="px-4 py-3 text-gray-600"
                                 x-text="item.alamat.length > 50 ? item.alamat.slice(0, 50) + '...' : item.alamat"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.rt"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.rw"></td>
+                            <td class="px-4 py-3 text-gray-600 text-center" x-text="item.rt"></td>
+                            <td class="px-4 py-3 text-gray-600 text-center" x-text="item.rw"></td>
                             <td class="px-6 py-4 text-center">
                                 <button @click="selectedKeluarga = item; showDetailModal = true"
                                     class="text-blue-600 hover:text-blue-800">
@@ -116,6 +122,9 @@
                     </template>
                 </tbody>
             </table>
+            <div x-show="filteredKeluarga.length === 0" class="text-center text-gray-500 py-6">
+                Data keluarga tidak ditemukan.
+            </div>
         </div>
 
         {{-- pagination --}}
@@ -246,7 +255,8 @@
                                             <td class="p-2" x-text="anggota.nama"></td>
                                             <td class="p-2" x-text="anggota.hubungan"></td>
                                             <td class="p-2">
-                                                <button @click="detailPenduduk(anggota.nik)"
+                                                <button
+                                                    @click="window.location.href = `/admin/penduduk?search=${anggota.nik}`"
                                                     class="text-blue-600 hover:underline">Detail</button>
                                             </td>
                                         </tr>

@@ -42,102 +42,146 @@
                             class="w-full pl-10 pr-20 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
 
                         <!-- Tombol Cari di dalam input -->
-                        <button type="submit"
-                            class="absolute right-1 top-1 bottom-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-sm">
+                        <x-button type='submit' variant="primary" class="absolute right-1 top-1 bottom-1">
                             Cari
-                        </button>
+                        </x-button>
                     </div>
                 </form>
 
                 <a href="{{ url()->current() }}"
-                    class="bg-gray-300 hover:bg-gray-400 text-black w-auto px-4 py-2 rounded-full text-sm">
-                    Tampilkan Semua
+                    class="bg-gray-200 hover:bg-gray-300 text-indigo-500 w-auto p-2 rounded-full text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </a>
             </div>
             {{-- Button tambah penduduk --}}
             <button @click="selectedPenduduk = null; showAddModal = true"
-                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                + Tambah Penduduk
+                class="flex items-center gap-2 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-2 rounded-full transition duration-200 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus-icon lucide-plus">
+                    <path d="M5 12h14" />
+                    <path d="M12 5v14" />
+                </svg>
+                <span>Tambah Penduduk</span>
             </button>
+
         </div>
 
         {{-- Tabel penduduk --}}
-        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
+        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-indigo-400 text-gray-50 uppercase text-xs font-semibold tracking-wider">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Nama</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Tanggal Lahir</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Alamat</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Jenis Kelamin</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-                        <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
+                        <th class="px-4 py-3 text-center">Nama</th>
+                        <th class="px-4 py-3 text-center">Tanggal Lahir</th>
+                        <th class="px-4 py-3 text-center">Alamat</th>
+                        <th class="px-4 py-3 text-left">Jenis Kelamin</th>
+                        <th class="px-4 py-3 text-left">Status</th>
+                        <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200" x-show="filteredPenduduk.length > 0">
+                <tbody class="divide-y divide-gray-50" x-show="filteredPenduduk.length > 0">
                     <template x-for="item in filteredPenduduk" :key="item.nik">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-700" x-text="item.nama"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.tanggal_lahir"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500"
-                                x-text="item.alamat.length > 50 ? item.alamat.slice(0, 50) + '...' : item.alamat"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.jenis_kelamin"></td>
-                            <td class="px-6 py-4 text-sm text-gray-500" x-text="item.status"></td>
-                            <td class="px-6 py-4 text-center">
+                        <tr class="even:bg-gray-50 hover:bg-gray-100">
+                            <td class="px-4 py-3 text-gray-800 font-medium" x-text="item.nama"></td>
+                            <td class="px-4 py-3 text-gray-600 text-center" x-text="item.tanggal_lahir"></td>
+                            <td class="px-4 py-3 text-gray-600"
+                                x-text="item.alamat.length > 50 ? item.alamat.slice(0, 50) + '...' : item.alamat">
+                            </td>
+                            <td class="px-4 py-3 text-center space-x-1 text-gray-600" x-text="item.jenis_kelamin"></td>
+                            <td class="px-4 py-3 text-gray-600" x-text="item.status_tinggal"></td>
+                            <td class="px-4 py-3 text-center space-x-1">
+                                <!-- Detail -->
                                 <button @click="selectedPenduduk = item; showDetailModal = true"
-                                    class="text-blue-600 hover:text-blue-800">
-                                    <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-width="1"
-                                            d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
-                                        <path stroke="currentColor" stroke-width="1"
-                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                    </svg>
+                                    class="text-blue-500 hover:text-blue-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
                                 </button>
+                                <!-- Edit -->
                                 <button @click="selectedPenduduk = {...item}; showEditModal = true"
-                                    class="text-yellow-600 hover:text-yellow-800"><svg class="w-[20px] h-[20px]"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                                    </svg>
+                                    class="text-yellow-500 hover:text-yellow-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
                                 </button>
+                                <!-- Delete -->
                                 <button @click="selectedPenduduk = item; showDeleteModal = true"
-                                    class="text-red-600 hover:text-red-800 hover:bg-gray-200 rounded-full">
-                                    <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-                                    </svg>
+                                    class="text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                 </button>
                             </td>
                         </tr>
                     </template>
                 </tbody>
             </table>
+
+            <!-- Notif -->
+            <div x-show="filteredPenduduk.length === 0" class="text-center text-gray-500 py-6">
+                Data penduduk tidak ditemukan.
+            </div>
         </div>
+
+        <!-- Pagination -->
         <div class="mt-4">
             {{ $penduduk->links() }}
         </div>
+
+
+        {{-- modal sukses/error --}}
+        <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
+            showSuccess = false;
+            showError = false
+        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
+
+            <!-- Berhasil -->
+            <div x-show="showSuccess" x-transition
+                class="flex items-center gap-3 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ session('success') }}</span>
+            </div>
+
+            <!-- Gagal -->
+            <div x-show="showError" x-transition
+                class="flex items-center gap-3 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+
 
         {{-- Modal Tambah --}}
         <div x-show="showAddModal" @click.away="showAddModal = false" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
-                <h2 class="text-lg font-semibold text-center mb-4">Tambah Penduduk</h2>
-                <form action="#" method="POST" @submit.prevent>
+                <h2 class="text-lg font-semibold text-center mb-4">Tambah Penduduk Baru</h2>
+                <form action="{{ route('penduduk.store') }}" method="POST">
+                    @csrf
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Nama -->
+                        {{-- KK --}}
                         <div class="col-span-2">
+                            <label for="kode_keluarga" class="block text-sm font-medium">
+                                Kode Keluarga
+                            </label>
+                            <input list="kodeKeluargaList" name="kode_keluarga" id="kode_keluarga"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Ketik atau pilih kode keluarga" required>
+                            <datalist id="kodeKeluargaList">
+                                @foreach ($daftar_keluarga as $keluarga)
+                                    <option value="{{ $keluarga->kode_keluarga }}"></option>
+                                @endforeach
+                            </datalist>
+                        </div>
+
+                        <!-- Nama -->
+                        <div class="">
                             <label for="nik" class="block text-sm font-medium">NIK</label>
-                            <input type="text" id="nama" x-model="selectedPenduduk?.nik"
+                            <input type="text" id="nik" name="nik" x-model="selectedPenduduk?.nik"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
-                        <div class="col-span-2">
+                        <div class="">
                             <label for="nama" class="block text-sm font-medium">Nama</label>
-                            <input type="text" id="nama" x-model="selectedPenduduk?.nama"
+                            <input type="text" id="nama" name="nama" x-model="selectedPenduduk?.nama"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
@@ -161,24 +205,26 @@
                         <!-- Tempat & Tanggal Lahir -->
                         <div>
                             <label for="tempat_lahir" class="block text-sm font-medium">Tempat Lahir</label>
-                            <input type="text" id="tempat_lahir" x-model="selectedPenduduk?.tempat_lahir"
+                            <input type="text" id="tempat_lahir" name="tempat_lahir"
+                                x-model="selectedPenduduk?.tempat_lahir"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
                             <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir</label>
-                            <input type="date" id="tanggal_lahir" x-model="selectedPenduduk?.tanggal_lahir"
+                            <input type="date" id="tanggal_lahir" name="tanggal_lahir"
+                                x-model="selectedPenduduk?.tanggal_lahir"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
                         <!-- Agama & Pendidikan -->
                         <div>
                             <label for="agama" class="block text-sm font-medium">Agama</label>
-                            <input type="text" id="agama" x-model="selectedPenduduk?.agama"
+                            <input type="text" id="agama" name="agama" x-model="selectedPenduduk?.agama"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
                             <label for="pendidikan" class="block text-sm font-medium">Pendidikan</label>
-                            <select id="pendidikan" x-model="selectedPenduduk?.pendidikan"
+                            <select id="pendidikan" name="pendidikan" x-model="selectedPenduduk?.pendidikan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Pendidikan</option>
                                 <option value="Tidak Sekolah">Tidak Sekolah</option>
@@ -198,12 +244,14 @@
                         <!-- Pekerjaan & Status Perkawinan -->
                         <div>
                             <label for="pekerjaan" class="block text-sm font-medium">Pekerjaan</label>
-                            <input type="text" id="pekerjaan" x-model="selectedPenduduk?.pekerjaan"
+                            <input type="text" id="pekerjaan" name="pekerjaan"
+                                x-model="selectedPenduduk?.pekerjaan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div class="">
                             <label for="status_perkawinan" class="block text-sm font-medium">Status Kawin</label>
-                            <select x-model="selectedPenduduk?.status_perkawinan"
+                            <select id="status_perkawinan" name="status_perkawinan"
+                                x-model="selectedPenduduk?.status_perkawinan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Status Kawin</option>
                                 <option value="Belum Kawin">Belum Kawin</option>
@@ -215,25 +263,21 @@
                         <!-- Golongan Darah & Kewarganegaraan -->
                         <div>
                             <label for="golongan_darah" class="block text-sm font-medium">Golongan Darah</label>
-                            <input type="text" id="golongan_darah" x-model="selectedPenduduk?.golongan_darah"
+                            <input type="text" id="golongan_darah" name="golongan_darah"
+                                x-model="selectedPenduduk?.golongan_darah"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
                             <label for="kewarganegaraan" class="block text-sm font-medium">Kewarganegaraan</label>
-                            <input type="text" id="kewarganegaraan" x-model="selectedPenduduk?.kewarganegaraan"
+                            <input type="text" id="kewarganegaraan" name="kewarganegaraan"
+                                x-model="selectedPenduduk?.kewarganegaraan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
-                        <!-- Kode Keluarga & Alamat -->
+                        <!-- Alamat -->
                         <div>
-                            <label for="kode_keluarga" class="block text-sm font-medium">Kode Keluarga</label>
-                            <input type="text" id="kode_keluarga" x-model="selectedPenduduk?.kode_keluarga"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
-                        </div>
-
-                        <div>
-                            <label for="status" class="block text-sm font-medium">Hubungan</label>
-                            <select x-model="selectedPenduduk?.hubungan"
+                            <label for="hubungan" class="block text-sm font-medium">Hubungan</label>
+                            <select x-model="selectedPenduduk?.hubungan" id="hubungan" name="hubungan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Hubungan Keluarga</option>
                                 <option value="Kepala Keluarga">Kepala Keluarga</option>
@@ -249,26 +293,27 @@
 
                         <div>
                             <label for="alamat" class="block text-sm font-medium">Alamat</label>
-                            <input type="text" id="alamat" x-model="selectedPenduduk?.alamat"
+                            <input type="text" id="alamat" name="alamat" x-model="selectedPenduduk?.alamat"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
                         <!-- RT & RW -->
                         <div>
                             <label for="rt" class="block text-sm font-medium">RT</label>
-                            <input type="text" id="rt" x-model="selectedPenduduk?.rt"
+                            <input type="text" id="rt" name="rt" x-model="selectedPenduduk?.rt"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
                             <label for="rw" class="block text-sm font-medium">RW</label>
-                            <input type="text" id="rw" x-model="selectedPenduduk?.rw"
+                            <input type="text" id="rw" name="rw" x-model="selectedPenduduk?.rw"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
                         <!-- Status Tinggal -->
-                        <div>
-                            <label for="status" class="block text-sm font-medium">Status Tinggal</label>
-                            <select x-model="selectedPenduduk?.status"
+                        <div class="col-span-2">
+                            <label for="status_tinggal" class="block text-sm font-medium">Status Tinggal</label>
+                            <select id="status_tinggal" name="status_tinggal"
+                                x-model="selectedPenduduk?.status_tinggal"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="Tetap">Tetap</option>
                                 <option value="Pindah">Pindah</option>
@@ -282,7 +327,7 @@
                         <button type="button" @click="showAddModal = false"
                             class="px-4 py-2 bg-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-300">Batal</button>
                         <button type="submit"
-                            class="px-4 py-2 bg-blue-600 rounded-md text-sm text-white hover:bg-blue-700">Simpan</button>
+                            class="px-4 py-2 bg-indigo-400 rounded-md text-sm text-white hover:bg-indigo-600">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -291,38 +336,58 @@
         {{-- modal edit --}}
         <div x-show="showEditModal" @click.away="showEditModal = false" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4">
+            <div
+                class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4">
                 <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Edit Data Penduduk
                 </h2>
-                <form @submit.prevent="updatePenduduk" class="space-y-4">
+                <form :action="'/admin/penduduk/' + selectedPenduduk.nik" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PUT')
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">Kode Keluarga</label>
-                            <input type="text" x-model="selectedPenduduk.kode_keluarga"
-                                class="w-full border rounded px-3 py-2 text-sm" />
+                        <div class="col-span-2">
+                            <label for="kode_keluarga" class="block text-sm font-medium">
+                                Kode Keluarga
+                            </label>
+                            <input list="kodeKeluargaList" name="kode_keluarga" id="kode_keluarga"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                x-model="selectedPenduduk.kode_keluarga"
+                                :placeholder="selectedPenduduk?.kode_keluarga ?? 'Ketik atau pilih kode keluarga'"
+                                required>
+                            <datalist id="kodeKeluargaList">
+                                @foreach ($daftar_keluarga as $keluarga)
+                                    <option value="{{ $keluarga->kode_keluarga }}"></option>
+                                @endforeach
+                            </datalist>
                         </div>
+
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">NIK</label>
-                            <input type="text" x-model="selectedPenduduk.nik"
+                            <input type="text" id="nik" name="nik" x-model="selectedPenduduk.nik"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Nama</label>
-                            <input type="text" x-model="selectedPenduduk.nama"
+                            <input type="text" id="nama" name="nama" x-model="selectedPenduduk.nama"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">Jenis Kelamin</label>
-                            <select x-model="selectedPenduduk.jenis_kelamin"
-                                class="w-full border rounded px-3 py-2 text-sm">
-                                <option value="">-- Pilih --</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
-                            </select>
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
+                            <div class="flex gap-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="jenis_kelamin" value="L"
+                                        x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-blue-600">
+                                    <span class="ml-2 text-sm">Laki-laki</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="jenis_kelamin" value="P"
+                                        x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-pink-500">
+                                    <span class="ml-2 text-sm">Perempuan</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="col-span-full">
-                            <label for="status" class="block text-sm text-gray-500 mb-1">Hubungan</label>
-                            <select x-model="selectedPenduduk.hubungan"
+                            <label for="hubungan" class="block text-sm text-gray-500 mb-1">Hubungan</label>
+                            <select id="hubungan" name="hubungan" x-model="selectedPenduduk.hubungan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Hubungan Keluarga</option>
                                 <option value="Kepala Keluarga">Kepala Keluarga</option>
@@ -337,23 +402,25 @@
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Tempat Lahir</label>
-                            <input type="text" x-model="selectedPenduduk.tempat_lahir"
+                            <input type="text" id="tempat_lahir" name="tempat_lahir"
+                                x-model="selectedPenduduk.tempat_lahir"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Tanggal Lahir</label>
-                            <input type="date" x-model="selectedPenduduk.tanggal_lahir"
+                            <input type="date" id="tanggal_lahir" name="tanggal_lahir"
+                                x-model="selectedPenduduk.tanggal_lahir"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Agama</label>
-                            <input type="text" x-model="selectedPenduduk.agama"
+                            <input type="text" id="agama" name="agama" x-model="selectedPenduduk.agama"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Pendidikan</label>
-                            <select type="text" x-model="selectedPenduduk.pendidikan"
-                                class="w-full border rounded px-3 py-2 text-sm">
+                            <select type="text" id="pendidikan" name="pendidikan"
+                                x-model="selectedPenduduk.pendidikan" class="w-full border rounded px-3 py-2 text-sm">
                                 <option value="">Pilih Pendidikan</option>
                                 <option value="Tidak Sekolah">Tidak Sekolah</option>
                                 <option value="Belum Tamat SD">Belum Tamat SD</option>
@@ -370,37 +437,42 @@
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Pekerjaan</label>
-                            <input type="text" x-model="selectedPenduduk.pekerjaan"
+                            <input type="text" id="pekerjaan" name="pekerjaan"
+                                x-model="selectedPenduduk.pekerjaan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Status Perkawinan</label>
-                            <input type="text" x-model="selectedPenduduk.status_perkawinan"
+                            <input type="text" id="status_perkawinan" name="status_perkawinan"
+                                x-model="selectedPenduduk.status_perkawinan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Golongan Darah</label>
-                            <input type="text" x-model="selectedPenduduk.golongan_darah"
+                            <input type="text" id="golongan_darah" name="golongan_darah"
+                                x-model="selectedPenduduk.golongan_darah"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">Kewarganegaraan</label>
-                            <input type="text" x-model="selectedPenduduk.kewarganegaraan"
+                            <input type="text" id="kewarganegaraan" name="kewarganegaraan"
+                                x-model="selectedPenduduk.kewarganegaraan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">RT</label>
-                            <input type="number" x-model="selectedPenduduk.rt"
+                            <input type="number" id="rt" name="rt" x-model="selectedPenduduk.rt"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">RW</label>
-                            <input type="number" x-model="selectedPenduduk.rw"
+                            <input type="number" id="rw" name="rw" x-model="selectedPenduduk.rw"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div class="col-span-full">
                             <label class="block text-xs text-gray-500 mb-1">Status Tinggal</label>
-                            <select type="text" x-model="selectedPenduduk.status"
+                            <select type="text" id="status_tinggal" name="status_tinggal"
+                                x-model="selectedPenduduk.status_tinggal"
                                 class="w-full border rounded px-3 py-2 text-sm">
                                 <option value="Tetap">Tetap</option>
                                 <option value="Pindah">Pindah</option>
@@ -418,7 +490,6 @@
             </div>
         </div>
 
-
         {{-- modal hapus --}}
         <div x-show="showDeleteModal" @click.away="showDeleteModal = false" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -426,12 +497,18 @@
                 <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus Penduduk?</h2>
                 <p class="mb-4">Apakah Anda yakin ingin menghapus data <strong
                         x-text="selectedPenduduk.nama"></strong>?</p>
-                <div class="flex justify-center gap-4">
-                    <button @click="showDeleteModal = false"
-                        class="px-4 py-2 bg-gray-300 rounded-lg text-sm hover:bg-gray-400">Batal</button>
-                    <button @click="/* lakukan hapus */"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">Hapus</button>
-                </div>
+
+                <form :action="`/admin/penduduk/${selectedPenduduk.nik}`" method="POST" x-ref="deleteForm">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="flex justify-center gap-4">
+                        <button type="button" @click="showDeleteModal = false"
+                            class="px-4 py-2 bg-gray-300 rounded-lg text-sm hover:bg-gray-400">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">Hapus</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -500,7 +577,7 @@
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm col-span-full">
                             <p class="text-xs text-gray-500">Status Tinggal</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.status"></p>
+                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.status_tinggal"></p>
                         </div>
                     </div>
                 </div>

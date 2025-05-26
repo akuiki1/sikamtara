@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\Keluarga;
 use App\Models\Penduduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,16 +12,16 @@ class PendudukController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         $query = Penduduk::with('keluarga');
 
         if ($request->has('search')) {
-            $query->where('nama', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->has('filter') && $request->filter !== '') {
-            $query->where('status_tinggal', $request->filter);
+            $query->where(function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%')
+                    ->orWhere('nik', 'like', '%' . $request->search . '%');
+            });
         }
 
         $penduduk = $query->paginate(10)->appends($request->query());
@@ -43,17 +44,21 @@ class PendudukController extends Controller
                 'alamat'            => $item->keluarga->alamat ?? 'Alamat tidak ada',
                 'rt'                => $item->rt,
                 'rw'                => $item->rw,
-                'status'            => $item->status_tinggal,
+                'status_tinggal'    => $item->status_tinggal,
             ];
         });
 
+        $daftar_keluarga = Keluarga::select('kode_keluarga')->get();
+
         return view('admin.penduduk.penduduk', [
-            'penduduk'      => $penduduk,
-            'pendudukJs'    => $transformed,
-            'search'        => $request->search,
-            'filter'        => $request->filter,
+            'penduduk'        => $penduduk,
+            'pendudukJs'      => $transformed,
+            'search'          => $request->search,
+            'filter'          => $request->filter,
+            'daftar_keluarga' => $daftar_keluarga, // ini dia!
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -68,7 +73,33 @@ class PendudukController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'nik' => 'required|numeric|unique:penduduk,nik',
+                'nama' => 'required|string|max:255',
+                'jenis_kelamin' => 'required|in:L,P',
+                'tempat_lahir' => 'required|string|max:255',
+                'tanggal_lahir' => 'required|date',
+                'agama' => 'nullable|string|max:100',
+                'pendidikan' => 'nullable|string|max:100',
+                'pekerjaan' => 'nullable|string|max:100',
+                'status_perkawinan' => 'nullable|string|max:50',
+                'golongan_darah' => 'nullable|string|max:10',
+                'kewarganegaraan' => 'nullable|string|max:100',
+                'kode_keluarga' => 'nullable|string|max:50',
+                'hubungan' => 'nullable|string|max:50',
+                'alamat' => 'nullable|string|max:255',
+                'rt' => 'nullable|string|max:10',
+                'rw' => 'nullable|string|max:10',
+                'status_tinggal' => 'nullable|string|max:50',
+            ]);
+
+            Penduduk::create($validated);
+
+            return redirect()->back()->with('success', 'Kode keluarga berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -82,24 +113,35 @@ class PendudukController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+    public function edit(Request $request, $nik) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $nik)
     {
-        //
+        $penduduk = Penduduk::where('nik', $nik)->firstOrFail();
+
+        // Update data
+        $penduduk->update($request->all());
+
+        // Redirect ke halaman dengan search berdasarkan NIK
+        return redirect()->to('/admin/penduduk?search=' . $nik)
+            ->with('success', 'Data berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($nik)
     {
-        //
+        try {
+            Penduduk::where('nik', $nik)->delete();
+
+            return redirect()->back()->with('success', 'Data keluarga berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }
