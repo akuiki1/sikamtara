@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('keluarga', function (Blueprint $table) {
             $table->char('kode_keluarga', 16)->primary();
-            $table->string('kepala_keluarga', 100);
+            $table->char('nik_kepala_keluarga', 16);
             $table->text('alamat');
             $table->string('rt', 3)->nullable();
             $table->string('rw', 3)->nullable();

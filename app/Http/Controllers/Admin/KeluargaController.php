@@ -17,22 +17,32 @@ class KeluargaController extends Controller
         $query = Keluarga::with('penduduk');
 
         if ($request->has('search')) {
-            $query->where('nama', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+
+            $query->where('kode_keluarga', 'like', '%' . $search . '%')
+                ->orWhereHas('kepalaKeluarga', function ($q) use ($search) {
+                    $q->where('nama', 'like', '%' . $search . '%');
+                });
         }
 
-        if ($request->has('filter') && $request->filter !== '') {
-            $query->where('status_tinggal', $request->filter);
-        }
 
         $keluarga = $query->paginate(20)->appends($request->query());
 
         $transformed = collect($keluarga->items())->map(function ($item) {
             return [
-                'kode_keluarga'     => $item->kode_keluarga,
-                'kepala_keluarga'   => $item->kepala_keluarga,
-                'alamat'            => $item->alamat,
-                'rt'                => $item->rt,
-                'rw'                => $item->rw,
+                'kode_keluarga'       => $item->kode_keluarga,
+                'kepala_keluarga'     => $item->kepalaKeluarga ? $item->kepalaKeluarga->nama : null,
+                'nik_kepala_keluarga' => $item->nik_kepala_keluarga,
+                'alamat'              => $item->alamat,
+                'rt'                  => $item->rt,
+                'rw'                  => $item->rw,
+                'anggota'             => $item->penduduk->map(function ($anggota) {
+                    return [
+                        'nik'            => $anggota->nik,
+                        'nama'           => $anggota->nama,
+                        'hubungan'       => $anggota->hubungan,
+                    ];
+                }),
             ];
         });
 
@@ -57,19 +67,23 @@ class KeluargaController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'kode_keluarga' => 'required|string|unique:keluargas,kode_keluarga',
-            'kepala_keluarga' => 'required|string|max:255',
-            'alamat' => 'nullable|string|max:255',
-            'dusun' => 'nullable|string|max:100',
-            'rt' => 'nullable|string|max:10',
-            'rw' => 'nullable|string|max:10',
-        ]);
+        try {
+            $validated = $request->validate([
+                'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga',
+                'nik_kepala_keluarga' => 'required|digits:16',
+                'alamat' => 'required|string',
+                'rt' => 'required|digits:3',
+                'rw' => 'required|digits:3',
+            ]);
 
-        Keluarga::create($validated);
+            Keluarga::create($validated);
 
-        return redirect()->back()->with('success', 'Data keluarga berhasil ditambahkan!');
+            return redirect()->back()->with('success', 'Kode keluarga berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
+
 
     /**
      * Display the specified resource.
@@ -90,40 +104,38 @@ class KeluargaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Keluarga $keluarga)
+    public function update(Request $request, $kode_keluarga)
     {
-        $validated = $request->validate([
-            'kode_keluarga' => 'required|string|unique:keluargas,kode_keluarga,' . $keluarga->id,
-            'kepala_keluarga' => 'required|string|max:255',
-            'alamat' => 'nullable|string|max:255',
-            'dusun' => 'nullable|string|max:100',
-            'rt' => 'nullable|string|max:10',
-            'rw' => 'nullable|string|max:10',
-        ]);
+        try {
+            $validated = $request->validate([
+                'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga,' . $kode_keluarga . ',kode_keluarga',
+                'nik_kepala_keluarga' => 'required|digits:16',
+                'alamat' => 'required|string',
+                'rt' => 'required|digits:3',
+                'rw' => 'required|digits:3',
+            ]);
 
-        $keluarga->update($validated);
+            $keluarga = Keluarga::where('kode_keluarga', $kode_keluarga)->firstOrFail();
+            $keluarga->update($validated);
 
-        return redirect()->back()->with('success', 'Data keluarga berhasil diupdate!');
+            return redirect()->back()->with('success', 'Data keluarga berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Keluarga $keluarga)
+    public function destroy($kode_keluarga)
     {
-        $keluarga->delete();
+        try {
+            Keluarga::where('kode_keluarga', $kode_keluarga)->delete();
 
-        return response()->json(['message' => 'Data keluarga berhasil dihapus']);
+            return redirect()->back()->with('success', 'Data keluarga berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
-
-    // public function __construct()
-    // {
-    //     // supaya route model binding pake kode_keluarga
-    //     $this->middleware(function ($request, $next) {
-    //         Route::bind('keluarga', function ($value) {
-    //             return \App\Models\Keluarga::where('kode_keluarga', $value)->firstOrFail();
-    //         });
-    //         return $next($request);
-    //     });
-    // }
 }

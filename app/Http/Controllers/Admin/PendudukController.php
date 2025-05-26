@@ -23,11 +23,11 @@ class PendudukController extends Controller
             $query->where('status_tinggal', $request->filter);
         }
 
-        $penduduk = $query->paginate(20)->appends($request->query());
+        $penduduk = $query->paginate(10)->appends($request->query());
 
         $transformed = collect($penduduk->items())->map(function ($item) {
             return [
-                'id_penduduk'       => $item->nik,
+                'nik'               => $item->nik,
                 'nama'              => $item->nama,
                 'tempat_lahir'      => $item->tempat_lahir,
                 'tanggal_lahir'     => $item->tanggal_lahir,
@@ -37,6 +37,7 @@ class PendudukController extends Controller
                 'pekerjaan'         => $item->pekerjaan,
                 'status_perkawinan' => $item->status_perkawinan,
                 'golongan_darah'    => $item->golongan_darah,
+                'hubungan'          => $item->hubungan,
                 'kewarganegaraan'   => $item->kewarganegaraan,
                 'kode_keluarga'     => $item->kode_keluarga,
                 'alamat'            => $item->keluarga->alamat ?? 'Alamat tidak ada',

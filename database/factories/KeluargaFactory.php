@@ -18,7 +18,7 @@ class KeluargaFactory extends Factory
     {
         return [
             'kode_keluarga' => $this->faker->unique()->numerify('###############'), // 16 digit
-            'kepala_keluarga' => $this->faker->name(),
+            'nik_kepala_keluarga' => $this->faker->unique()->numerify('###############'),
             'alamat' => $this->faker->address(),
             'rt' => $this->faker->numberBetween(1, 10),
             'rw' => $this->faker->numberBetween(1, 5),

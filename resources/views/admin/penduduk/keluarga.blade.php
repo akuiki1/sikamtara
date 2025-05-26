@@ -14,14 +14,12 @@
         keluarga: @js($keluargaJs),
         get filteredKeluarga() {
             return this.keluarga.filter(item => {
-                const matchesSearch = item.nama.toLowerCase().includes(this.search.toLowerCase());
+                const matchesSearch = item.kode_keluarga.toLowerCase().includes(this.search.toLowerCase());
                 const matchesFilter = this.filter === '' || item.status === this.filter;
                 return matchesSearch && matchesFilter;
             });
         }
     }">
-
-
 
         {{-- Search bar + filter + tambah keluarga --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
@@ -119,8 +117,229 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- pagination --}}
         <div class="mt-4">
             {{ $keluarga->links() }}
+        </div>
+
+        {{-- modal sukses/error --}}
+        <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
+            showSuccess = false;
+            showError = false
+        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
+
+            <!-- Berhasil -->
+            <div x-show="showSuccess" x-transition
+                class="flex items-center gap-3 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ session('success') }}</span>
+            </div>
+
+            <!-- Gagal -->
+            <div x-show="showError" x-transition
+                class="flex items-center gap-3 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+
+        {{-- Modal Tambah --}}
+        <div x-show="showAddModal" @click.away="showAddModal = false" x-transition
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+                <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Tambah Keluarga</h2>
+                <form action="{{ route('keluarga.store') }}" method="POST">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <!-- Kode Keluarga & Alamat -->
+                        <div>
+                            <label for="kode_keluarga" class="block text-sm font-medium">Kode Keluarga</label>
+                            <input type="text" id="kode_keluarga" name="kode_keluarga"
+                                x-model="selectedKeluarga?.kode_keluarga"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">NIK Kepala
+                                Keluarga</label>
+                            <input type="text" id="nik_kepala_keluarga" name="nik_kepala_keluarga"
+                                x-model="selectedKeluarga?.nik_kepala_keluarga"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="alamat" class="block text-sm font-medium">Alamat</label>
+                            <input type="text" id="alamat" x-model="selectedKeluarga?.alamat" name="alamat"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+
+                        <!-- RT & RW -->
+                        <div>
+                            <label for="rt" class="block text-sm font-medium">RT</label>
+                            <input type="text" id="rt" x-model="selectedKeluarga?.rt" name="rt"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="rw" class="block text-sm font-medium">RW</label>
+                            <input type="text" id="rw" x-model="selectedKeluarga?.rw" name="rw"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="mt-6 flex justify-end gap-2">
+                        <button type="button" @click="showAddModal = false"
+                            class="px-4 py-2 bg-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-300">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-600 rounded-md text-sm text-white hover:bg-blue-700">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- modal detail --}}
+        <div x-show="showDetailModal" @click.away="showDetailModal = false" x-transition
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
+
+            <div class="bg-white rounded-xl shadow-2xl max-h-screen w-full sm:max-w-3xl overflow-hidden">
+                <div class="p-4 sm:p-6 flex flex-col space-y-4 max-h-[90vh] overflow-y-auto">
+                    <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">
+                        Detail Keluarga
+                    </h2>
+
+                    <div class="text-center">
+                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                            <p class="text-xs text-gray-500">Kode Keluarga</p>
+                            <p class="font-medium text-gray-800" x-text="selectedKeluarga.kode_keluarga"></p>
+                        </div>
+
+                        <div class="grid mt-4 grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500">Kepala Keluarga</p>
+                                <p class="font-medium text-gray-800" x-text="selectedKeluarga.kepala_keluarga"></p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
+                                <p class="text-xs text-gray-500">NIK Kepala Keluarga</p>
+                                <p class="font-medium text-gray-800" x-text="selectedKeluarga.nik_kepala_keluarga">
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Scrollable Table -->
+                        <div class="bg-gray-50 rounded-lg shadow-sm mt-4 max-h-64 overflow-y-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-100 sticky top-0 z-10">
+                                    <tr>
+                                        <th class="p-2">NIK</th>
+                                        <th class="p-2">Nama</th>
+                                        <th class="p-2">Hubungan</th>
+                                        <th class="p-2">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template x-for="anggota in selectedKeluarga.anggota" :key="anggota.nik">
+                                        <tr class="border-b">
+                                            <td class="p-2" x-text="anggota.nik"></td>
+                                            <td class="p-2" x-text="anggota.nama"></td>
+                                            <td class="p-2" x-text="anggota.hubungan"></td>
+                                            <td class="p-2">
+                                                <button @click="detailPenduduk(anggota.nik)"
+                                                    class="text-blue-600 hover:underline">Detail</button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="text-center pt-2">
+                        <button @click="showDetailModal = false"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- modal edit --}}
+        <div x-show="showEditModal" @click.away="showEditModal = false" x-transition
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
+            <div
+                class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4">
+                <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Edit Data Keluarga
+                </h2>
+                <form :action="'/admin/keluarga/' + selectedKeluarga.kode_keluarga" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <!-- Kode Keluarga & Alamat -->
+                        <div>
+                            <label for="kode_keluarga" class="block text-sm font-medium">Kode Keluarga</label>
+                            <input type="text" id="kode_keluarga" name="kode_keluarga"
+                                x-model="selectedKeluarga?.kode_keluarga"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">NIK Kepala
+                                Keluarga</label>
+                            <input type="text" id="nik_kepala_keluarga" name="nik_kepala_keluarga"
+                                x-model="selectedKeluarga?.nik_kepala_keluarga"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="alamat" class="block text-sm font-medium">Alamat</label>
+                            <input type="text" id="alamat" x-model="selectedKeluarga?.alamat" name="alamat"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+
+                        <!-- RT & RW -->
+                        <div>
+                            <label for="rt" class="block text-sm font-medium">RT</label>
+                            <input type="text" id="rt" x-model="selectedKeluarga?.rt" name="rt"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="rw" class="block text-sm font-medium">RW</label>
+                            <input type="text" id="rw" x-model="selectedKeluarga?.rw" name="rw"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="text-center pt-4 space-x-2">
+                        <button type="button" @click="showEditModal = false"
+                            class="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition">Batal</button>
+                        <button type="submit"
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {{-- modal hapus --}}
+        <div x-show="showDeleteModal" @click.away="showDeleteModal = false" x-transition
+            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
+            <div class="bg-white rounded-lg shadow-xl w-96 p-6 text-center">
+                <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus Keluarga?</h2>
+                <p class="mb-4">Apakah Anda yakin ingin menghapus keluarga dengan no KK
+                    <strong x-text="selectedKeluarga.kode_keluarga"></strong>?
+                </p>
+
+                <form :action="`/admin/keluarga/${selectedKeluarga.kode_keluarga}`" method="POST" x-ref="deleteForm">
+                    @csrf
+                    @method('DELETE')
+
+                    <div class="flex justify-center gap-4">
+                        <button type="button" @click="showDeleteModal = false"
+                            class="px-4 py-2 bg-gray-300 rounded-lg text-sm hover:bg-gray-400">Batal</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">Hapus</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </x-admin-layout>

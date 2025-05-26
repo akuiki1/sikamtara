@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200" x-show="filteredPenduduk.length > 0">
-                    <template x-for="item in filteredPenduduk" :key="item.id_penduduk">
+                    <template x-for="item in filteredPenduduk" :key="item.nik">
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm font-medium text-gray-700" x-text="item.nama"></td>
                             <td class="px-6 py-4 text-sm text-gray-500" x-text="item.tanggal_lahir"></td>
@@ -130,6 +130,11 @@
                 <form action="#" method="POST" @submit.prevent>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Nama -->
+                        <div class="col-span-2">
+                            <label for="nik" class="block text-sm font-medium">NIK</label>
+                            <input type="text" id="nama" x-model="selectedPenduduk?.nik"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                        </div>
                         <div class="col-span-2">
                             <label for="nama" class="block text-sm font-medium">Nama</label>
                             <input type="text" id="nama" x-model="selectedPenduduk?.nama"
@@ -200,6 +205,7 @@
                             <label for="status_perkawinan" class="block text-sm font-medium">Status Kawin</label>
                             <select x-model="selectedPenduduk?.status_perkawinan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                <option value="">Pilih Status Kawin</option>
                                 <option value="Belum Kawin">Belum Kawin</option>
                                 <option value="Kawin">Kawin</option>
                                 <option value="Cerai">Cerai</option>
@@ -224,6 +230,23 @@
                             <input type="text" id="kode_keluarga" x-model="selectedPenduduk?.kode_keluarga"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
+
+                        <div>
+                            <label for="status" class="block text-sm font-medium">Hubungan</label>
+                            <select x-model="selectedPenduduk?.hubungan"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                <option value="">Pilih Hubungan Keluarga</option>
+                                <option value="Kepala Keluarga">Kepala Keluarga</option>
+                                <option value="Suami">Suami</option>
+                                <option value="Istri">Istri</option>
+                                <option value="Anak">Anak</option>
+                                <option value="Menantu">Menantu</option>
+                                <option value="Mertua">Mertua</option>
+                                <option value="Orang tua">Orang tua</option>
+                                <option value="Pembantu">Pembantu</option>
+                            </select>
+                        </div>
+
                         <div>
                             <label for="alamat" class="block text-sm font-medium">Alamat</label>
                             <input type="text" id="alamat" x-model="selectedPenduduk?.alamat"
@@ -243,7 +266,7 @@
                         </div>
 
                         <!-- Status Tinggal -->
-                        <div class="col-span-2">
+                        <div>
                             <label for="status" class="block text-sm font-medium">Status Tinggal</label>
                             <select x-model="selectedPenduduk?.status"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -280,7 +303,7 @@
                         </div>
                         <div>
                             <label class="block text-xs text-gray-500 mb-1">NIK</label>
-                            <input type="text" x-model="selectedPenduduk.id_penduduk"
+                            <input type="text" x-model="selectedPenduduk.nik"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
@@ -295,6 +318,21 @@
                                 <option value="">-- Pilih --</option>
                                 <option value="L">Laki-laki</option>
                                 <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="col-span-full">
+                            <label for="status" class="block text-sm text-gray-500 mb-1">Hubungan</label>
+                            <select x-model="selectedPenduduk.hubungan"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                <option value="">Pilih Hubungan Keluarga</option>
+                                <option value="Kepala Keluarga">Kepala Keluarga</option>
+                                <option value="Suami">Suami</option>
+                                <option value="Istri">Istri</option>
+                                <option value="Anak">Anak</option>
+                                <option value="Menantu">Menantu</option>
+                                <option value="Mertua">Mertua</option>
+                                <option value="Orang tua">Orang tua</option>
+                                <option value="Pembantu">Pembantu</option>
                             </select>
                         </div>
                         <div>
@@ -412,7 +450,7 @@
 
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                             <p class="text-xs text-gray-500">NIK</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.id_penduduk"></p>
+                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.nik"></p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                             <p class="text-xs text-gray-500">Nama</p>

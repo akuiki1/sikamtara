@@ -151,8 +151,8 @@ Route::put('/penduduk/{id}', [PendudukController::class, 'update']);
 
 Route::get('/admin/keluarga', [KeluargaController::class, 'index'])->name('keluarga.index');
 Route::post('/admin/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
-Route::put('/admin/keluarga/{id}', [KeluargaController::class, 'update'])->name('keluarga.update');
-Route::delete('/admin/keluarga/{id}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
+Route::put('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'update'])->name('keluarga.update');
+Route::delete('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 
 //halaman admin - apbdes
 Route::get('/admin/apbdes', function () {

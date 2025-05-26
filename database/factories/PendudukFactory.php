@@ -26,6 +26,7 @@ class PendudukFactory extends Factory
             'agama' => $this->faker->randomElement(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha']),
             'pendidikan' => $this->faker->randomElement(['SD', 'SMP', 'SMA', 'D3', 'S1']),
             'pekerjaan' => $this->faker->jobTitle(),
+            'hubungan' => $this->faker->randomElement(['Kepala Keluarga', 'Suami', 'Istri', 'Anak', 'Menantu', 'Orang tua', 'Mertua', 'Pembantu']),
             'status_perkawinan' => $this->faker->randomElement(['Belum Kawin', 'Kawin', 'Cerai']),
             'golongan_darah' => $this->faker->randomElement(['A', 'B', 'AB', 'O']),
             'kewarganegaraan' => 'WNI',

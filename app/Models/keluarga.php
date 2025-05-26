@@ -19,17 +19,23 @@ class Keluarga extends Model
 
     protected $fillable = [
         'kode_keluarga',
-        'kepala_keluarga',
+        'nik_kepala_keluarga',
         'alamat',
         'dusun',
         'rt',
         'rw',
-        'tanggal_dibuat',
     ];
 
-    // Relasi ke penduduk-penduduk dalam KK ini
-    public function Penduduk()
+    // Semua anggota keluarga
+    public function penduduk()
     {
         return $this->hasMany(Penduduk::class, 'kode_keluarga', 'kode_keluarga');
+    }
+
+    // Kepala keluarga
+    public function kepalaKeluarga()
+    {
+        return $this->hasOne(Penduduk::class, 'kode_keluarga', 'kode_keluarga')
+            ->where('hubungan', 'Kepala Keluarga');
     }
 }
