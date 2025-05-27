@@ -15,14 +15,14 @@ class User extends Authenticatable
     protected $primaryKey = 'id_user';
 
     protected $fillable = [
-        'nama',
+        'username',
         'nik',
         'email',
         'password',
         'role',
         'google_id',
         'foto',
-        'verified_is'
+        'status_verifikasi'
     ];
 
     protected $hidden = [

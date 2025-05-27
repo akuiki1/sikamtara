@@ -131,7 +131,10 @@ Route::get('/admin/akun', function () {
     return view('admin.akun.profil', ['title' => 'Setelan Akun']);
 });
 
-Route::get('/admin/akun-warga', [UserController::class, 'index']);
+Route::get('/admin/akun-warga', [UserController::class, 'index'])->name('user.index');
+Route::post('/admin/akun-warga', [UserController::class, 'store'])->name('user.store');
+Route::post('/admin/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
+Route::delete('/admin/akun-warga/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
 
 //halaman admin - kependudukan

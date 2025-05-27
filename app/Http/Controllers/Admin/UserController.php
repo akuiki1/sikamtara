@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Penduduk;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -40,11 +41,14 @@ class UserController extends Controller
             ];
         });
 
+        $daftarNik = Penduduk::select('nik')->get();
+
         return view('admin.akun.akun-warga', [
             'user'      => $user,
             'userJs'    => $transformed,
             'search'    => $request->search,
             'filter'    => $request->filter,
+            'daftarNik' => $daftarNik
         ]);
     }
 
@@ -64,13 +68,16 @@ class UserController extends Controller
     {
         try {
             $validated = $request->validate([
-                'username' => '',
-                'foto' => '',
-                'role' => '',
-                'status_verifikasi' => '',
-                'email' => '',
-                'password' => '',
+                'nik' => 'required|exists:penduduk,nik|unique:users,nik',
+                'username' => 'required|string|max:50',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|confirmed', // pastikan ada 'password_confirmation' di form
+                'role' => 'required|in:user,admin,kepala desa',
+                'status_verifikasi' => 'required|in:Terverifikasi,Belum Terverifikasi',
             ]);
+
+            // Enkripsi password sebelum disimpan
+            $validated['password'] = bcrypt($validated['password']);
 
             User::create($validated);
 
@@ -79,6 +86,7 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -101,7 +109,17 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = User::where('id_user', $id)->firstOrFail();
+
+        // Update data
+        $user->update($request->all());
+
+        // Ambil bagian sebelum '@' dari email
+        $searchKeyword = strstr($user->email, '@', true);
+
+        // Redirect ke halaman dengan query search
+        return redirect()->to('/admin/akun-warga?search=' . urlencode($searchKeyword))
+            ->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -109,6 +127,12 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            User::where('id_user', $id)->delete();
+
+            return redirect()->back()->with('success', 'Data user berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 }
