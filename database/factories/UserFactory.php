@@ -24,7 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'nama' => $this->faker->name,
+            'username' => $this->faker->username,
             'nik' => $this->faker->unique()->numerify('###############'),
             'email' => $this->faker->unique()->safeEmail,
             'password' => static::$password ??= Hash::make('password'),

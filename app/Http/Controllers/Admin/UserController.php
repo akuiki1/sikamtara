@@ -31,9 +31,12 @@ class UserController extends Controller
                 'id_user'           => $item->id_user,
                 'email'             => $item->email,
                 'status_verifikasi' => $item->status_verifikasi,
-                'role' => $item->role,
+                'role'              => $item->role,
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
+                'nik'               => $item->nik,
+                'username'          => $item->username,
+                'password'          => $item->password,
             ];
         });
 
@@ -59,7 +62,22 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validated = $request->validate([
+                'username' => '',
+                'foto' => '',
+                'role' => '',
+                'status_verifikasi' => '',
+                'email' => '',
+                'password' => '',
+            ]);
+
+            User::create($validated);
+
+            return redirect()->back()->with('success', 'User Baru berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
 
     /**
