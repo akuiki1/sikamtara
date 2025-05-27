@@ -16,6 +16,7 @@ class UserController extends Controller
     {
         $query = User::with('penduduk');
 
+        // Pencarian berdasarkan email atau nama penduduk
         if ($request->has('search')) {
             $query->where(function ($q) use ($request) {
                 $q->where('email', 'like', '%' . $request->search . '%')
@@ -25,8 +26,20 @@ class UserController extends Controller
             });
         }
 
+        // Filter berdasarkan role
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Filter berdasarkan status_verifikasi
+        if ($request->filled('status')) {
+            $query->where('status_verifikasi', $request->status);
+        }
+
+        // Pagination dengan query string tetap
         $user = $query->paginate(10)->appends($request->query());
 
+        // Data untuk JavaScript (Alpine)
         $transformed = collect($user->items())->map(function ($item) {
             return [
                 'id_user'           => $item->id_user,
@@ -48,9 +61,12 @@ class UserController extends Controller
             'userJs'    => $transformed,
             'search'    => $request->search,
             'filter'    => $request->filter,
-            'daftarNik' => $daftarNik
+            'daftarNik' => $daftarNik,
+            'role'      => $request->role,
+            'status'    => $request->status,
         ]);
     }
+
 
 
     /**
