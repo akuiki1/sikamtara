@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('kewarganegaraan', 10)->default('WNI');
             
             $table->enum('hubungan', ['Kepala Keluarga', 'Suami', 'Istri', 'Anak', 'Menantu', 'Orang tua', 'Mertua', 'Pembantu'])->nullable();
+            
             $table->char('kode_keluarga', 16); // Foreign key ke KK
             $table->foreign('kode_keluarga')->references('kode_keluarga')->on('keluarga')->onDelete('cascade');
 

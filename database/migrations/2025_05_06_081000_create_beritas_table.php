@@ -16,7 +16,7 @@ return new class extends Migration
         $table->string('judul_berita');
         $table->text('isi_berita');
         $table->string('gambar_cover');
-        $table->date('tanggal_publish');
+        $table->timestamp('tanggal_publish')->nullable();
         $table->unsignedBigInteger('penulis');
         $table->foreign('penulis')->references('id_user')->on('users');
         $table->enum('status', ['draft', 'published', 'archived'])->default('draft');

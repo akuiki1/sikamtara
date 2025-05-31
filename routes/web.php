@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminBeritaController;
 use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -118,8 +119,10 @@ Route::get('/admin/layanan/pengaduan', function () {
     return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
 });
 
-Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
-Route::get('/berita/{id}', [BeritaController::class, 'show'])->name('berita.show');
+Route::get('/admin/berita', [AdminBeritaController::class, 'index'])->name('adminberita.index');
+Route::post('/admin/berita', [AdminBeritaController::class, 'store'])->name('adminberita.store');
+Route::put('/admin/berita/{id}', [AdminBeritaController::class, 'update'])->name('adminberita.update');
+Route::delete('/admin/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('adminberita.destroy');
 
 
 Route::get('/admin/pengumuman', function () {

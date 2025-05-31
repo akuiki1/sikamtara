@@ -12,7 +12,7 @@ class Berita extends Model
     protected $primaryKey = 'id_berita';
     protected $fillable = ['judul_berita', 'isi_berita', 'gambar_cover', 'tanggal_publish', 'penulis', 'status', 'tags'];
 
-    public function penulisUser()
+    public function user()
     {
         return $this->belongsTo(User::class, 'penulis', 'id_user');
     }

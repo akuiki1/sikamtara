@@ -1,337 +1,442 @@
 <x-admin-layout>
-    <x-slot:title>{{ $title }}</x-slot>
+    <x-slot:title>kelola berita</x-slot>
 
     {{-- logika table --}}
     <div class="p-6" x-data="{
         search: '',
-        filter: '',
-        openModal: '',
-        tanggal: '',
-        bulan: '',
-        tahun: '',
+        filterRole: '',
+        filterStatus: '',
+        email: '',
+        showPassword: false,
+        showPassword2: false,
+        showAddModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
+        showDetailModal: false,
         selectedBerita: null,
-        berita: [{
-                id_berita: 1,
-                judul_berita: 'Pembangunan Jalan Baru',
-                isi_berita: 'Pemerintah desa memulai pembangunan jalan...',
-                gambar_cover: 'https://via.placeholder.com/150',
-                tanggal_publish: '2025-05-08',
-                penulis: 'Admin Desa',
-                status: 'published',
-                tags: ['pembangunan', 'jalan'],
-            },
-            {
-                id_berita: 2,
-                judul_berita: 'Festival Budaya Kambat Utara',
-                isi_berita: 'Masyarakat antusias mengikuti festival budaya...',
-                gambar_cover: 'https://via.placeholder.com/150',
-                tanggal_publish: '2025-05-05',
-                penulis: 'Admin Desa',
-                status: 'draft',
-                tags: ['budaya', 'festival'],
-            },
-        ],
+        berita: @js($beritaJs),
         get filteredBerita() {
             return this.berita.filter(item => {
-                const tanggalBerita = item.tanggal_publish;
-                const matchesSearch = item.judul_berita.toLowerCase().includes(this.search.toLowerCase());
-                const matchesFilter = this.filter === '' || item.status === this.filter;
-                const matchesTanggal = this.tanggal === '' || tanggalBerita === this.tanggal;
-                const matchesBulan = this.bulan === '' || tanggalBerita.slice(5, 7) === this.bulan;
-                const matchesTahun = this.tahun === '' || tanggalBerita.slice(0, 4) === this.tahun;
-    
-                return matchesSearch && matchesFilter && matchesTanggal && matchesBulan && matchesTahun;
+                const matchesSearch = `${item.id_berita}`.toLowerCase().includes(this.search.toLowerCase());
+                const matchesRole = this.filterRole === '' || item.role === this.filterRole;
+                const matchesStatus = this.filterStatus === '' || item.status_verifikasi === this.filterStatus;
+                return matchesSearch && matchesRole && matchesStatus;
             });
-            {{-- .sort((a, b) => new Date(b.tanggal_publish) - new Date(a.tanggal_publish)); --}}
         }
     }">
 
-        {{-- search bar + filter + tambah berita --}}
+        {{-- Search bar + filter + tambah --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-
-            {{-- kontainer search dan filter --}}
-            <div class="flex flex-col md:flex-row items-center gap-4">
-                {{-- search bar --}}
-                <div class="relative">
-                    <input type="text" placeholder="Cari nama atau judul..." x-model="search"
-                        class="w-full md:w-80 pl-10 border border-gray-300 rounded-full px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
-
-                    <svg class="w-6 h-6 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                        fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
-                            d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                    </svg>
-                </div>
-
-                {{-- filter --}}
-                <div class="relative" x-data="{
-                    showFilters: false,
-                    clearFilters() {
-                        filter = '';
-                        bulan = '';
-                        tahun = '';
-                    },
-                    get activeCount() {
-                        return [filter, bulan, tahun].filter(Boolean).length;
-                    }
-                }">
-                    <!-- Toggle Button -->
-                    <button @click="showFilters = !showFilters"
-                        class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 transition-all duration-200 text-sm font-medium text-gray-700">
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
-                            viewBox="0 0 24 24">
-                            <path
-                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 019 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+            {{-- LEFT SECTION: Search, Filter, Clear --}}
+            <div class="flex flex-wrap items-center gap-2">
+                {{-- SEARCH FORM --}}
+                <form method="GET" class="relative w-full md:w-80">
+                    <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                        {{-- Search Icon --}}
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-width="2"
+                                d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                         </svg>
-                        <span>Filter</span>
-                        <template x-if="activeCount > 0">
+                    </span>
+                    <input type="text" name="search" placeholder="Cari Berita..." value="{{ request('search') }}"
+                        class="pl-10 pr-24 py-2 w-full rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                        @keydown.enter="$event.target.form.submit()">
+                    <x-button type="submit"
+                        class="absolute right-1 top-1 bottom-1 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
+                        Cari
+                    </x-button>
+                </form>
+
+                {{-- FILTER DROPDOWN --}}
+                @php
+                    $filterAktif = collect([
+                        'search' => request('search'),
+                        'role' => request('role'),
+                        'status' => request('status'),
+                    ])
+                        ->filter()
+                        ->count();
+                @endphp
+
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open" type="button"
+                        class="relative flex items-center gap-2 px-4 py-2 rounded-full border border-gray-300 bg-white text-sm text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        aria-expanded="true" aria-haspopup="true">
+                        <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
+                        </svg>
+                        Filter
+
+                        <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+
+                        {{-- BADGE ANGKA --}}
+                        @if ($filterAktif > 0)
                             <span
-                                class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full">
-                                <span x-text="activeCount"></span>
+                                class="absolute top-0 right-0 -mt-1 -mr-1 min-w-[1rem] h-auto px-1 text-xs bg-indigo-500 text-white font-bold rounded-full ring-2 ring-white flex items-center justify-center">
+                                {{ $filterAktif }}
                             </span>
-                        </template>
-                        <svg :class="{ 'rotate-180': showFilters }"
-                            class="transform transition-transform duration-300 w-4 h-4 ml-1 text-gray-400"
-                            fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M19 9l-7 7-7-7" />
-                        </svg>
+                        @endif
                     </button>
 
-                    <!-- Dropdown -->
-                    <div x-show="showFilters" @click.outside="showFilters = false"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 translate-y-2 scale-95"
-                        x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-                        x-transition:leave="transition ease-in duration-100"
-                        x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-                        x-transition:leave-end="opacity-0 translate-y-2 scale-95"
-                        class="absolute z-50 mt-2 right-0 w-80 bg-white backdrop-blur-md border border-gray-200 rounded-2xl shadow-xl p-5 space-y-4 origin-top-right ">
+                    {{-- FILTER PANEL --}}
+                    <div x-show="open" @click.outside="open = false" x-transition.opacity.scale.origin.top.right
+                        class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-10 z-50 p-4">
+                        <form method="GET" class="space-y-4">
+                            <input type="hidden" name="search" value="{{ request('search') }}">
 
-                        <!-- Filter Section -->
-                        <div class="space-y-3">
+                            {{-- Status Berita --}}
                             <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Status</label>
-                                <select x-model="filter"
-                                    class="w-full px-4 py-2 text-sm border rounded-lg focus:ring focus:border-blue-500">
+                                <label for="status" class="block text-sm font-medium text-gray-700">Status
+                                    Berita</label>
+                                <select id="status" name="status"
+                                    class="mt-1 block w-full rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                     <option value="">Semua Status</option>
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                    <option value="archived">Archived</option>
+                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft
+                                    </option>
+                                    <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>
+                                        Published</option>
+                                    <option value="archived" {{ request('status') == 'archived' ? 'selected' : '' }}>
+                                        Archived</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Bulan</label>
-                                <select x-model="bulan"
-                                    class="w-full px-4 py-2 text-sm border rounded-lg focus:ring focus:border-blue-500">
-                                    <option value="">Semua Bulan</option>
-                                    <template x-for="i in 12" :key="i">
-                                        <option :value="String(i).padStart(2, '0')"
-                                            x-text="new Date(0, i - 1).toLocaleString('id-ID', { month: 'long' })">
-                                        </option>
-                                    </template>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-600 mb-1">Tahun</label>
-                                <select x-model="tahun"
-                                    class="w-full px-4 py-2 text-sm border rounded-lg focus:ring focus:border-blue-500">
-                                    <option value="">Semua Tahun</option>
-                                    <template
-                                        x-for="tahunItem in [...new Set(berita.map(b => b.tanggal_publish.slice(0,4)))]">
-                                        <option :value="tahunItem" x-text="tahunItem"></option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
 
-                        <!-- Tombol Clear Filter -->
-                        <button @click="filter=''; bulan=''; tahun=''"
-                            class="w-full text-center text-sm text-blue-600 hover:underline transition">
-                            Hapus Semua Filter
-                        </button>
+                            <x-button type="submit" class="w-full justify-center">Terapkan Filter</x-button>
+                        </form>
                     </div>
                 </div>
+
+
+                {{-- TOMBOL CLEAR FILTER (hanya muncul kalau filter aktif) --}}
+                @if (request()->has('search') || request()->has('role') || request()->has('status'))
+                    <a href="{{ url()->current() }}"
+                        class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-400 text-gray-600 rounded-full">
+                        Tampilkan Semua
+                    </a>
+                @endif
             </div>
-            {{-- button tambah berita --}}
-            <button @click="openModal = 'tambah'"
-                class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700">
-                + Tambah Berita
-            </button>
+
+            {{-- RIGHT SECTION: Tambah Berita --}}
+            <div>
+                <x-button @click="selectedBerita = null; showAddModal = true">
+                    {{-- Plus Icon --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>Tambah Berita</span>
+                </x-button>
+            </div>
         </div>
 
         {{-- table --}}
-        @foreach ($beritas as $berita)
-            <div class="card">
-                <img src="{{ asset('storage/' . $berita->gambar_cover) }}" alt="Gambar Berita">
-                <h2>{{ $berita->judul_berita }}</h2>
-                <p>{{ Str::limit($berita->isi_berita, 150) }}</p>
-                <p><strong>Tanggal:</strong> {{ $berita->tanggal_publish->format('d M Y') }}</p>
-                <p><strong>Penulis:</strong> {{ $berita->penulisUser->nama ?? 'Tidak diketahui' }}</p>
-                <a href="{{ route('berita.show', $berita->id_berita) }}">Baca Selengkapnya</a>
+        <x-table>
+            <x-slot name="head">
+                <tr>
+                    <th class="px-4 py-3 text-center">Judul</th>
+                    <th class="px-4 py-3 text-center">Isi</th>
+                    <th class="px-4 py-3 text-center">Tanggal Publish</th>
+                    <th class="px-6 py-3 text-center">Status</th>
+                    <th class="px-6 py-3 text-center">Aksi</th>
+                </tr>
+            </x-slot>
+            <x-slot name="body" x-show="filteredBerita.length > 0">
+                <template x-if="filteredBerita.length === 0">
+                    <tr>
+                        <td colspan="5" class="text-center text-gray-500 py-6">
+                            Data Berita tidak ditemukan.
+                        </td>
+                    </tr>
+                </template>
+                <template x-for="item in filteredBerita" :key="item.id_berita">
+                    <tr class="even:bg-gray-50 hover:bg-gray-100">
+                        <td class="px-4 py-3 text-gray-600" x-text="item.judul_berita"></td>
+                        <td class="px-4 py-3 text-gray-600 text-center" x-text="item.isi_berita"></td>
+                        <td class="px-4 py-3 text-gray-600 text-center" x-text="item.tanggal_publish"></td>
+                        <td class="px-4 py-3 text-gray-600 text-center" x-text="item.status"></td>
+                        {{-- tombol --}}
+                        <td class="px-6 py-4 text-center">
+                            <button @click="selectedBerita = item; showDetailModal = true"
+                                class="text-blue-600 hover:text-blue-800">
+                                <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-width="1"
+                                        d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
+                                    <path stroke="currentColor" stroke-width="1"
+                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                            <button @click="selectedBerita = {...item}; showEditModal = true"
+                                class="text-yellow-600 hover:text-yellow-800"><svg class="w-[20px] h-[20px]"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1"
+                                        d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                                </svg>
+                            </button>
+                            <button @click="selectedBerita = item; showDeleteModal = true"
+                                class="text-red-600 hover:text-red-800 hover:bg-gray-200 rounded-full">
+                                <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1"
+                                        d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </template>
+            </x-slot>
+        </x-table>
+
+        {{-- pagination --}}
+        <div class="mt-4">
+            {{ $berita->links() }}
+        </div>
+
+        {{-- modal status --}}
+        <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
+            showSuccess = false;
+            showError = false
+        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
+
+            <!-- Berhasil -->
+            <div x-show="showSuccess" x-transition
+                class="flex items-center gap-3 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ session('success') }}</span>
             </div>
-        @endforeach
+
+            <!-- Gagal -->
+            <div x-show="showError" x-transition
+                class="flex items-center gap-3 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
 
         {{-- modal tambah --}}
-        <template x-if="openModal === 'tambah'">
-            <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative max-h-screen overflow-y-auto">
-                    <h2 class="text-xl font-bold mb-6 text-gray-800">Tambah APBDes</h2>
+        <x-modal show="showAddModal" title="Tambah Berita Baru">
+            <form action="{{ route('adminberita.store') }}" method="POST" enctype="multipart/form-data"
+                class="space-y-8" x-data="{
+                    previewCover: null,
+                    updatePreview(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            this.previewCover = URL.createObjectURL(file);
+                        }
+                    }
+                }">
+                @csrf
 
-                    <form action="#" method="POST" enctype="multipart/form-data" class="space-y-4">
-                        @csrf
-
-                        <!-- Grid 2 kolom -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900">
-                            <!-- Judul Berita -->
-                            <div>
-                                <label for="judul_berita" class="block mb-2 font-semibold">Judul Berita</label>
-                                <input type="text" name="judul_berita" id="judul_berita" placeholder="Judul Berita"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
-
-                            <!-- Tanggal (sub_judul) -->
-                            <div>
-                                <label for="sub_judul" class="block mb-2 font-semibold">Tanggal</label>
-                                <input type="date" name="sub_judul" id="sub_judul"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
-
-                            <!-- Anggaran -->
-                            <div>
-                                <label for="anggaran" class="block mb-2 font-semibold">Anggaran</label>
-                                <input type="text" name="anggaran" id="anggaran" placeholder="Anggaran"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
-
-                            <!-- Tags -->
-                            <div>
-                                <label for="tags" class="block mb-2 font-semibold">Tags</label>
-                                <input type="text" name="tags" id="tags"
-                                    placeholder="Tag (pisahkan dengan koma)" class="w-full border p-3 rounded-lg">
-                            </div>
-
-                            <!-- Upload Gambar -->
-                            <div>
-                                <label for="gambar_cover" class="block mb-2 font-semibold">Upload Gambar</label>
-                                <input type="file" name="judul" id="gambar_cover"
-                                    class="w-full border p-3 rounded-lg file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-yellow-600 file:text-white hover:file:bg-yellow-700" />
-                            </div>
-
-                            <!-- Kategori -->
-                            <div>
-                                <label for="kategori" class="block mb-2 font-semibold">Kategori</label>
-                                <select name="kategori" id="kategori" class="w-full border p-3 rounded-lg" required>
-                                    <option value="Pendapatan">Pendapatan</option>
-                                    <option value="Belanja">Belanja</option>
-                                    <option value="Pembiayaan">Pembiayaan</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Full Width: Isi Berita -->
-                        <div class="text-gray-900">
-                            <label for="isi_berita" class="block mb-2 font-semibold">Isi Berita</label>
-                            <textarea name="isi_berita" id="isi_berita" rows="5"
-                                class="w-full border p-3 rounded-lg resize-y focus:ring-2 focus:ring-blue-600"
-                                placeholder="Masukkan isi berita lengkap di sini..." required></textarea>
-                        </div>
-
-                        <!-- Tombol Aksi -->
-                        <div class="mt-6 flex justify-end gap-3">
-                            <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Batal</button>
-                            <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
-                        </div>
-                    </form>
+                {{-- Baris 1: Gambar + Judul --}}
+                <div>
+                    <label for="gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Cover</label>
+                    <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
+                        <input type="file" name="gambar_cover" id="gambar_cover" accept="image/*"
+                            @change="updatePreview"
+                            class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+                        <template x-if="previewCover">
+                            <img :src="previewCover" alt="Preview"
+                                class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
+                        </template>
+                    </div>
                 </div>
-            </div>
-        </template>
+
+                <div>
+                    <label for="judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita</label>
+                    <input type="text" name="judul_berita" id="judul_berita"
+                        class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                        placeholder="Masukkan judul berita" required />
+                </div>
+
+
+                {{-- Isi Berita --}}
+                <div>
+                    <label for="isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita</label>
+                    <textarea name="isi_berita" id="isi_berita" rows="6"
+                        class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
+                        placeholder="Tulis isi berita di sini..." required></textarea>
+                </div>
+
+                {{-- Baris 2: Tanggal + Status --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label for="status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <select name="status" id="status"
+                            class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    {{-- Penulis --}}
+                    <div>
+                        <label for="penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        @auth
+                            <input type="hidden" name="penulis" value="{{ Auth::user()->name }}">
+                            <input type="text" disabled value="{{ Auth::user()->name }}"
+                                class="w-full rounded-xl bg-gray-100 border border-gray-200 px-4 py-2 text-gray-700 cursor-not-allowed">
+                        @else
+                            <input type="text" name="penulis" id="penulis"
+                                class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                                placeholder="Nama penulis">
+                        @endauth
+                    </div>
+                </div>
+
+
+
+                {{-- Tombol Aksi --}}
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <x-button type="button" @click="showAddModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
 
         <!-- Modal detail -->
-        <template x-if="openModal === 'detail' && selectedBerita">
-            <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                <div class="bg-white rounded-xl p-6 w-full max-w-2xl shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Berita'"></h3>
-                        <button @click="openModal = ''"
-                            class="text-xl text-gray-500 hover:text-red-500">&times;</button>
-                    </div>
-                    <div class="space-y-3 text-sm text-gray-700">
-                        <img :src="selectedBerita.gambar_cover" class="w-full rounded-xl" alt="Gambar Berita">
-                        <p><strong>Judul:</strong> <span x-text="selectedBerita.judul_berita"></span></p>
-                        <p><strong>Tanggal:</strong> <span x-text="selectedBerita.tanggal_publish"></span></p>
-                        <p><strong>Penulis:</strong> <span x-text="selectedBerita.penulis"></span></p>
-                        <p><strong>Status:</strong> <span x-text="selectedBerita.status"></span></p>
-                        <p><strong>Isi:</strong> <span x-text="selectedBerita.isi_berita"></span></p>
-                        <p><strong>Tags:</strong> <span x-text="selectedBerita.tags.join(', ')"></span></p>
-                    </div>
-                    <div class="flex justify-end mt-4">
-                        <button @click="openModal = ''"
-                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Tutup</button>
-                    </div>
+        <x-modal show="showDetailModal">
+            <div class="col-span-full border-b pb-2 mb-4 flex items-center justify-between gap-4">
+                <p class="font-bold text-2xl text-gray-800" x-text="selectedBerita.judul_berita"></p>
+
+                <!-- Badge Status -->
+                <span class="text-xs font-semibold px-2 py-1 rounded-full"
+                    :class="{
+                        'bg-green-100 text-green-800': selectedBerita.status === 'published',
+                        'bg-yellow-100 text-yellow-800': selectedBerita.status === 'draft',
+                        'bg-gray-200 text-gray-800': selectedBerita.status === 'archived'
+                    }"
+                    x-text="selectedBerita.status">
+                </span>
+            </div>
+            <div class="flex justify-center mb-4">
+                <div class="relative">
+                    <!-- Foto -->
+                    <img :src="selectedBerita.gambar_cover ? '/storage/' + selectedBerita.gambar_cover : 'img/default-avatar.png'"
+                        alt="Foto Berita" class="col-span-full rounded-lg object-cover border border-gray-300" />
+
                 </div>
             </div>
-        </template>
+            <div class="">
+                <p class="text-xs text-gray-500">Diupload <span x-text="selectedBerita.tanggal_publish"></span> Oleh
+                    <span x-text="selectedBerita.penulis"></span>
+                </p>
+            </div>
+            <div class="grid mt-4 grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="col-span-full">
+                    <p class="font-normal text-gray-800 break-words" x-text="selectedBerita.isi_berita_full"></p>
+                </div>
+            </div>
+
+            <!-- Tombol Tutup -->
+            <div class="text-right pt-4">
+                <x-button variant="primary" @click="showDetailModal = false">
+                    Tutup
+                </x-button>
+            </div>
+        </x-modal>
 
         <!-- Modal edit -->
-        <template x-if="openModal === 'edit' && selectedBerita">
-            <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-                    <h2 class="text-xl font-bold mb-4">Edit Berita</h2>
-                    <form :action="`/berita/${selectedBerita.id_berita}`" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="grid grid-cols-1 gap-4">
-                            <input type="text" name="judul_berita" :value="selectedBerita.judul_berita"
-                                class="border p-2 rounded" required>
-                            <textarea name="isi_berita" rows="5" class="border p-2 rounded" x-text="selectedBerita.isi_berita"></textarea>
-                            <input type="file" name="gambar_cover" class="border p-2 rounded">
-                            <input type="date" name="tanggal_publish" :value="selectedBerita.tanggal_publish"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="penulis" :value="selectedBerita.penulis"
-                                class="border p-2 rounded" required>
-                            <input type="text" name="tags" :value="selectedBerita.tags"
-                                class="border p-2 rounded">
-                            <select name="status" class="border p-2 rounded" :value="selectedBerita.status">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                                <option value="archived">Archived</option>
-                            </select>
-                        </div>
-                        <div class="mt-4 flex justify-end gap-2">
-                            <button type="button" @click="openModal = ''"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Batal</button>
-                            <button type="submit"
-                                class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Update</button>
-                        </div>
-                    </form>
+        <x-modal show="showEditModal" title="Edit Berita">
+            <form :action="'/admin/berita/' + selectedBerita.id_berita" method="POST" enctype="multipart/form-data"
+                class="space-y-8" x-data="{
+                    previewCover: selectedBerita.gambar_cover ? '{{ asset('storage') }}/' + selectedBerita.gambar_cover : null,
+                    updatePreview(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            this.previewCover = URL.createObjectURL(file);
+                        }
+                    }
+                }">
+                @csrf
+                @method('PUT')
+
+                {{-- Baris 1: Gambar + Judul --}}
+                <div>
+                    <label for="edit_gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Cover</label>
+                    <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
+                        <input type="file" name="gambar_cover" id="edit_gambar_cover" accept="image/*"
+                            @change="updatePreview"
+                            class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+                        <template x-if="previewCover">
+                            <img :src="previewCover" alt="Preview"
+                                class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
+                        </template>
+                    </div>
                 </div>
-            </div>
-        </template>
+                <div>
+                    <label for="edit_judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita</label>
+                    <input type="text" name="judul_berita" id="edit_judul_berita"
+                        x-model="selectedBerita.judul_berita"
+                        class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
+                        placeholder="Masukkan judul berita" required />
+                </div>
+
+                {{-- Isi Berita --}}
+                <div>
+                    <label for="edit_isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita</label>
+                    <textarea name="isi_berita" id="edit_isi_berita" rows="6" x-text="selectedBerita.isi_berita_full"
+                        class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
+                        placeholder="Tulis isi berita di sini..." required></textarea>
+                </div>
+
+                {{-- Baris 2: Tanggal + Status --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <label for="edit_status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <select name="status" id="edit_status" x-model="selectedBerita.status"
+                            class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="edit_penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        <input type="text" id="edit_penulis" x-model="selectedBerita.penulis"
+                            class="rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-gray-100 cursor-not-allowed"
+                            readonly />
+                    </div>
+                </div>
+
+                {{-- Tombol Aksi --}}
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-100">
+                    <x-button type="button" @click="showEditModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan
+                        Perubahan</x-button>
+                </div>
+            </form>
+        </x-modal>
 
         <!-- Modal hapus -->
-        <template x-if="openModal === 'hapus' && selectedBerita">
-            <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-                <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-lg">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold capitalize" x-text="openModal + ' Berita'"></h3>
-                        <button @click="openModal = ''"
-                            class="text-gray-500 hover:text-red-500 text-xl">&times;</button>
-                    </div>
-                    <p class="text-sm text-gray-700 mb-6">Apakah Anda yakin ingin menghapus berita <strong><span
-                                x-text="selectedBerita.judul_berita"></span></strong> ?</p>
-                    <p class="text-sm text-gray-700 mb-6">Tindakan ini tidak dapat dibatalkan.</p>
-                    <div class="flex justify-end space-x-3">
-                        <button @click="openModal = ''"
-                            class="px-4 py-2 bg-gray-100 rounded-xl hover:bg-gray-200">Batal</button>
-                        <button class="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700">Hapus</button>
-                    </div>
-                </div>
+        <x-modal show="showDeleteModal" title="Hapus Berita">
+            <div>
+                <p class="mb-4">Apakah Anda yakin ingin menghapus berita <strong
+                        x-text="selectedBerita.judul_berita"></strong> ?
+                </p>
             </div>
-        </template>
+            <form :action="'/admin/berita/' + selectedBerita.id_berita" method="POST">
+                @csrf
+                @method('DELETE')
+
+                <div class="flex justify-center gap-4">
+                    <x-button type="button" @click="showDeleteModal = false" variant="secondary">Batal</x-button>
+                    <x-button variant="danger" type="submit">Hapus</x-button>
+                </div>
+            </form>
+        </x-modal>
 
     </div>
 </x-admin-layout>
