@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id('id_pengumuman');
             $table->string('judul_pengumuman');
             $table->text('isi_pengumuman');
-            $table->string('file_lampiran');
-            $table->date('tanggal_publish');
+            $table->string('file_lampiran')->nullable();
+            $table->timestamp('tanggal_publish')->nullable();
+            
             $table->unsignedBigInteger('penulis'); // FK ke tabel users misalnya
+            $table->foreign('penulis')->references('id_user')->on('users');
+
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
             $table->timestamps();
 
-            // Kalau penulis mengacu ke tabel users:
-            // $table->foreign('penulis')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

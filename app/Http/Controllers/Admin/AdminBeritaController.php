@@ -24,9 +24,9 @@ class AdminBeritaController extends Controller
 
 
         // Filter berdasarkan role
-         if ($request->filled('status')) {
-        $query->where('status', $request->status);
-    }
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
         // Pagination dengan query string tetap
         $berita = $query->paginate(10)->appends($request->query());

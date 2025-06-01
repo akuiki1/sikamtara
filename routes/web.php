@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\admin\AdminBeritaController;
 use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -12,11 +11,13 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
-use App\Http\Controllers\Admin\VisiMisiController;
 use App\Http\Controllers\admin\PendudukController;
-use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\Admin\VisiMisiController;
+use App\Http\Controllers\Admin\AdminPengumumanController;
+use App\Http\Controllers\admin\AdminBeritaController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -124,10 +125,11 @@ Route::post('/admin/berita', [AdminBeritaController::class, 'store'])->name('adm
 Route::put('/admin/berita/{id}', [AdminBeritaController::class, 'update'])->name('adminberita.update');
 Route::delete('/admin/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('adminberita.destroy');
 
+Route::get('/admin/pengumuman', [AdminPengumumanController::class, 'index'])->name('pengumuman.index');
+Route::post('/admin/pengumuman', [AdminPengumumanController::class, 'store'])->name('pengumuman.store');
+Route::put('/admin/pengumuman/{id}', [AdminPengumumanController::class, 'update'])->name('pengumuman.update');
+Route::delete('/admin/pengumuman/{id}', [AdminPengumumanController::class, 'destroy'])->name('pengumuman.destroy');
 
-Route::get('/admin/pengumuman', function () {
-    return view('admin.berita.pengumuman', ['title' => 'Kelola Pengumuman Desa']);
-});
 
 //halaman admin - akun
 Route::get('/admin/akun', function () {
