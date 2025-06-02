@@ -2,22 +2,17 @@
 
 use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use App\Http\Controllers\SuratController;
 use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\KeuanganController;
-use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
 use App\Http\Controllers\admin\PendudukController;
 use App\Http\Controllers\Admin\VisiMisiController;
-use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminBeritaController;
+use App\Http\Controllers\Admin\AdminPengumumanController;
+use App\Http\Controllers\admin\AdminAdministrasiController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -112,9 +107,12 @@ Route::get('/profil/wilayah', function () {
 
 
 // halaman kelola layanan admin
-Route::get('/admin/layanan/administrasi', function () {
-    return view('admin.layanan.administrasi', ['title' => 'Kelola Layanan Administrasi']);
-});
+Route::get('/admin/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');
+Route::get('admin/layanan/administrasi/preview-form/{filename}', [AdminAdministrasiController::class, 'previewForm']);
+Route::post('/admin/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
+Route::put('/admin/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');
+Route::delete('/admin/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'destroy'])->name('adminadministrasi.destroy');
+
 
 Route::get('/admin/layanan/pengaduan', function () {
     return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);

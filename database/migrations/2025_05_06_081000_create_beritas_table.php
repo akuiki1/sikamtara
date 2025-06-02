@@ -20,7 +20,6 @@ return new class extends Migration
         $table->unsignedBigInteger('penulis');
         $table->foreign('penulis')->references('id_user')->on('users');
         $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
-        $table->string('tags')->nullable();
         $table->timestamps();
     });
 }

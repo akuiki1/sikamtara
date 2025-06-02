@@ -8,7 +8,8 @@ $base = 'inline-flex items-center rounded-full focus:outline-none transition dur
 $colors = [
     'primary' => 'bg-indigo-400 hover:bg-indigo-600 text-white',
     'secondary' => 'bg-gray-200 hover:bg-gray-300 text-gray-700',
-    'danger' => 'bg-red-500 hover:bg-red-600 text-white',
+    'warning' => 'bg-amber-200 hover:bg-amber-300 text-gray-700',
+    'danger' => 'bg-red-400 hover:bg-red-500 text-white',
 ];
 $sizes = [
     'sm' => 'text-xs px-3 py-1',
