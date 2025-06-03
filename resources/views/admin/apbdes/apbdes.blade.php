@@ -68,64 +68,77 @@
 
 
         <!-- Table -->
-        <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Tahun</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Total Anggaran</th>
-                        <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Total Realisasi</th>
-                        <th class="px-6 py-3 text-center text-sm font-medium text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200" x-show="filteredApbdes.length > 0">
-                    <template x-for="item in filteredApbdes" :key="item.id_apbdes">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm" x-text="item.tahun"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.total_anggaran"></td>
-                            <td class="px-6 py-4 text-sm" x-text="item.total_realisasi"></td>
-                            <td class="px-6 py-4 text-center text-sm">
-                                <button @click="selectedApbdes = item; showDetailModal = true"
-                                    class="text-blue-600 hover:text-blue-800">
-                                    <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-width="1"
-                                            d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
-                                        <path stroke="currentColor" stroke-width="1"
-                                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                    </svg>
-                                </button>
-                                <button @click="selectedApbdes = {...item}; showEditModal = true"
-                                    class="text-yellow-600 hover:text-yellow-800"><svg class="w-[20px] h-[20px]"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                        height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                                    </svg>
-                                </button>
-                                <button @click="selectedApbdes = item; showDeleteModal = true"
-                                    class="text-red-600 hover:text-red-800 hover:bg-gray-200 rounded-full">
-                                    <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="1"
-                                            d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-                <tbody x-show="filteredApbdes.length === 0">
+        <x-table>
+            <x-slot name="head">
+                <tr>
+                    <th class="px-4 py-3 text-center">Tahun</th>
+                    <th class="px-4 py-3 text-center">Total Anggaran</th>
+                    <th class="px-4 py-3 text-center">Total Realisasi</th>
+                    <th class="px-4 py-3 text-center">Aksi</th>
+                </tr>
+            </x-slot>
+            <x-slot name="body">
+                <template x-show="filteredApbdes.length === 0">
                     <tr>
                         <td colspan="4" class="text-center px-6 py-4 text-sm text-gray-500">
                             Tidak ada data APBDes ditemukan.
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                </template>
+                <template x-for="item in filteredApbdes" :key="item.id_apbdes">
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 text-center text-sm" x-text="item.tahun"></td>
+                        <td class="px-6 py-4 text-sm" x-text="item.total_anggaran"></td>
+                        <td class="px-6 py-4 text-sm" x-text="item.total_realisasi"></td>
+                        <td class="px-6 py-4 text-center text-sm">
+                            <button @click="selectedApbdes = item; showDetailModal = true"
+                                class="text-blue-600 hover:text-blue-800">
+                                <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-width="1"
+                                        d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
+                                    <path stroke="currentColor" stroke-width="1"
+                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </button>
+                            <button @click="selectedApbdes = {...item}; showEditModal = true"
+                                class="text-yellow-600 hover:text-yellow-800"><svg class="w-[20px] h-[20px]"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1"
+                                        d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                                </svg>
+                            </button>
+                            <button @click="selectedApbdes = item; showDeleteModal = true"
+                                class="text-red-600 hover:text-red-800 hover:bg-gray-200 rounded-full">
+                                <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="1"
+                                        d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                                </svg>
+                            </button>
+                        </td>
+                    </tr>
+                </template>
+            </x-slot>
+        </x-table>
+
+        {{-- pagination --}}
+         <div class="mt-4">
+            {{ $apbdes->links() }}
         </div>
+
+
+        <!-- Modal Detail -->
+        <x-modal show="showDetailModal" title="Detail APBDes">
+            {{-- button --}}
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-button type="button" @click="{{ 'showDetailModal' }} = false"
+                        variant="primary">Tutup</x-button>
+                </div>
+        </x-modal>
 
         {{-- modal tambah --}}
         <x-modal show="showAddModal" title="Tambah APBDes Baru">
@@ -171,8 +184,8 @@
 
                     <!-- Input + Tombol Atas Bawah -->
                     <div class="relative w-full">
-                        <input type="number" name="tahun" x-model="selectedApbdes.tahun" :placeholder="tahun" min="1900"
-                            max="2099"
+                        <input type="number" name="tahun" x-model="selectedApbdes.tahun" :placeholder="tahun"
+                            min="1900" max="2099"
                             class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                             required>
                     </div>
@@ -187,11 +200,13 @@
             </form>
         </x-modal>
 
+        {{-- Modal Hapus --}}
         <div x-show="showDeleteModal" @click.away="showDeleteModal = false" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-xl shadow-2xl w-96 p-6 text-center">
                 <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus APBDes?</h2>
-                <p class="mb-4">Apakah Anda yakin ingin menghapus data APBDes tahun <strong x-text="selectedApbdes.tahun"></strong>?
+                <p class="mb-4">Apakah Anda yakin ingin menghapus data APBDes tahun <strong
+                        x-text="selectedApbdes.tahun"></strong>?
                 </p>
 
                 <form :action="`{{ url('/admin/apbdes/delete') }}/${selectedApbdes.id_apbdes}`" method="POST"

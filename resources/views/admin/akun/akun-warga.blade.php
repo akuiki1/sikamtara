@@ -162,7 +162,7 @@
                     <th class="px-6 py-3 text-center">Aksi</th>
                 </tr>
             </x-slot>
-            <x-slot name="body" x-show="filteredUser.length > 0">
+            <x-slot name="body">
                 <template x-if="filteredUser.length === 0">
                     <tr>
                         <td colspan="5" class="text-center text-gray-500 py-6">
