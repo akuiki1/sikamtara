@@ -5,8 +5,10 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
+use App\Models\Administrasi;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\PengajuanAdministrasi;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,19 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $admin = User::create([
-        //     'nama' => 'Admin Desa',
-        //     'nik' => '6612345678901234',
-        //     'email' => 'admin@desa.com',
-        //     'password' => Hash::make('admin@123'),
-        //     'role' => 'admin',
-        //     'verified_is' => true
-        // ]);
-
-        // keluarga::factory(50)->recycle([
-        //     penduduk::factory(2000)->create(),
-        //     User::factory(100)->create(),
-        // ])->create();
 
         // Kemudian buat data keluarga dengan referensi ke penduduk dan user
         keluarga::factory(50)->create();
@@ -48,9 +37,29 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Buat sisa 98 user dengan role 'user'
-        User::factory(98)->create([
-            'nik' => $penduduks->random()->nik, // pilih nik secara acak dari penduduk
-            'role' => 'user',
-        ]);
+        $penduduksUser = $penduduks->random(98); // ambil 98 nik acak dan unik
+
+        $penduduksUser->each(function ($penduduk) {
+            User::factory()->create([
+                'nik' => $penduduk->nik,
+                'role' => 'user',
+            ]);
+        });
+
+
+        // Buat 20 data dummy untuk tabel administrasi
+        Administrasi::factory(20)->create();
+
+        // Ambil semua user dan administrasi
+        $users = User::all();
+        $administrasis = Administrasi::all();
+
+        // Buat 20 pengajuan acak
+        for ($i = 0; $i < 20; $i++) {
+            PengajuanAdministrasi::factory()->create([
+                'id_user' => $users->random()->id_user,
+                'id_administrasi' => $administrasis->random()->id_administrasi,
+            ]);
+        }
     }
 }
