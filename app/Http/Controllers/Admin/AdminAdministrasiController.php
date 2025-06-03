@@ -53,6 +53,7 @@ class AdminAdministrasiController extends Controller
                 'persyaratan'        => $item->persyaratan,
                 'form'      => $item->form,
                 'name_form' => Str::limit(Str::after(basename($item->form), '_'), 35),
+                'name_form_edit' => Str::limit(Str::after(basename($item->form), '_'), 25),
             ];
         });
 
