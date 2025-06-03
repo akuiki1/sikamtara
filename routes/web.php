@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\VisiMisiController;
 use App\Http\Controllers\admin\AdminBeritaController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\admin\AdminApbdesController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -161,9 +162,12 @@ Route::put('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'updat
 Route::delete('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 
 //halaman admin - apbdes
-Route::get('/admin/apbdes', function () {
-    return view('admin.apbdes.apbdes', ['title' => 'Kelola Data APBDes']);
-});
+
+Route::get('/admin/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
+Route::post('/admin/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');
+Route::post('/admin/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
+Route::delete('/admin/apbdes/delete/{id}', [AdminApbdesController::class, 'destroy'])->name('adminapbdes.destroy');
+
 
 Route::get('/admin/detail-apbdes', function () {
     return view('admin.apbdes.detail-apbdes', ['title' => 'Kelola Data APBDes']);
