@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +9,21 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     {{-- script untuk chart keuangan di dashboard admin --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sikamtara</title>
     <link rel="icon" type="image/png" href="/img/LogoHST.png">
 </head>
+
 <body class="bg-gray-100">
     <div class="flex h-screen">
         {{-- Sidebar --}}
         <div class="bg-white text-white">
             <x-admin-sidebar />
         </div>
-        
+
         {{-- Konten utama --}}
         <div class="flex-1 flex flex-col">
             {{-- Header --}}
@@ -37,4 +41,5 @@
     </div>
 
 </body>
+
 </html>

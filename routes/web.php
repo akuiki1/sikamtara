@@ -14,6 +14,7 @@ use App\Http\Controllers\admin\AdminBeritaController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
 use App\Http\Controllers\admin\AdminApbdesController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -76,9 +77,7 @@ Route::get('/keuangan', function () {
 
 
 // halaman admin
-Route::get('/dashboard', function () {
-    return view('admin.dashboard', ['title' => 'Dashboard']);
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 // halaman profil admin
 Route::get('/profil/demografi', function () {
