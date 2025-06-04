@@ -192,7 +192,8 @@
                 </div>
 
                 {{-- Cards --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-10">
+
 
                     {{-- Card 1 - LAYANAN ONLINE --}}
                     <div
@@ -209,16 +210,17 @@
                             {{-- Title --}}
                             <h3 class="text-2xl font-bold text-white mb-4">LAYANAN ONLINE</h3>
                             {{-- Description --}}
-                            <p class="text-white/90 mb-6">
+                            <p class="hidden sm:block text-white/90 mb-6">
                                 Ajukan berbagai surat administrasi seperti surat keterangan, domisili, usaha, dan
                                 lainnya
                                 dengan praktis tanpa antri.
                             </p>
                             {{-- CTA --}}
                             <a href="/layanan/administrasi"
-                                class="inline-block bg-white text-blue-600 font-bold py-3 px-6 rounded-full shadow hover:bg-blue-100 transition-all duration-300">
+                                class="inline-block bg-white text-blue-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-blue-100 transition-all duration-300">
                                 Ajukan Sekarang
                             </a>
+
                         </div>
                     </div>
 
@@ -237,16 +239,17 @@
                             {{-- Title --}}
                             <h3 class="text-2xl font-bold text-white mb-4">PENGADUAN ONLINE</h3>
                             {{-- Description --}}
-                            <p class="text-white/90 mb-6">
+                            <p class="hidden sm:block text-white/90 mb-6">
                                 Sampaikan keluhan, aspirasi, atau masukan kepada perangkat desa secara cepat,
                                 transparan,
                                 dan tuntas.
                             </p>
                             {{-- CTA --}}
                             <a href="/layanan/pengaduan"
-                                class="inline-block bg-white text-yellow-600 font-bold py-3 px-6 rounded-full shadow hover:bg-yellow-100 transition-all duration-300">
+                                class="inline-block bg-white text-yellow-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-yellow-100 transition-all duration-300">
                                 Kirim Pengaduan
                             </a>
+
                         </div>
                     </div>
                 </div>
