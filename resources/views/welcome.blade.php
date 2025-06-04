@@ -1,4 +1,16 @@
 <x-layout>
+    @if (session('warn'))
+        <div
+            class="max-w-md mx-auto mt-6 px-4 py-3 rounded-2xl shadow-lg bg-red-50 border border-orange-300 flex items-start gap-3 animate-fade-in-down">
+            <svg class="w-6 h-6 text-orange-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01M12 17h0a9 9 0 100-18 9 9 0 000 18z" />
+            </svg>
+            <div class="text-sm text-orange-800 font-medium">
+                {{ session('warn') }}
+            </div>
+        </div>
+    @endif
     {{-- section hero --}}
     <section x-data="heroSlider()" x-init="init()" class="relative h-screen overflow-hidden">
         <!-- Slides Background -->
@@ -413,6 +425,4 @@
             </div>
         </div>
     </section>
-
-
 </x-layout>

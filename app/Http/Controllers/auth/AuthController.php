@@ -2,43 +2,67 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
-    public function showLoginForm() {
+    public function showLoginForm()
+    {
         return view('auth.login');
     }
 
-    public function login(Request $request) {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
+    public function authenticate(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->intended('/dashboard');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
+            $user = Auth::user();
+
+            // Arahkan berdasarkan role
+            switch ($user->role) {
+                case 'admin':
+                    return redirect()->intended('/dashboard');
+                case 'kepala desa':
+                    return redirect()->intended('/kepala-desa/dashboard');
+                case 'user':
+                    return redirect()->intended('/');
+                default:
+                    return redirect('/')->with('warn', 'Role anda tidak tersedia. Hubungi admin.');
+            }
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ]);
+        return back()->with('loginError', 'Email atau password salah!');
     }
 
-    public function logout() {
+
+    public function logout(Request $request): RedirectResponse
+    {
         Auth::logout();
-        return redirect('/login');
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 
-    public function showRegistrationForm() {
+    public function showRegistrationForm()
+    {
         return view('auth.register');
     }
 
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'nama' => 'required|string|max:255',
             'nik' => 'required|string|unique:users',

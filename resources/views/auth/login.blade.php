@@ -14,29 +14,81 @@
 </head>
 
 <body class="h-full flex items-center justify-center">
+
+
+
     {{-- tampilan dekstop --}}
-    <div x-data="{ 
-        email: '', 
-        password: '', 
-        showPassword: false, 
+    <div x-data="{
+        email: '',
+        password: '',
+        showPassword: false,
         agree: false,
         registerEmail: '',
         registerPassword: '',
         showRegisterPassword: false,
         isLogin: true
-    }" class="hidden md:flex w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden relative">
-    
+    }"
+        class="hidden md:flex w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden relative">
+
         <!-- Forms Container -->
         <div class="flex w-full md:w-1/2 p-8 relative z-10 flex-col justify-center">
-            <!-- Login Form -->
-            <div x-show="isLogin" class="transition duration-700 ease-in-out">
-                <h2 class="text-3xl font-bold text-purple-700 mb-6">Login</h2>
-                <div class="flex flex-col space-y-6">
-    
+            @if (session()->has('success'))
+                <div class="alert alert-success alert-dimissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+            <div class="bg-white p-8 rounded shadow-md w-full max-w-md" x-show="true" x-transition.duration.700ms>
+                <h2 class="text-3xl font-bold text-purple-700 mb-6 text-center">Login</h2>
+
+                {{-- code login error --}}
+                @if (session()->has('loginError'))
+                    <div x-data="{ showError: true }" x-show="showError" x-transition.duration.300ms
+                        class="flex items-start p-4 mb-4 text-xs text-red-800 bg-red-100 rounded-full dark:bg-red-200 dark:text-red-900"
+                        role="alert">
+
+                        <svg class="flex-shrink-0 inline w-5 h-5 mt-0.5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.366-.756 1.37-.756 1.736 0l6.518 13.473A1 1 0 0 1 15.518 18H4.482a1 1 0 0 1-.893-1.428L10.107 3.1zM11 14a1 1 0 1 0-2 0 1 1 0 0 0 2 0zm-1-2a1 1 0 0 0 1-1V9a1 1 0 1 0-2 0v2a1 1 0 0 0 1 1z"
+                                clip-rule="evenodd" />
+                        </svg>
+
+                        <div>
+                            <span class="font-semibold">Login gagal!</span> {{ session('loginError') }}
+                        </div>
+
+                        <button type="button" @click="showError = false"
+                            class="ml-auto -mx-1.5 -my-1.5 text-red-500 rounded-lg focus:ring-2 focus:ring-red-400 p-1.5 hover:bg-red-200 inline-flex items-center justify-center h-8 w-8"
+                            aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4.293 4.293a1 1 0 0 1 1.414 0L10 8.586l4.293-4.293a1 1 0 0 1 1.414 1.414L11.414 10l4.293 4.293a1 1 0 0 1-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L8.586 10 4.293 5.707a1 1 0 0 1 0-1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                @endif
+
+
+                <form x-ref="loginForm"
+                    @submit.prevent="if (!agree) { alert('Kamu harus setuju Terms & Conditions dulu!'); return; } $refs.loginForm.submit();"
+                    method="POST" action="{{ route('login.post') }}">
+
+                    @csrf
+                    {{-- Error Message --}}
+                    @error('email')
+                        <div class="invalid-feedback text-xs text-red-500">
+                            *{{ $message }}
+                        </div>
+                    @enderror
                     <!-- Email Input -->
-                    <div class="relative">
-                        <input x-model="email" type="email" placeholder="Email"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <div class="relative mb-6 flex flex-col" x-data="{
+                        email: '{{ old('email') }}',
+                    }">
+                        <input x-model ="email" name="email" type="email" placeholder="Email" required
+                            autocomplete="username"
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 @error('email') is-invalid @enderror" />
                         <button type="button" @click="email=''" x-show="email.length > 0"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -45,67 +97,87 @@
                                     d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
+
                     </div>
-    
+
+                    {{-- Error Message --}}
+                    @error('password')
+                        <div class="invalid-feedback text-xs text-red-500">
+                            *{{ $message }}
+                        </div>
+                    @enderror
                     <!-- Password Input -->
-                    <div class="relative">
-                        <input :type="showPassword ? 'text' : 'password'" x-model="password" placeholder="Password"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <div class="relative mb-6">
+                        <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
+                            placeholder="Password" required autocomplete="current-password"
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 @error('password') is-invalid @enderror" />
+
                         <button type="button" @click="showPassword = !showPassword"
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
                             <template x-if="!showPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-eye-closed-icon lucide-eye-closed">
+                                    <path d="m15 18-.722-3.25" />
+                                    <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                                    <path d="m20 15-1.726-2.05" />
+                                    <path d="m4 15 1.726-2.05" />
+                                    <path d="m9 18 .722-3.25" />
                                 </svg>
                             </template>
                             <template x-if="showPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.956 9.956 0 011.175-4.875m2.25 2.25A9.956 9.956 0 014.5 12c0 5.523 4.477 10 10 10a9.956 9.956 0 004.875-1.175m2.25-2.25A9.956 9.956 0 0119.5 12c0-5.523-4.477-10-10-10a9.956 9.956 0 00-4.875 1.175" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-eye-icon lucide-eye">
+                                    <path
+                                        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                    <circle cx="12" cy="12" r="3" />
                                 </svg>
                             </template>
                         </button>
                     </div>
-    
+
+
                     <!-- Checkbox Agree -->
-                    <div class="flex items-center space-x-2">
-                        <input x-model="agree" type="checkbox"
-                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                        <label class="text-gray-600 text-sm">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <input x-model="agree" type="checkbox" required
+                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" id="agree" />
+                        <label for="agree" class="text-gray-600 text-sm select-none">
                             I agree to the <a href="#" class="text-purple-600 hover:underline">Terms &
                                 Conditions</a>
                         </label>
                     </div>
-    
+
                     <!-- Login Button -->
                     <button type="submit"
                         class="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition font-bold">
                         Login
                     </button>
-    
-                    <!-- Divider -->
-                    <div class="flex items-center my-4">
-                        <div class="flex-grow border-t border-gray-300"></div>
-                        <span class="mx-2 text-gray-400 text-sm">OR</span>
-                        <div class="flex-grow border-t border-gray-300"></div>
-                    </div>
-    
-                    <!-- Login with Google -->
-                    <button type="button"
-                        class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                            class="w-5 h-5 mr-2">
-                        <span class="text-gray-700 font-semibold">Login with Google</span>
-                    </button>
+
+                </form>
+
+                <!-- Divider -->
+                <div class="flex items-center my-6">
+                    <div class="flex-grow border-t border-gray-300"></div>
+                    <span class="mx-2 text-gray-400 text-sm">OR</span>
+                    <div class="flex-grow border-t border-gray-300"></div>
                 </div>
+
+                <!-- Login with Google -->
+                <button type="button"
+                    class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition"
+                    @click="alert('Login with Google feature belum dibuat, bro!')">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
+                        class="w-5 h-5 mr-2" />
+                    <span class="text-gray-700 font-semibold">Login with Google</span>
+                </button>
+
             </div>
         </div>
-    
+
+        {{-- register --}}
         <div class="flex w-full md:w-1/2 p-8 relative z-10 flex-col justify-center">
             <!-- Register Form -->
             <div x-show="!isLogin" class="transition duration-700 ease-in-out">
@@ -127,26 +199,31 @@
                         <button type="button" @click="showRegisterPassword = !showRegisterPassword"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <template x-if="!showRegisterPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-eye-closed-icon lucide-eye-closed">
+                                    <path d="m15 18-.722-3.25" />
+                                    <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                                    <path d="m20 15-1.726-2.05" />
+                                    <path d="m4 15 1.726-2.05" />
+                                    <path d="m9 18 .722-3.25" />
                                 </svg>
                             </template>
                             <template x-if="showRegisterPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10a9.956 9.956 0 011.175-4.875m2.25 2.25A9.956 9.956 0 014.5 12c0 5.523 4.477 10 10 10a9.956 9.956 0 004.875-1.175m2.25-2.25A9.956 9.956 0 0119.5 12c0-5.523-4.477-10-10-10a9.956 9.956 0 00-4.875 1.175" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-eye-icon lucide-eye">
+                                    <path
+                                        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                    <circle cx="12" cy="12" r="3" />
                                 </svg>
                             </template>
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <input type="checkbox"
-                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
+                        <input type="checkbox" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
                         <label class="text-gray-600 text-sm">
                             I agree to the <a href="#" class="text-purple-600 hover:underline">Terms &
                                 Conditions</a>
@@ -170,7 +247,7 @@
                 </div>
             </div>
         </div>
-    
+
         <!-- Sliding Panel -->
         <div class="hidden md:flex w-1/2 bg-gradient-to-r from-purple-700 to-purple-500 text-white items-center justify-center p-8 absolute top-0 left-0 h-full transition-transform duration-700 ease-in-out z-20"
             :class="isLogin ? 'translate-x-full' : 'translate-x-0'">
@@ -186,7 +263,7 @@
             </div>
         </div>
     </div>
-    
+
 
     {{-- tampilan mobile --}}
     <div class="flex md:hidden w-full min-h-screen items-center justify-center p-4">

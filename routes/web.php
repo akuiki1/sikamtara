@@ -20,17 +20,13 @@ Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
 });
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
 
-Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register')->middleware('guest');
 Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Untuk registrasi
-Route::get('register', [AuthController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 Route::get('/auth/redirect', [SocialiteController::class, 'redirect']);
 Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
@@ -77,97 +73,83 @@ Route::get('/keuangan', function () {
 
 
 // halaman admin
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware(['auth', 'role:admin']);
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    // halaman profil admin
+    Route::get('/profil/demografi', function () {
+        return view('admin.profil.demografi', ['title' => 'Demografi']);
+    });
 
-// halaman profil admin
-Route::get('/profil/demografi', function () {
-    return view('admin.profil.demografi', ['title' => 'Demografi']);
-});
+    Route::get('/profil/infrastruktur-desa', function () {
+        return view('admin.profil.infrastruktur', ['title' => 'Infrastruktur Desa']);
+    });
+    Route::get('/profil/sejarah-desa', function () {
+        return view('admin.profil.sejarah', ['title' => 'Sejarah Desa']);
+    });
 
-Route::get('/profil/infrastruktur-desa', function () {
-    return view('admin.profil.infrastruktur', ['title' => 'Infrastruktur Desa']);
-});
-Route::get('/profil/sejarah-desa', function () {
-    return view('admin.profil.sejarah', ['title' => 'Sejarah Desa']);
-});
+    Route::get('/profil/struktur-pemerintahan', function () {
+        return view('admin.profil.struktur-pemerintahan', ['title' => 'Struktur Pemerintahan']);
+    });
 
-Route::get('/profil/struktur-pemerintahan', function () {
-    return view('admin.profil.struktur-pemerintahan', ['title' => 'Struktur Pemerintahan']);
-});
+    Route::get('/profil/visi-misi', function () {
+        return view('admin.profil.visi-misi', ['title' => 'Visi & Misi']);
+    });
+    Route::get('visi-misi', [VisiMisiController::class, 'index'])->name('admin.visimisi.index');
+    Route::put('visi-misi', [VisiMisiController::class, 'update'])->name('admin.visimisi.update');
 
-Route::get('/profil/visi-misi', function () {
-    return view('admin.profil.visi-misi', ['title' => 'Visi & Misi']);
-});
-Route::get('visi-misi', [VisiMisiController::class, 'index'])->name('admin.visimisi.index');
-Route::put('visi-misi', [VisiMisiController::class, 'update'])->name('admin.visimisi.update');
+    Route::get('/profil/wilayah', function () {
+        return view('admin.profil.wilayah', ['title' => 'Wilayah Administrasi']);
+    });
 
-Route::get('/profil/wilayah', function () {
-    return view('admin.profil.wilayah', ['title' => 'Wilayah Administrasi']);
-});
-
-
-// halaman kelola layanan admin
-Route::get('/admin/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');
-Route::get('admin/layanan/administrasi/preview-form/{filename}', [AdminAdministrasiController::class, 'previewForm']);
-Route::post('/admin/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
-Route::put('/admin/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');
-Route::delete('/admin/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'destroy'])->name('adminadministrasi.destroy');
-
-
-Route::get('/admin/layanan/pengaduan', function () {
-    return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
-});
-
-Route::get('/admin/berita', [AdminBeritaController::class, 'index'])->name('adminberita.index');
-Route::post('/admin/berita', [AdminBeritaController::class, 'store'])->name('adminberita.store');
-Route::put('/admin/berita/{id}', [AdminBeritaController::class, 'update'])->name('adminberita.update');
-Route::delete('/admin/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('adminberita.destroy');
-
-Route::get('/admin/pengumuman', [AdminPengumumanController::class, 'index'])->name('pengumuman.index');
-Route::post('/admin/pengumuman', [AdminPengumumanController::class, 'store'])->name('pengumuman.store');
-Route::put('/admin/pengumuman/{id}', [AdminPengumumanController::class, 'update'])->name('pengumuman.update');
-Route::delete('/admin/pengumuman/{id}', [AdminPengumumanController::class, 'destroy'])->name('pengumuman.destroy');
+    // halaman kelola layanan admin
+    Route::get('/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');
+    Route::get('/layanan/administrasi/preview-form/{filename}', [AdminAdministrasiController::class, 'previewForm']);
+    Route::post('/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
+    Route::put('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');
+    Route::delete('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'destroy'])->name('adminadministrasi.destroy');
 
 
-//halaman admin - akun
-Route::get('/admin/akun', function () {
-    return view('admin.akun.profil', ['title' => 'Setelan Akun']);
-});
+    Route::get('/layanan/pengaduan', function () {
+        return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
+    });
 
-Route::get('/admin/akun-warga', [UserController::class, 'index'])->name('user.index');
-Route::post('/admin/akun-warga', [UserController::class, 'store'])->name('user.store');
-Route::post('/admin/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
-Route::delete('/admin/akun-warga/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/berita', [AdminBeritaController::class, 'index'])->name('adminberita.index');
+    Route::post('/berita', [AdminBeritaController::class, 'store'])->name('adminberita.store');
+    Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('adminberita.update');
+    Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('adminberita.destroy');
 
-
-//halaman admin - kependudukan
-// Route::get('/admin/penduduk', function () {
-//     return view('admin.penduduk.penduduk', ['title' => 'Kelola Data Penduduk']);
-// });
-Route::prefix('admin')->group(function () {
-    Route::resource('penduduk', PendudukController::class);
-});
-Route::get('/admin/penduduk', [PendudukController::class, 'index']);
-Route::put('/admin/penduduk/{nik}', [PendudukController::class, 'update'])->name('penduduk.update');
-Route::delete('/admin/penduduk/{nik}', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
-
-// Route::get('/admin/keluarga', function () {
-//     return view('admin.penduduk.keluarga', ['title' => 'Kelola Data Keluarga']);
-// });
-
-Route::get('/admin/keluarga', [KeluargaController::class, 'index'])->name('keluarga.index');
-Route::post('/admin/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
-Route::put('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'update'])->name('keluarga.update');
-Route::delete('/admin/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
-
-//halaman admin - apbdes
-
-Route::get('/admin/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
-Route::post('/admin/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');
-Route::post('/admin/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
-Route::delete('/admin/apbdes/delete/{id}', [AdminApbdesController::class, 'destroy'])->name('adminapbdes.destroy');
+    Route::get('/pengumuman', [AdminPengumumanController::class, 'index'])->name('pengumuman.index');
+    Route::post('/pengumuman', [AdminPengumumanController::class, 'store'])->name('pengumuman.store');
+    Route::put('/pengumuman/{id}', [AdminPengumumanController::class, 'update'])->name('pengumuman.update');
+    Route::delete('/pengumuman/{id}', [AdminPengumumanController::class, 'destroy'])->name('pengumuman.destroy');
 
 
-Route::get('/admin/detail-apbdes', function () {
-    return view('admin.apbdes.detail-apbdes', ['title' => 'Kelola Data APBDes']);
+    //halaman admin - akun
+    Route::get('/akun', function () {
+        return view('admin.akun.profil', ['title' => 'Setelan Akun']);
+    });
+
+    Route::get('/akun-warga', [UserController::class, 'index'])->name('user.index');
+    Route::post('/akun-warga', [UserController::class, 'store'])->name('user.store');
+    Route::post('/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('/akun-warga/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+
+    Route::get('/penduduk', [PendudukController::class, 'index']);
+    Route::put('/penduduk/{nik}', [PendudukController::class, 'update'])->name('penduduk.update');
+    Route::delete('/penduduk/{nik}', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
+
+    Route::get('/keluarga', [KeluargaController::class, 'index'])->name('keluarga.index');
+    Route::post('/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');
+    Route::put('/keluarga/{kode_keluarga}', [KeluargaController::class, 'update'])->name('keluarga.update');
+    Route::delete('/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
+
+    //halaman admin - apbdes
+    Route::get('/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
+    Route::post('/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');
+    Route::post('/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
+    Route::delete('/apbdes/delete/{id}', [AdminApbdesController::class, 'destroy'])->name('adminapbdes.destroy');
+
+    Route::get('/detail-apbdes', function () {
+        return view('admin.apbdes.detail-apbdes', ['title' => 'Kelola Data APBDes']);
+    });
 });

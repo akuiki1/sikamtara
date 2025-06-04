@@ -246,7 +246,21 @@
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog"><path d="m14.305 19.53.923-.382"/><path d="m15.228 16.852-.923-.383"/><path d="m16.852 15.228-.383-.923"/><path d="m16.852 20.772-.383.924"/><path d="m19.148 15.228.383-.923"/><path d="m19.53 21.696-.382-.924"/><path d="M2 21a8 8 0 0 1 10.434-7.62"/><path d="m20.772 16.852.924-.383"/><path d="m20.772 19.148.924.383"/><circle cx="10" cy="8" r="5"/><circle cx="18" cy="18" r="3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog">
+                        <path d="m14.305 19.53.923-.382" />
+                        <path d="m15.228 16.852-.923-.383" />
+                        <path d="m16.852 15.228-.383-.923" />
+                        <path d="m16.852 20.772-.383.924" />
+                        <path d="m19.148 15.228.383-.923" />
+                        <path d="m19.53 21.696-.382-.924" />
+                        <path d="M2 21a8 8 0 0 1 10.434-7.62" />
+                        <path d="m20.772 16.852.924-.383" />
+                        <path d="m20.772 19.148.924.383" />
+                        <circle cx="10" cy="8" r="5" />
+                        <circle cx="18" cy="18" r="3" />
+                    </svg>
                     <span x-show="!collapsed">Kelola Akun</span>
                 </div>
                 <svg x-show="!collapsed" :class="open ? 'rotate-90' : ''"
@@ -259,7 +273,21 @@
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
                 <a href="/admin/akun"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog"><path d="m14.305 19.53.923-.382"/><path d="m15.228 16.852-.923-.383"/><path d="m16.852 15.228-.383-.923"/><path d="m16.852 20.772-.383.924"/><path d="m19.148 15.228.383-.923"/><path d="m19.53 21.696-.382-.924"/><path d="M2 21a8 8 0 0 1 10.434-7.62"/><path d="m20.772 16.852.924-.383"/><path d="m20.772 19.148.924.383"/><circle cx="10" cy="8" r="5"/><circle cx="18" cy="18" r="3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog">
+                        <path d="m14.305 19.53.923-.382" />
+                        <path d="m15.228 16.852-.923-.383" />
+                        <path d="m16.852 15.228-.383-.923" />
+                        <path d="m16.852 20.772-.383.924" />
+                        <path d="m19.148 15.228.383-.923" />
+                        <path d="m19.53 21.696-.382-.924" />
+                        <path d="M2 21a8 8 0 0 1 10.434-7.62" />
+                        <path d="m20.772 16.852.924-.383" />
+                        <path d="m20.772 19.148.924.383" />
+                        <circle cx="10" cy="8" r="5" />
+                        <circle cx="18" cy="18" r="3" />
+                    </svg>
                     <span>Profil</span>
                 </a>
                 <a href="/admin/akun-warga"
@@ -300,14 +328,25 @@
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
                 <a href="/admin/keluarga"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round">
+                        <path d="M18 21a8 8 0 0 0-16 0" />
+                        <circle cx="10" cy="8" r="5" />
+                        <path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" />
+                    </svg>
                     <span>Keluarga</span>
 
 
                 </a>
                 <a href="/admin/penduduk"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round">
+                        <circle cx="12" cy="8" r="5" />
+                        <path d="M20 21a8 8 0 0 0-16 0" />
+                    </svg>
                     <span>Penduduk</span>
                 </a>
             </div>
@@ -359,16 +398,20 @@
         </div>
 
         <!-- LogOut -->
-        <a href="/"
-            class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" x2="9" y1="12" y2="12" />
-            </svg>
-            <span x-show="!collapsed" class="transition-opacity duration-200">Logout</span>
-        </a>
+        <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
+            <form action="/logout" method="POST">
+                @csrf
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" x2="9" y1="12" y2="12" />
+                    </svg>
+                    <span x-show="!collapsed" class="transition-opacity duration-200">Logout</span>
+                </button>
+            </form>
+        </div>
     </nav>
 </div>
