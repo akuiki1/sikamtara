@@ -1,5 +1,6 @@
 <nav x-data="{ mobileMenuOpen: false, scrolled: false }" x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
-    :class="scrolled ? 'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900' : 'bg-transparent text-white'"
+    :class="scrolled ? 'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900' :
+        'bg-transparent text-white'"
     class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out px-6 py-3">
 
     <div class="flex justify-between items-center">
@@ -31,13 +32,41 @@
 
         <!-- Auth Button -->
         @auth
-            <form method="POST" action="/logout" class="hidden md:block">
-                @csrf
-                <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow">
-                    Logout
+            <div x-data="{ open: false }" class="relative hidden md:block">
+                <!-- Tombol Avatar/Profile -->
+                <button @click="open = !open" @click.away="open = false"
+                    class="flex items-center space-x-2 px-3 py-2 rounded-lg shadow text-white focus:outline-none hover:shadow">
+                    <img src="{{ Auth::user()->foto }}" class="w-8 h-8 rounded-full">
+                    <span class="font-medium">{{ Auth::user()->username }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-chevron-up-icon lucide-chevron-up transition-transform duration-300"
+                        :class="{ '-rotate-180': open }">
+                        <path d="m18 15-6-6-6 6" />
+                    </svg>
                 </button>
-            </form>
+
+
+                <!-- Dropdown Menu -->
+                <div x-show="open" x-transition
+                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <!-- Edit Profil -->
+                    <a href="/profile/edit" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                        Edit Profil
+                    </a>
+
+                    <!-- Logout -->
+                    <form method="POST" action="/logout">
+                        @csrf
+                        <button type="submit"
+                            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 hover:text-red-800">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         @else
+            <!-- Login Button -->
             <form method="GET" action="/login" class="hidden md:block">
                 <x-button variant="warning" size="lg"
                     class="bg-yellow-300 hover:bg-yellow-400 text-black font-semibold px-4 py-2 shadow-lg">
@@ -45,6 +74,7 @@
                 </x-button>
             </form>
         @endauth
+
 
         <!-- Mobile Toggle -->
         <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-xl focus:outline-none">
