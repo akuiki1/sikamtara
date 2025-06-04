@@ -1,4 +1,6 @@
 <x-layout>
+    <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-10 px-6 text-center">
+    </section>
 
     <head>
         <meta charset="UTF-8">
@@ -29,7 +31,8 @@
             </div>
 
             <!-- Gambar -->
-            <img src="https://cdn1.katadata.co.id/media/images/2025/04/27/Anggota_Komisi_C_DPRD_DKI_Jakarta_Brando_Susanto-2025_04_27-19_03_31_d542ef88cccea8e7c4123dda4d0c9604.png" alt="Gambar Berita" class="w-full h-auto rounded-md mb-6">
+            <img src="https://cdn1.katadata.co.id/media/images/2025/04/27/Anggota_Komisi_C_DPRD_DKI_Jakarta_Brando_Susanto-2025_04_27-19_03_31_d542ef88cccea8e7c4123dda4d0c9604.png"
+                alt="Gambar Berita" class="w-full h-auto rounded-md mb-6">
 
             <!-- Isi Berita -->
             <div class="text-gray-700 leading-relaxed space-y-4">

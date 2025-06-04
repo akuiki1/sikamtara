@@ -1,4 +1,6 @@
 <x-layout>
+    <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-10 px-6 text-center">
+    </section>
     <div class="p-10">
         <div x-data="apbdesApp()" x-init="init()">
             <!-- Header: Judul + Dropdown Tahun -->

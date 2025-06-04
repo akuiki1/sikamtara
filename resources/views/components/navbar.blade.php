@@ -1,12 +1,12 @@
 <nav x-data="{ mobileMenuOpen: false, scrolled: false }" x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
-    :class="scrolled ? 'bg-blue-900/90 backdrop-blur shadow-md text-gray-900' : 'bg-transparent text-white'"
+    :class="scrolled ? 'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900' : 'bg-transparent text-white'"
     class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out px-6 py-3">
 
     <div class="flex justify-between items-center">
         <!-- Logo -->
         <a href="/">
             <div class="flex items-center gap-2">
-                <img src="img/LogoHST.png" alt="Logo" class="h-14">
+                <img src="{{ asset('img/LogoHST.png') }}" alt="Logo" class="h-14">
                 <span class="font-semibold text-lg hidden md:inline text-white">SIKAMTARA</span>
             </div>
         </a>

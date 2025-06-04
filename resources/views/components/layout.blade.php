@@ -20,6 +20,7 @@
             display: none !important;
         }
 
+        /* untuk transisi per-section */
         html {
             scroll-behavior: smooth;
         }

@@ -1,16 +1,9 @@
 <x-layout>
-    <div class="bg-white">
+    <div class="bg-gray-100">
 
-        {{-- Hero Section --}}
-        <section class="relative bg-gradient-to-r from-green-600 to-green-400 text-white py-16 px-6 text-center">
-            <h1 class="text-3xl md:text-5xl font-bold mb-4">Desa Kambat Utara</h1>
-            <p class="text-lg md:text-xl max-w-2xl mx-auto">Desa yang asri, damai, dan penuh semangat gotong royong di
-                Kabupaten Hulu Sungai Tengah</p>
-            <button
-                class="mt-6 inline-block bg-white text-green-600 px-6 py-2 rounded-full shadow hover:bg-gray-100 transition">Lihat
-                Selengkapnya</button>
+        <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-10 px-6 text-center">
         </section>
-
+        
         {{-- Sejarah Desa --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Sejarah Desa</h2>
@@ -86,7 +79,8 @@
                         [
                             'nama' => 'Ahmad Zulkarnain',
                             'jabatan' => 'Kepala Desa',
-                            'foto' => 'https://perpustakaan.widyatama.ac.id/wp-content/uploads/2020/07/foto-formal-compres-scaled.jpg',
+                            'foto' =>
+                                'https://perpustakaan.widyatama.ac.id/wp-content/uploads/2020/07/foto-formal-compres-scaled.jpg',
                             'detail' => 'Menjabat sejak 2020, fokus pada pembangunan infrastruktur desa.',
                         ],
                         [
@@ -110,13 +104,15 @@
                         [
                             'nama' => 'Budi Santoso',
                             'jabatan' => 'Kaur Umum',
-                            'foto' => 'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
+                            'foto' =>
+                                'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
                             'detail' => 'Mengurus keperluan umum desa dan inventarisasi aset.',
                         ],
                         [
                             'nama' => 'Dewi Lestari',
                             'jabatan' => 'Kaur Perencanaan',
-                            'foto' => 'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
+                            'foto' =>
+                                'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
                             'detail' => 'Membantu penyusunan program kerja dan anggaran desa.',
                         ],
                     ];
@@ -161,11 +157,13 @@
         <section class="py-16 px-6 md:px-16 bg-white">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Dasar Hukum</h2>
             <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify mb-4">
-                Peraturan Desa Kambat Utara berdasarkan keputusan rapat desa dan peraturan daerah yang berlaku. 
+                Peraturan Desa Kambat Utara berdasarkan keputusan rapat desa dan peraturan daerah yang berlaku.
                 Untuk informasi lebih lanjut, Anda dapat mengunduh dokumen peraturan desa di bawah ini.
             </p>
             <div class="flex justify-center">
-                <a href="link-ke-peraturan-desa.pdf" class="inline-block bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition">Unduh Peraturan Desa</a>
+                <a href="link-ke-peraturan-desa.pdf"
+                    class="inline-block bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition">Unduh
+                    Peraturan Desa</a>
             </div>
         </section>
 
@@ -173,8 +171,8 @@
         <section class="py-16 px-6 md:px-16">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Tujuan Penyusunan Website</h2>
             <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify">
-                Website ini dibangun untuk memberikan akses informasi yang lebih mudah dan transparan mengenai kegiatan 
-                dan program pembangunan di Desa Kambat Utara. Tujuan utamanya adalah untuk mempermudah komunikasi antara 
+                Website ini dibangun untuk memberikan akses informasi yang lebih mudah dan transparan mengenai kegiatan
+                dan program pembangunan di Desa Kambat Utara. Tujuan utamanya adalah untuk mempermudah komunikasi antara
                 pemerintahan desa dan warga, serta mempromosikan potensi desa ke dunia luar.
             </p>
         </section>
@@ -217,12 +215,15 @@
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Strategi dan Arah Kebijakan Desa</h2>
             <div class="space-y-6 max-w-3xl mx-auto text-justify">
                 <p class="text-gray-700">
-                    Strategi kebijakan desa mencakup peningkatan kualitas pendidikan, kesehatan, dan ekonomi lokal melalui 
-                    penguatan infrastruktur dan pemberdayaan masyarakat. Kami juga berfokus pada pelestarian lingkungan dan 
+                    Strategi kebijakan desa mencakup peningkatan kualitas pendidikan, kesehatan, dan ekonomi lokal
+                    melalui
+                    penguatan infrastruktur dan pemberdayaan masyarakat. Kami juga berfokus pada pelestarian lingkungan
+                    dan
                     budaya lokal.
                 </p>
                 <p class="text-gray-700">
-                    Arah kebijakan ini bertujuan untuk menciptakan desa yang mandiri, berdaya saing, dan mampu menghadapi 
+                    Arah kebijakan ini bertujuan untuk menciptakan desa yang mandiri, berdaya saing, dan mampu
+                    menghadapi
                     tantangan global.
                 </p>
             </div>
@@ -240,7 +241,7 @@
                 </ul>
             </div>
         </section>
-          
+
 
         {{-- CTA Kontak --}}
         {{-- <section class="py-16 px-6 md:px-16 bg-green-600 text-white text-center">
