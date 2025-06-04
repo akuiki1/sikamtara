@@ -1,4 +1,4 @@
-<footer class="bg-gray-800 text-white px-6 py-10">
+<footer class="bg-blue-900 text-white px-6 py-10">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
         <!-- Logo dan Alamat -->
         <div class="flex flex-col items-start">

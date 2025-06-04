@@ -19,176 +19,168 @@
                 </button>
             </div>
         @endif
-        {{-- section hero --}}
-        <section x-data="heroSlider()" x-init="init()" class="relative h-screen overflow-hidden">
-            <!-- Slides Background -->
-            <template x-for="(slide, index) in slides" :key="index">
-                <div x-show="currentSlide === index" x-transition:enter="transition-opacity duration-700"
-                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                    x-transition:leave="transition-opacity duration-700" x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0" class="absolute inset-0 bg-cover bg-center will-change-transform"
-                    :style="`background-image: url(${slide.image}); transform: translateY(${parallaxOffset}px)`">
-                </div>
-            </template>
 
-            <!-- Dark Overlay -->
-            <div class="absolute inset-0 bg-black/50"></div>
+        {{-- section hero --}}
+        <section id="beranda" x-data="{
+            currentSlide: 0,
+            slides: [
+                { image: 'img/kantordesa.jpg' },
+                { image: 'https://up2date.id/wp-content/uploads/2024/11/noemalisasi.jpg' },
+                { image: 'https://totabuan.news/wp-content/uploads/2021/11/182-1822070_pemandangan-alam-indonesia-hd.jpg' }
+            ],
+            interval: null,
+        
+            init() {
+                this.startAutoSlide();
+            },
+            startAutoSlide() {
+                this.interval = setInterval(() => this.next(), 8000);
+            },
+            resetAutoSlide() {
+                clearInterval(this.interval);
+                this.startAutoSlide();
+            },
+            next() {
+                this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+                this.resetAutoSlide();
+            },
+            prev() {
+                this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+                this.resetAutoSlide();
+            },
+            goToSlide(index) {
+                this.currentSlide = index;
+                this.resetAutoSlide();
+            }
+        }" x-init="init()"
+            class="relative w-full h-20 md:h-screen overflow-hidden">
+            <!-- Slides Container -->
+            <div class="absolute inset-0 flex transition-transform duration-700 ease-in-out"
+                :style="`transform: translateX(-${currentSlide * 100}%);`">
+                <template x-for="(slide, index) in slides" :key="index">
+                    <div class="min-w-full h-40 md:h-screen bg-cover bg-center"
+                        :style="`background-image: url(${slide.image})`"></div>
+                </template>
+            </div>
+
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-black/70 z-0"></div>
 
             <!-- Content -->
-            <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-                <h1 class="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">SELAMAT DATANG!</h1>
-                <p class="text-lg md:text-2xl mb-6 drop-shadow-md">WEBSITE RESMI PEMERINTAH DESA KAMBAT UTARA</p>
-                <div class="flex gap-4">
-                    <a href="/informasi/berita"
-                        class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 px-6 rounded-full transition">Informasi
-                        Terbaru</a>
-                    <a href="/layanan/administrasi"
-                        class="border border-white hover:bg-white hover:text-black font-semibold py-3 px-6 rounded-full transition">Akses
-                        Layanan →</a>
+            <div
+                class="relative z-10 hidden md:flex flex-col items-center justify-center h-full text-center text-white px-4">
+                <h1 class="text-3xl md:text-6xl font-bold mb-4 drop-shadow-lg">SELAMAT DATANG!</h1>
+                <p class="text-base md:text-2xl mb-6 drop-shadow-md">WEBSITE RESMI PEMERINTAH DESA KAMBAT UTARA</p>
+                <div class="flex gap-4 flex-wrap justify-center">
+                    <a href="#jelajahi"
+                        class="bg-yellow-300 hover:bg-yellow-400 text-black font-semibold py-3 px-6 rounded-full transition">
+                        Jelajahi sistem desa
+                    </a>
+                    <a href="#layanan"
+                        class="border border-white hover:bg-white hover:text-black font-semibold py-3 px-6 rounded-full transition">
+                        Pengajuan layanan online
+                    </a>
                 </div>
             </div>
 
-            <!-- Navigation Arrows -->
+
+            <!-- Arrows -->
             <button @click="prev()"
-                class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-3 rounded-full transition hidden md:block">
-                ←
+                class="absolute z-20 top-1/2 left-4 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition hidden md:block"
+                aria-label="Previous Slide">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
             </button>
 
             <button @click="next()"
-                class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white p-3 rounded-full transition hidden md:block">
-                →
+                class="absolute z-20 top-1/2 right-4 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition hidden md:block"
+                aria-label="Next Slide">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
             </button>
 
-            <!-- Dots Indicator -->
-            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
+            <!-- Dots -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 hidden md:flex gap-2 z-20">
                 <template x-for="(slide, index) in slides" :key="index">
                     <button @click="goToSlide(index)"
-                        :class="{ 'bg-white': currentSlide === index, 'bg-white/50': currentSlide !== index }"
-                        class="w-3 h-3 rounded-full transition">
-                    </button>
+                        :class="{
+                            'bg-white scale-110': currentSlide === index,
+                            'bg-white/50': currentSlide !== index
+                        }"
+                        class="w-3 h-3 rounded-full transition duration-300 transform"></button>
                 </template>
             </div>
         </section>
 
-        <!-- Alpine.js Logic -->
-        <script>
-            function heroSlider() {
-                return {
-                    currentSlide: 0,
-                    slides: [{
-                            image: 'img/KantorDesa.png'
-                        },
-                        {
-                            image: 'https://up2date.id/wp-content/uploads/2024/11/noemalisasi.jpg'
-                        },
-                        {
-                            image: 'https://totabuan.news/wp-content/uploads/2021/11/182-1822070_pemandangan-alam-indonesia-hd.jpg'
-                        }
-                    ],
-                    interval: null,
-                    parallaxOffset: 0,
-
-                    init() {
-                        this.startAutoSlide();
-                        window.addEventListener('scroll', this.handleScroll.bind(this));
-                    },
-                    startAutoSlide() {
-                        this.interval = setInterval(() => {
-                            this.next();
-                        }, 5000);
-                    },
-                    resetAutoSlide() {
-                        clearInterval(this.interval);
-                        this.startAutoSlide();
-                    },
-                    next() {
-                        this.currentSlide = (this.currentSlide + 1) % this.slides.length;
-                        this.resetAutoSlide();
-                    },
-                    prev() {
-                        this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
-                        this.resetAutoSlide();
-                    },
-                    goToSlide(index) {
-                        this.currentSlide = index;
-                        this.resetAutoSlide();
-                    },
-                    handleScroll() {
-                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                        this.parallaxOffset = scrollTop * 0.3;
-                    }
-                }
-            }
-        </script>
-
         <!-- Section: Jelajahi Sistem Desa -->
-        <section class="bg-yellow-400 py-16">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">JELAJAHI SISTEM DESA</h2>
-                <p class="text-base md:text-lg text-gray-800 mb-12 max-w-3xl mx-auto">
-                    Melalui website ini Anda dapat menjelajahi segala hal yang terkait dengan Desa.
-                    Aspek pemerintahan, penduduk, demografi, potensi Desa, dan juga berita tentang Desa.
+        <section id="jelajahi" class="bg-gray-100 py-20 hidden sm:block">
+            <div class="max-w-7xl mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">JELAJAHI SISTEM DESA</h2>
+                <p class="text-base md:text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+                    Melalui website ini Anda dapat menjelajahi segala hal yang terkait dengan Desa: pemerintahan,
+                    penduduk, demografi, potensi, hingga berita terkini.
                 </p>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Card 1 -->
-                    <a href="#" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-8">
-                        <div class="flex items-center justify-center mb-4">
-                            {{-- Icon Placeholder --}}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-yellow-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5 0a4 4 0 01-8 0 4 4 0 018 0zM9 5a3 3 0 100 6 3 3 0 000-6zM15 11a3 3 0 100-6 3 3 0 000 6z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">PROFIL DESA</h3>
-                    </a>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    @php
+                        $items = [
+                            [
+                                'title' => 'Profil Desa',
+                                'url' => '/profil-desa',
+                                'icon' =>
+                                    '<path d="M10 18v-7"/><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>',
+                            ],
+                            [
+                                'title' => 'Statistik Penduduk',
+                                'url' => '/informasi/kependudukan',
+                                'icon' =>
+                                    '<path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/>',
+                            ],
+                            [
+                                'title' => 'Pengumuman Desa',
+                                'url' => '/informasi/pengumuman',
+                                'icon' =>
+                                    '<path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/>',
+                            ],
+                            [
+                                'title' => 'Keuangan Desa',
+                                'url' => '/informasi/apbdes',
+                                'icon' =>
+                                    '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+                            ],
+                        ];
+                    @endphp
 
-                    <!-- Card 2 -->
-                    <a href="#" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-8">
-                        <div class="flex items-center justify-center mb-4">
-                            {{-- Icon Placeholder --}}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-yellow-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 3v18h18M9 17V9m4 8V5m4 12v-4" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">INFOGRAFIS</h3>
-                    </a>
+                    @foreach ($items as $item)
+                        <a href="{{ $item['url'] }}"
+                            class="group block rounded-xl shadow-md hover:shadow-xl transition-transform transform hover:-translate-y-1 
+               p-4 sm:p-5 md:p-6 text-center bg-white">
+                            <div class="flex items-center justify-center mb-3 sm:mb-4 md:mb-5">
+                                <div
+                                    class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-yellow-300 flex items-center justify-center shadow-inner">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7 text-gray-800"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        {!! $item['icon'] !!}
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3
+                                class="text-sm sm:text-base md:text-lg font-semibold text-gray-800 group-hover:text-yellow-300 transition-colors">
+                                {{ $item['title'] }}
+                            </h3>
+                        </a>
+                    @endforeach
 
-                    <!-- Card 3 -->
-                    <a href="#" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-8">
-                        <div class="flex items-center justify-center mb-4">
-                            {{-- Icon Placeholder --}}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-yellow-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M19 7h1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h11.5M7 14h6m-6 3h6m0-10h.5m-.5 3h.5M7 7h3v3H7V7Z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">Informasi Penting</h3>
-                    </a>
-
-                    <!-- Card 4 -->
-                    <a href="#" class="block bg-white rounded-lg shadow-md hover:shadow-lg transition p-8">
-                        <div class="flex items-center justify-center mb-4">
-                            {{-- Icon Placeholder --}}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-yellow-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 9V7a2 2 0 00-2-2H9a2 2 0 00-2 2v2M5 10h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2zm7 4h.01" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-gray-800">APBDes</h3>
-                    </a>
                 </div>
             </div>
         </section>
 
         <!-- Section: Layanan Administrasi -->
-        <section class="bg-gray-50 py-20">
+        <section id="layanan" class="bg-gray-50 py-20">
             <div class="max-w-7xl mx-auto px-6">
                 {{-- Section Title --}}
                 <div class="text-center mb-14">
@@ -208,8 +200,8 @@
                         <div class="flex flex-col items-center text-center">
                             {{-- Icon --}}
                             <div class="bg-white p-4 rounded-full shadow-md mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-3-9v18m8-9H5" />
                                 </svg>
@@ -236,8 +228,8 @@
                         <div class="flex flex-col items-center text-center">
                             {{-- Icon --}}
                             <div class="bg-white p-4 rounded-full shadow-md mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M18.364 5.636L5.636 18.364M5.636 5.636l12.728 12.728" />
                                 </svg>
@@ -262,7 +254,7 @@
         </section>
 
         <!-- Section: Keuangan Desa -->
-        <section class="bg-gray-100 py-20">
+        <section id="apbdes" class="bg-gray-100 py-20">
             @php
                 $anggaran = 120000000; // Rp 120.000.000
                 $realisasi = 95000000; // Rp 95.000.000
@@ -387,7 +379,7 @@
         </section>
 
         <!-- Section: Berita & Pengumuman -->
-        <section class="py-16 bg-gray-50">
+        <section id="berita" class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">Berita Terbaru Desa</h2>
