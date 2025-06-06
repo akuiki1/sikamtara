@@ -19,7 +19,7 @@
     <nav class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium">
 
         <!-- Beranda -->
-        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">
+        <a href="dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-house-icon lucide-house">
@@ -30,117 +30,22 @@
 
             <span x-show="!collapsed" class="transition-opacity duration-200">Beranda</span>
         </a>
-
+        
         <!-- Profil Desa -->
-        <div x-data="{ open: false }">
-            <button @click="open = !open"
-                class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
-                <div class="flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+        <a href="/admin/profil-desa" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text">
-                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                        <path d="M10 9H8" />
-                        <path d="M16 13H8" />
-                        <path d="M16 17H8" />
+                        stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark">
+                        <line x1="3" x2="21" y1="22" y2="22" />
+                        <line x1="6" x2="6" y1="18" y2="11" />
+                        <line x1="10" x2="10" y1="18" y2="11" />
+                        <line x1="14" x2="14" y1="18" y2="11" />
+                        <line x1="18" x2="18" y1="18" y2="11" />
+                        <polygon points="12 2 20 7 4 7" />
                     </svg>
-                    <span x-show="!collapsed">Kelola Profil Desa</span>
-                </div>
-                <svg x-show="!collapsed" :class="open ? 'rotate-90' : ''"
-                    class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor"
-                    stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 5l7 7-7 7" />
-                </svg>
-            </button>
 
-            <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/profil/sejarah-desa"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-book-open-text-icon lucide-book-open-text">
-                        <path d="M12 7v14" />
-                        <path d="M16 12h2" />
-                        <path d="M16 8h2" />
-                        <path
-                            d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
-                        <path d="M6 12h2" />
-                        <path d="M6 8h2" />
-                    </svg>
-                    <span>Sejarah Desa</span>
-                </a>
-                <a href="/profil/demografi"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined">
-                        <path d="M12 16v5" />
-                        <path d="M16 14v7" />
-                        <path d="M20 10v11" />
-                        <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" />
-                        <path d="M4 18v3" />
-                        <path d="M8 14v7" />
-                    </svg>
-                    <span>Demografi</span>
-                </a>
-                <a href="/profil/visi-misi"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-target-icon lucide-target">
-                        <circle cx="12" cy="12" r="10" />
-                        <circle cx="12" cy="12" r="6" />
-                        <circle cx="12" cy="12" r="2" />
-                    </svg>
-                    <span>Visi & Misi</span>
-                </a>
-                <a href="/profil/struktur-pemerintahan"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-building2-icon lucide-building-2">
-                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-                        <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                        <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-                        <path d="M10 6h4" />
-                        <path d="M10 10h4" />
-                        <path d="M10 14h4" />
-                        <path d="M10 18h4" />
-                    </svg>
-                    <span>Stuktur Pemerintahan</span>
-                </a>
-                <a href="/profil/infrastruktur-desa"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark">
-                        <line x1="3" x2="21" y1="22" y2="22" />
-                        <line x1="6" x2="6" y1="18" y2="11" />
-                        <line x1="10" x2="10" y1="18" y2="11" />
-                        <line x1="14" x2="14" y1="18" y2="11" />
-                        <line x1="18" x2="18" y1="18" y2="11" />
-                        <polygon points="12 2 20 7 4 7" />
-                    </svg>
-                    <span>Infrastruktur Desa</span>
-                </a>
-                <a href="/profil/wilayah"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark">
-                        <line x1="3" x2="21" y1="22" y2="22" />
-                        <line x1="6" x2="6" y1="18" y2="11" />
-                        <line x1="10" x2="10" y1="18" y2="11" />
-                        <line x1="14" x2="14" y1="18" y2="11" />
-                        <line x1="18" x2="18" y1="18" y2="11" />
-                        <polygon points="12 2 20 7 4 7" />
-                    </svg>
-                    <span>Wilayah Administrasi</span>
-                </a>
-            </div>
-        </div>
+            <span x-show="!collapsed" class="transition-opacity duration-200">Profil Desa</span>
+        </a>
 
         <!-- Layanan -->
         <div x-data="{ open: false }">
@@ -396,12 +301,14 @@
                 </a>
             </div>
         </div>
+    </nav>
 
-        <!-- LogOut -->
+    <!-- LogOut -->
+    <div class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium text-center border-t">
         <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
             <form action="/logout" method="POST">
                 @csrf
-                <button type="submit">
+                <button type="submit" class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
@@ -413,5 +320,6 @@
                 </button>
             </form>
         </div>
-    </nav>
+    </div>
+
 </div>

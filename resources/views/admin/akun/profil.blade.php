@@ -2,21 +2,20 @@
     <x-slot:title>Edit Profil</x-slot>
 
     @push('styles')
-    <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
+        <link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
     @endpush
 
     <div x-data="profileEditor()" class="p-6 bg-white rounded-xl shadow-xl">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Your personal profile info</h2>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Edit Profil</h2>
 
         <!-- Foto Profil -->
         <div class="flex items-center space-x-4 mb-8">
             <div class="relative">
-                <img :src="photoPreview || '/img/default-avatar.png'" alt="Preview" class="w-24 h-24 rounded-full object-cover border border-gray-300" />
-                <input type="file" accept="image/jpeg,image/png,image/jpg"
-                       @change="handleImageUpload" class="absolute inset-0 opacity-0 cursor-pointer" />
-            </div>
-            <div>
-                <p class="text-sm text-gray-500">Click photo to change</p>
+                <img :src="photoPreview || '{{ Auth::user()->foto }}'" alt="Preview"
+                    class="w-24 h-24 rounded-full object-cover border border-gray-300" />
+                <input type="file" accept="image/jpeg,image/png,image/jpg" @change="handleImageUpload"
+                    class="absolute inset-0 opacity-0 cursor-pointer" />
+                <p class="text-sm text-center text-gray-500">Ganti Foto</p>
             </div>
         </div>
 
@@ -24,28 +23,43 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- PROFILE -->
             <div>
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">1</span> PROFILE</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <x-form.input label="First name" />
-                    <x-form.input label="Last name" />
-                    <x-form.input label="Username (not your e-mail)" />
-                    <x-form.input label="Country, City" />
-                    <x-form.input label="Your e-mail" type="email" />
-                    <x-form.input label="Organization" />
-                    <div class="col-span-2 flex gap-4">
-                        <x-form.select label="Personal phone number" :options="['+62', '+1', '+44']" />
-                        <x-form.input label="" placeholder="812 345 678" />
-                    </div>
-                    <div class="col-span-2 flex gap-4">
-                        <x-form.select label="Work phone number" :options="['+62', '+1', '+44']" />
-                        <x-form.input label="" placeholder="812 345 678" />
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">1</span> PROFILE
+                </h3>
+                <div class="grid grid-cols-1 gap-4" x-data="{
+                    selectedUser: null,
+                    user: @js($userJs),
+                    get filteredUser() {
+                        return this.user.filter(item => {
+                            const matchesSearch = `${item.id_user}`.toLowerCase().includes(this.search.toLowerCase());
+                            const matchesRole = this.filterRole === '' || item.role === this.filterRole;
+                            const matchesStatus = this.filterStatus === '' || item.status_verifikasi === this.filterStatus;
+                            return matchesSearch && matchesRole && matchesStatus;
+                        });
+                    }
+                }">
+                    <div x-for="item in filteredUser" :key="item.Auth::user">
+
+                        <x-form.input label="First name" x-text="selectedUser.username" />
+                        <x-form.input label="Username (not your e-mail)" />
+                        <x-form.input label="Country, City" />
+                        <x-form.input label="Your e-mail" type="email" />
+                        <x-form.input label="Organization" />
+                        <div class="col-span-2 flex gap-4">
+                            <x-form.select label="Personal phone number" :options="['+62', '+1', '+44']" />
+                            <x-form.input label="" placeholder="812 345 678" />
+                        </div>
+                        <div class="col-span-2 flex gap-4">
+                            <x-form.select label="Work phone number" :options="['+62', '+1', '+44']" />
+                            <x-form.input label="" placeholder="812 345 678" />
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- PASSWORD -->
             <div>
-                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">2</span> PASSWORD</h3>
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><span class="text-blue-500">2</span> PASSWORD
+                </h3>
                 <div class="grid grid-cols-1 gap-4">
                     <x-form.input label="Old password" type="password" />
                     <x-form.input label="New password" type="password" />
@@ -73,52 +87,55 @@
     </div>
 
     @push('scripts')
-    <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
-    <script>
-        function profileEditor() {
-            return {
-                photoPreview: null,
-                showCrop: false,
-                imageFile: null,
-                cropper: null,
+        <script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+        <script>
+            function profileEditor() {
+                return {
+                    photoPreview: null,
+                    showCrop: false,
+                    imageFile: null,
+                    cropper: null,
 
-                handleImageUpload(e) {
-                    const file = e.target.files[0];
-                    if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                        alert("File harus JPG, JPEG, atau PNG.");
-                        return;
-                    }
-                    this.imageFile = file;
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        document.getElementById('cropper-image').src = event.target.result;
-                        this.showCrop = true;
-                        this.$nextTick(() => {
-                            this.cropper = new Cropper(document.getElementById('cropper-image'), {
-                                aspectRatio: 1,
-                                viewMode: 1
+                    handleImageUpload(e) {
+                        const file = e.target.files[0];
+                        if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                            alert("File harus JPG, JPEG, atau PNG.");
+                            return;
+                        }
+                        this.imageFile = file;
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            document.getElementById('cropper-image').src = event.target.result;
+                            this.showCrop = true;
+                            this.$nextTick(() => {
+                                this.cropper = new Cropper(document.getElementById('cropper-image'), {
+                                    aspectRatio: 1,
+                                    viewMode: 1
+                                });
                             });
+                        };
+                        reader.readAsDataURL(file);
+                    },
+
+                    cancelCrop() {
+                        this.cropper.destroy();
+                        this.cropper = null;
+                        this.showCrop = false;
+                    },
+
+                    applyCrop() {
+                        const canvas = this.cropper.getCroppedCanvas({
+                            width: 300,
+                            height: 300
                         });
-                    };
-                    reader.readAsDataURL(file);
-                },
-
-                cancelCrop() {
-                    this.cropper.destroy();
-                    this.cropper = null;
-                    this.showCrop = false;
-                },
-
-                applyCrop() {
-                    const canvas = this.cropper.getCroppedCanvas({ width: 300, height: 300 });
-                    this.photoPreview = canvas.toDataURL();
-                    this.cropper.destroy();
-                    this.cropper = null;
-                    this.showCrop = false;
+                        this.photoPreview = canvas.toDataURL();
+                        this.cropper.destroy();
+                        this.cropper = null;
+                        this.showCrop = false;
+                    }
                 }
             }
-        }
-    </script>
+        </script>
     @endpush
 
 </x-admin-layout>

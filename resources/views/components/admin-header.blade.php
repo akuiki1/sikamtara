@@ -71,13 +71,14 @@
         <!-- Profil Dropdown -->
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open"
-                class="flex items-center space-x-2 hover:bg-gray-100 px-3 py-1.5 rounded-full transition">
-                <img src="https://via.placeholder.com/32" alt="User Avatar"
+                class="flex items-center space-x-2 hover:text-blue-600 px-3 py-1.5 rounded-full transition">
+                <img src="{{ Auth::user()->foto }}" alt="User Avatar"
                     class="w-8 h-8 rounded-full object-cover border border-gray-300" />
-                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                        d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 011.14.98l-4.25 4.65a.75.75 0 01-1.1 0l-4.25-4.65a.75.75 0 01.02-1.06z"
-                        clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-chevron-up-icon lucide-chevron-up transition-transform duration-300"
+                    :class="{ '-rotate-180': open }">
+                    <path d="m18 15-6-6-6 6" />
                 </svg>
             </button>
 
@@ -88,8 +89,13 @@
                 x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-100"
                 x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
 
-                <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>                      
+                <a href="{{ route('adminprofile') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round">
+                        <circle cx="12" cy="8" r="5" />
+                        <path d="M20 21a8 8 0 0 0-16 0" />
+                    </svg>
                     Profil
                 </a>
 
@@ -101,16 +107,22 @@
                     Pengaturan
                 </a> --}}
 
-                <div class="border-t my-1"></div>
+                <div class="border-t my-1 "></div>
 
-                <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"/>
-                    </svg>
-                    
-                    Keluar
-                </a>
+                <form method="POST" action="/logout">
+                    @csrf
+                    <div class="text-red-600 hover:bg-red-50">
+                        <button type="submit" class="flex items-center gap-2 px-4 py-2 text-sm ">
+                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="1.5"
+                                viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
+                            </svg>
+                            Keluar
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

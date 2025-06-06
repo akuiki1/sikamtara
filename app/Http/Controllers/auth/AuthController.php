@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 class AuthController extends Controller
 {
@@ -31,9 +32,9 @@ class AuthController extends Controller
             // Arahkan berdasarkan role
             switch ($user->role) {
                 case 'admin':
-                    return redirect()->intended('/dashboard');
+                    return redirect()->intended('/admin/dashboard');
                 case 'kepala desa':
-                    return redirect()->intended('/kepala-desa/dashboard');
+                    return redirect()->intended('dashboard');
                 case 'user':
                     return redirect()->intended('/');
                 default:
