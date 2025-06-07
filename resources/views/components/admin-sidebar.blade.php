@@ -176,7 +176,7 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/akun"
+                <a href="/admin/profile/edit"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"

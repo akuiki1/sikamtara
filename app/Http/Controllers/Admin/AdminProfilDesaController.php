@@ -3,21 +3,56 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Sejarah;
+use App\Models\Visimisi;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Visimisi;
+use App\Models\StrukturPemerintahan;
 
 class AdminProfilDesaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = StrukturPemerintahan::with('user');
+
+        if ($request->has('search')) {
+            $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
+        }
+
+
+        // Filter berdasarkan role
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Pagination dengan query string tetap
+        $strukturPemerintahan = $query->paginate(8)->appends($request->query());
+
+        // Data untuk JavaScript (Alpine)
+        $transformed = collect($strukturPemerintahan->items())->map(function ($item) {
+            return [
+                'id_administrasi'         => $item->id_administrasi,
+                'nama_administrasi'      => $item->nama_administrasi,
+                'deskripsi'        => Str::limit($item->deskripsi, 100),
+                'deskripsi_full'        => $item->deskripsi,
+                'persyaratan'        => $item->persyaratan,
+                'form'      => $item->form,
+                // 'name_form' => Str::limit(Str::after(basename($item->form), '_'), 35),
+                // 'name_form_edit' => Str::limit(Str::after(basename($item->form), '_'), 25),
+            ];
+        });
+        
         $sejarah = Sejarah::first();
         $visimisi = Visimisi::first();
 
+
         return view('admin.profil-desa', [
+            'strukturPemerintahan'      => $strukturPemerintahan,
+            'strukturPemerintahanJs'    => $transformed,
+            'search'    => $request->search,
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
         ]);

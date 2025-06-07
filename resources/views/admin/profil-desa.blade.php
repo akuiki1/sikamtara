@@ -168,197 +168,210 @@
 
 
     {{-- Data Wilayah --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50">
+    <section x-data="{
+        luas: '',
+        penduduk: '',
+        rt: '',
+        rw: '',
+        editing: false,
+        original: {},
+        startEdit() {
+            this.original = { luas: this.luas, penduduk: this.penduduk, rt: this.rt, rw: this.rw };
+            this.editing = true;
+        },
+        cancelEdit() {
+            Object.assign(this, this.original);
+            this.editing = false;
+        },
+        saveEdit() {
+            // kirim ke server pake fetch/ajax di sini kalau mau
+            this.editing = false;
+        },
+        tambahData() {
+            this.luas = '';
+            this.penduduk = '';
+            this.rt = '';
+            this.rw = '';
+            this.editing = true;
+        }
+    }" class="py-16 px-6 md:px-16 bg-gray-50">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Wilayah</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-3xl font-bold text-green-600">2.100 Ha</div>
-                <div class="text-gray-600 mt-2">Luas Wilayah</div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-3xl font-bold text-green-600">1.872</div>
-                <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-3xl font-bold text-green-600">3</div>
-                <div class="text-gray-600 mt-2">Jumlah Dusun</div>
-            </div>
-            <div class="bg-white rounded-lg shadow p-6 text-center">
-                <div class="text-3xl font-bold text-green-600">8</div>
-                <div class="text-gray-600 mt-2">RT/RW</div>
-            </div>
-        </div>
-    </section>
 
-    {{-- Peta Lokasi --}}
-    <section class="py-16 px-6 md:px-16">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Peta Lokasi Desa</h2>
-        <div class="max-w-5xl mx-auto rounded-lg overflow-hidden shadow">
-            <iframe class="w-full h-64 md:h-96"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30310.09139579498!2d115.31917278882365!3d-2.5119143378588986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de56a788be0f17f%3A0x5eb3706f97864e42!2sKambat%20Utara%2C%20Pandawan%2C%20Central%20Hulu%20Sungai%20Regency%2C%20South%20Kalimantan!5e1!3m2!1sen!2sid!4v1745651831702!5m2!1sen!2sid"
-                style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        <template x-if="luas || penduduk || rt || rw">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="luas" @input="startEdit()"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
+                    <div class="text-gray-600 mt-2">Luas Wilayah</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="penduduk" @input="startEdit()"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
+                    <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="rt" @input="startEdit()"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
+                    <div class="text-gray-600 mt-2">Jumlah RT</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="rw" @input="startEdit()"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
+                    <div class="text-gray-600 mt-2">Jumlah RW</div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Form Input Baru saat Data Masih Kosong -->
+        <div class="max-w-5xl mx-auto" x-show="editing && !(luas || penduduk || rt || rw)">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="luas"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
+                        placeholder="Isi luas" />
+                    <div class="text-gray-600 mt-2">Luas Wilayah</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="penduduk"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
+                        placeholder="Isi jumlah penduduk" />
+                    <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="rt"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
+                        placeholder="Isi RT" />
+                    <div class="text-gray-600 mt-2">Jumlah RT</div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <input x-model="rw"
+                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
+                        placeholder="Isi RW" />
+                    <div class="text-gray-600 mt-2">Jumlah RW</div>
+                </div>
+            </div>
         </div>
+
+        <!-- Tombol Simpan / Batal -->
+        <div class="text-center mt-8" x-show="editing">
+            <button @click="saveEdit()" class="bg-green-600 text-white px-6 py-2 rounded-lg mr-2">Simpan</button>
+            <button @click="cancelEdit()" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Batal</button>
+        </div>
+
+        <!-- Kalau Belum Ada Data, tampilkan tombol Tambah -->
+        <template x-if="!luas && !penduduk && !rt && !rw && !editing">
+            <div class="text-center mt-8">
+                <p class="text-gray-500 mb-4">Data masih kosong</p>
+                <button @click="tambahData()" class="bg-green-600 text-white px-6 py-2 rounded-lg">Tambah</button>
+            </div>
+        </template>
     </section>
 
     {{-- Struktur Pemerintahan --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50">
+    <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{
+        search: '',
+        filterRole: '',
+        filterStatus: '',
+        email: '',
+        showPassword: false,
+        showPassword2: false,
+        showAddModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
+        showDetailModal: false,
+        selectedStrukturPemerintahan: null,
+        strukturPemerintahan: @js($strukturPemerintahanJs),
+        get filteredStrukturPemerintahan() {
+            return this.strukturPemerintahan.filter(item => {
+                const matchesSearch = `${item.id}`.toLowerCase().includes(this.search.toLowerCase());
+                const matchesRole = this.filterRole === '' || item.role === this.filterRole;
+                const matchesStatus = this.filterStatus === '' || item.status_verifikasi === this.filterStatus;
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+        }
+    }">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
+        <div class="md:col-span-4 bg-white p-5 rounded-2xl shadow mt-4">
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {{-- container header --}}
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+                {{-- LEFT SECTION: Search, Filter, Clear --}}
+                <div class="flex flex-wrap items-center gap-2">
+                    {{-- SEARCH FORM --}}
+                    <form method="GET" class="relative w-full md:w-80">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
+                            {{-- Search Icon --}}
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-width="2"
+                                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </span>
+                        <input type="text" name="search" placeholder="Cari Layanan..."
+                            value="{{ request('search') }}"
+                            class="pl-10 pr-24 py-2 w-full rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+                            @keydown.enter="$event.target.form.submit()">
+                        <x-button type="submit"
+                            class="absolute right-1 top-1 bottom-1 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
+                            Cari
+                        </x-button>
+                    </form>
 
-            {{-- Data Perangkat Desa --}}
-            @php
-                $perangkat = [
-                    [
-                        'nama' => 'Ahmad Zulkarnain',
-                        'jabatan' => 'Kepala Desa',
-                        'foto' =>
-                            'https://perpustakaan.widyatama.ac.id/wp-content/uploads/2020/07/foto-formal-compres-scaled.jpg',
-                        'detail' => 'Menjabat sejak 2020, fokus pada pembangunan infrastruktur desa.',
-                    ],
-                    [
-                        'nama' => 'Siti Maemunah',
-                        'jabatan' => 'Sekretaris Desa',
-                        'foto' => 'https://i.pinimg.com/736x/88/f7/31/88f7318c8cb5f88bfc30a02ea0963a6b.jpg',
-                        'detail' => 'Mengelola administrasi desa dan koordinasi surat menyurat.',
-                    ],
-                    [
-                        'nama' => 'Rahmat Hidayat',
-                        'jabatan' => 'Bendahara Desa',
-                        'foto' => 'https://i.pinimg.com/originals/79/60/24/79602435883656852374940fb74baac4.jpg',
-                        'detail' => 'Bertanggung jawab atas keuangan dan laporan dana desa.',
-                    ],
-                    [
-                        'nama' => 'Nurul Aini',
-                        'jabatan' => 'Kasi Pelayanan',
-                        'foto' => 'https://i.pinimg.com/736x/88/f7/31/88f7318c8cb5f88bfc30a02ea0963a6b.jpg',
-                        'detail' => 'Melayani administrasi warga seperti surat pengantar, SKTM, dsb.',
-                    ],
-                    [
-                        'nama' => 'Budi Santoso',
-                        'jabatan' => 'Kaur Umum',
-                        'foto' =>
-                            'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
-                        'detail' => 'Mengurus keperluan umum desa dan inventarisasi aset.',
-                    ],
-                    [
-                        'nama' => 'Dewi Lestari',
-                        'jabatan' => 'Kaur Perencanaan',
-                        'foto' =>
-                            'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
-                        'detail' => 'Membantu penyusunan program kerja dan anggaran desa.',
-                    ],
-                ];
-            @endphp
+                    {{-- TOMBOL CLEAR FILTER (hanya muncul kalau filter aktif) --}}
+                    @if (request()->has('search') || request()->has('role') || request()->has('status'))
+                        <a href="{{ url()->current() }}"
+                            class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-400 text-gray-600 rounded-full">
+                            Tampilkan Semua
+                        </a>
+                    @endif
+                </div>
 
-            {{-- Loop Perangkat --}}
-            @foreach ($perangkat as $p)
-                <div x-data="{ open: false }"
-                    class="bg-white rounded-lg shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
-                    @click="open = true">
-                    <div class="w-32 h-32 mb-4">
-                        <img src="{{ $p['foto'] }}" alt="{{ $p['nama'] }}"
-                            class="w-full h-full object-cover rounded-full border-2 border-green-500">
+                {{-- RIGHT SECTION: Tambah Layanan --}}
+                <div>
+                    <x-button @click="selectedLayanan = null; showAddModal = true">
+                        {{-- Plus Icon --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span>Tambah Layanan Baru</span>
+                    </x-button>
+                </div>
+            </div>
+
+            {{-- layanan - card version --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 rounded-xl">
+
+                <!-- Jika tidak ada data -->
+                <template x-if="filteredStrukturPemerintahan.length === 0">
+                    <div class="col-span-full text-center text-gray-500 py-6">
+                        Data Pegawai tidak ditemukan.
                     </div>
-                    <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p['nama'] }}</h3>
-                    <p class="text-gray-600 text-sm">{{ $p['jabatan'] }}</p>
+                </template>
 
-                    {{-- Modal --}}
-                    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                        x-show="open" x-transition @click.away="open = false">
-                        <div class="bg-white rounded-xl shadow-lg p-6 w-11/12 max-w-md" @click.stop>
-                            <div class="flex justify-between items-center mb-4">
-                                <h4 class="text-xl font-semibold text-green-600">{{ $p['nama'] }}</h4>
-                                <button @click="open = false"
-                                    class="text-gray-400 hover:text-gray-600">&times;</button>
-                            </div>
-                            <img src="{{ $p['foto'] }}" alt="{{ $p['nama'] }}"
-                                class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-2 border-green-500">
-                            <p class="text-gray-700 mb-2 font-semibold">{{ $p['jabatan'] }}</p>
-                            <p class="text-gray-600 text-sm">{{ $p['detail'] }}</p>
-                            <button @click="open = false"
-                                class="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">Tutup</button>
+                <!-- Card binding alpine -->
+                <template x-for="item in filteredstrukturPemerintahan" :key="item.id">
+                    <div
+                        class="bg-white rounded-2xl hover:shadow-lg transition-all border border-black/10 p-6 flex flex-col justify-between h-full">
+                        <div class="flex-grow">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2" x-text="item.nama">
+                            </h3>
+                            <p class="text-gray-600 text-sm leading-relaxed"
+                                x-text="item.deskripsi || 'Deskripsi tidak tersedia.'"></p>
+                        </div>
+                        <div class="mt-4">
+                            <x-button variant="primary" @click="selectedStrukturPemerintahan = item; showDetailModal = true">
+                                Detail
+                            </x-button>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                </template>
+            </div>
 
-        </div>
-    </section>
-
-    {{-- Dasar Hukum --}}
-    <section class="py-16 px-6 md:px-16 bg-white">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Dasar Hukum</h2>
-        <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify mb-4">
-            Peraturan Desa Kambat Utara berdasarkan keputusan rapat desa dan peraturan daerah yang berlaku.
-            Untuk informasi lebih lanjut, Anda dapat mengunduh dokumen peraturan desa di bawah ini.
-        </p>
-        <div class="flex justify-center">
-            <a href="link-ke-peraturan-desa.pdf"
-                class="inline-block bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition">Unduh
-                Peraturan Desa</a>
-        </div>
-    </section>
-
-    {{-- Tujuan Penyusunan Website --}}
-    <section class="py-16 px-6 md:px-16">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Tujuan Penyusunan Website</h2>
-        <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify">
-            Website ini dibangun untuk memberikan akses informasi yang lebih mudah dan transparan mengenai kegiatan
-            dan program pembangunan di Desa Kambat Utara. Tujuan utamanya adalah untuk mempermudah komunikasi antara
-            pemerintahan desa dan warga, serta mempromosikan potensi desa ke dunia luar.
-        </p>
-    </section>
-
-    {{-- Data Kependudukan --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Kependudukan</h2>
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white shadow-lg rounded-lg">
-                <thead class="bg-green-600 text-white">
-                    <tr>
-                        <th class="py-3 px-6 text-left">No</th>
-                        <th class="py-3 px-6 text-left">Deskripsi</th>
-                        <th class="py-3 px-6 text-left">Jumlah</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700">
-                    <tr>
-                        <td class="py-3 px-6">1</td>
-                        <td class="py-3 px-6">Jumlah Penduduk</td>
-                        <td class="py-3 px-6">1,872</td>
-                    </tr>
-                    <tr>
-                        <td class="py-3 px-6">2</td>
-                        <td class="py-3 px-6">Jumlah Kepala Keluarga</td>
-                        <td class="py-3 px-6">450</td>
-                    </tr>
-                    <tr>
-                        <td class="py-3 px-6">3</td>
-                        <td class="py-3 px-6">Distribusi Gender</td>
-                        <td class="py-3 px-6">Laki-laki: 900, Perempuan: 972</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    {{-- Strategi dan Arah Kebijakan Desa --}}
-    <section class="py-16 px-6 md:px-16">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Strategi dan Arah Kebijakan Desa</h2>
-        <div class="space-y-6 max-w-3xl mx-auto text-justify">
-            <p class="text-gray-700">
-                Strategi kebijakan desa mencakup peningkatan kualitas pendidikan, kesehatan, dan ekonomi lokal
-                melalui
-                penguatan infrastruktur dan pemberdayaan masyarakat. Kami juga berfokus pada pelestarian lingkungan
-                dan
-                budaya lokal.
-            </p>
-            <p class="text-gray-700">
-                Arah kebijakan ini bertujuan untuk menciptakan desa yang mandiri, berdaya saing, dan mampu
-                menghadapi
-                tantangan global.
-            </p>
+            {{-- pagination --}}
+            <div class="mt-4">
+                {{ $strukturPemerintahan->links() }}
+            </div>
         </div>
     </section>
 
@@ -374,14 +387,4 @@
             </ul>
         </div>
     </section>
-
-
-    {{-- CTA Kontak --}}
-    {{-- <section class="py-16 px-6 md:px-16 bg-green-600 text-white text-center">
-            <h2 class="text-2xl md:text-3xl font-semibold mb-4">Kunjungi atau Hubungi Kami</h2>
-            <p class="mb-6">Kantor Desa Kambat Utara - Jl. Raya Pandawan KM. 5, Hulu Sungai Tengah</p>
-            <a href="#"
-                class="inline-block bg-white text-green-600 font-semibold px-6 py-3 rounded-full shadow hover:bg-gray-100 transition">Hubungi
-                Sekarang</a>
-        </section> --}}
 </x-admin-layout>

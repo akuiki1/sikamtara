@@ -5,18 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SocialiteController;
+// use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
 use App\Http\Controllers\admin\PendudukController;
-use App\Http\Controllers\Admin\VisiMisiController;
 use App\Http\Controllers\admin\AdminApbdesController;
 use App\Http\Controllers\admin\AdminBeritaController;
 use App\Http\Controllers\admin\AdminDApbdesController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
+use App\Http\Controllers\admin\AdminProfileController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -30,8 +30,8 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-Route::get('/auth/redirect', [SocialiteController::class, 'redirect']);
-Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
+// Route::get('/auth/redirect', [SocialiteController::class, 'redirect']);
+// Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
 
 Route::get('/profil-desa', function () {
     return view('profil.profil-desa', ['title' => 'Profil Desa']);
@@ -107,9 +107,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 
     //halaman admin - akun
-    Route::get('/profil', [UserController::class, 'profileindex'])->name('adminprofile');
-    Route::post('/profil/update/{id}', [UserController::class, 'profileupdate'])->name('adminprofile.update');
-    
+    Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+
     Route::get('/akun-warga', [UserController::class, 'index'])->name('user.index');
     Route::post('/akun-warga', [UserController::class, 'store'])->name('user.store');
     Route::post('/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
