@@ -100,7 +100,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('/berita/{id}', [AdminBeritaController::class, 'update'])->name('adminberita.update');
     Route::delete('/berita/{id}', [AdminBeritaController::class, 'destroy'])->name('adminberita.destroy');
 
-    Route::get('/pengumuman', [AdminPengumumanController::class, 'index'])->name('pengumuman.index');
+    Route::get('/pengumuman', [AdminPengumumanController::class, 'index'])->name('adminpengumuman.index');
     Route::post('/pengumuman', [AdminPengumumanController::class, 'store'])->name('pengumuman.store');
     Route::put('/pengumuman/{id}', [AdminPengumumanController::class, 'update'])->name('pengumuman.update');
     Route::delete('/pengumuman/{id}', [AdminPengumumanController::class, 'destroy'])->name('pengumuman.destroy');
@@ -131,7 +131,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
     Route::delete('/apbdes/delete/{id}', [AdminApbdesController::class, 'destroy'])->name('adminapbdes.destroy');
     
-    Route::get('/detail-apbdes', [AdminDApbdesController::class, 'index'])->name('detail-apbdes');
+    Route::get('/detail-apbdes', [AdminDApbdesController::class, 'index'])->name('admindapbdes.index');
     Route::post('/detail-apbdes', [AdminDApbdesController::class, 'store'])->name('admindapbdes.store');
     Route::post('/detail-apbdes/update/{id}', [AdminDApbdesController::class, 'update'])->name('admindapbdes.update');
     Route::delete('/detail-apbdes/delete/{id}', [AdminDApbdesController::class, 'destroy'])->name('admindapbdes.destroy');

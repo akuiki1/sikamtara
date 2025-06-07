@@ -19,7 +19,11 @@
     <nav class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium">
 
         <!-- Beranda -->
-        <a href="dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">
+        <a href="{{ route('dashboard.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all
+          hover:bg-gray-100
+          {{ request()->routeIs('dashboard.index') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-house-icon lucide-house">
@@ -30,25 +34,26 @@
 
             <span x-show="!collapsed" class="transition-opacity duration-200">Beranda</span>
         </a>
-        
+
         <!-- Profil Desa -->
-        <a href="/admin/profil-desa" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark">
-                        <line x1="3" x2="21" y1="22" y2="22" />
-                        <line x1="6" x2="6" y1="18" y2="11" />
-                        <line x1="10" x2="10" y1="18" y2="11" />
-                        <line x1="14" x2="14" y1="18" y2="11" />
-                        <line x1="18" x2="18" y1="18" y2="11" />
-                        <polygon points="12 2 20 7 4 7" />
-                    </svg>
+        <a href="{{ route('profildesa.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('profildesa.index') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-landmark-icon lucide-landmark">
+                <line x1="3" x2="21" y1="22" y2="22" />
+                <line x1="6" x2="6" y1="18" y2="11" />
+                <line x1="10" x2="10" y1="18" y2="11" />
+                <line x1="14" x2="14" y1="18" y2="11" />
+                <line x1="18" x2="18" y1="18" y2="11" />
+                <polygon points="12 2 20 7 4 7" />
+            </svg>
 
             <span x-show="!collapsed" class="transition-opacity duration-200">Profil Desa</span>
         </a>
 
         <!-- Layanan -->
-        <div x-data="{ open: false }">
+        <div x-data="{ open: {{ request()->routeIs('adminadministrasi.*') || request()->is('admin/layanan/pengaduan') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -69,8 +74,11 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/layanan/administrasi"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('adminadministrasi.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg transition-all
+          hover:bg-gray-100
+          {{ request()->routeIs('adminadministrasi.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-file-plus2-icon lucide-file-plus-2">
@@ -97,7 +105,7 @@
         </div>
 
         <!-- Berita & Pengumuman -->
-        <div x-data="{ open: false }">
+        <div x-data="{ open: {{ request()->routeIs('adminberita.*') || request()->routeIs('adminpengumuman.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -120,8 +128,8 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/berita"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('adminberita.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminberita.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-newspaper-icon lucide-newspaper">
@@ -133,8 +141,8 @@
                     </svg>
                     <span>Berita Desa</span>
                 </a>
-                <a href="/admin/pengumuman"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('adminpengumuman.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminpengumuman.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone">
@@ -147,7 +155,7 @@
         </div>
 
         <!-- Kelola Akun -->
-        <div x-data="{ open: false }">
+        <div x-data="{ open: {{ request()->routeIs('profile.*') || request()->routeIs('user.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -176,8 +184,8 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/profile/edit"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('profile.edit') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('profile.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-user-round-cog-icon lucide-user-round-cog">
@@ -195,8 +203,8 @@
                     </svg>
                     <span>Profil</span>
                 </a>
-                <a href="/admin/akun-warga"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('user.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('user.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-user-round-pen-icon lucide-user-round-pen">
@@ -212,7 +220,7 @@
         </div>
 
         <!-- Kependudukan -->
-        <div x-data="{ open: false }">
+        <div x-data="{ open: {{ request()->routeIs('keluarga.*') || request()->routeIs('penduduk.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -231,8 +239,8 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/keluarga"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('keluarga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('keluarga.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-users-round-icon lucide-users-round">
@@ -244,8 +252,8 @@
 
 
                 </a>
-                <a href="/admin/penduduk"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                <a href="{{ route('penduduk.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('penduduk.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round">
@@ -258,7 +266,7 @@
         </div>
 
         <!-- APBDes -->
-        <div x-data="{ open: false }">
+       <div x-data="{ open: {{ request()->routeIs('adminapbdes.*') || request()->routeIs('admindapbdes.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -277,9 +285,9 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
-                <a href="/admin/apbdes"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                <a href="{{ route('adminapbdes.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                             d="M5.5 21h13M12 21V7m0 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2-1.8c3.073.661 2.467 2.8 5 2.8M5 8c3.359 0 2.192-2.115 5.012-2.793M7 9.556V7.75m0 1.806-1.95 4.393a.773.773 0 0 0 .37.962.785.785 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.776.776 0 0 0 .09-.716L7 9.556Zm10 0V7.313m0 2.243-1.95 4.393a.773.773 0 0 0 .37.962.786.786 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.775.775 0 0 0 .09-.716L17 9.556Z" />
@@ -289,9 +297,9 @@
 
 
                 </a>
-                <a href="/admin/detail-apbdes"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
-                    <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                <a href="{{ route('admindapbdes.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('admindapbdes.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"
                             d="M16.5 15v1.5m0 0V18m0-1.5H15m1.5 0H18M3 9V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3M3 9v6a1 1 0 0 0 1 1h5M3 9h16m0 0v1M6 12h3m12 4.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
@@ -306,7 +314,7 @@
     <!-- LogOut -->
     <div class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium text-center border-t">
         <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
-            <form action="/logout" method="POST">
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
