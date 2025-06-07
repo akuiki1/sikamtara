@@ -81,6 +81,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('/profil-desa', [AdminProfilDesaController::class, 'index'])->name('profildesa.index');
     Route::put('/profil/sejarah', [AdminProfilDesaController::class, 'updateSejarah'])->name('sejarah.update');
+    Route::put('/profil/visimisi', [AdminProfilDesaController::class, 'updateSejarah'])->name('visimisi.update');
 
     // halaman kelola layanan admin
     Route::get('/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');
@@ -114,7 +115,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/akun-warga/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('/penduduk', [PendudukController::class, 'index']);
+    Route::get('/penduduk', [PendudukController::class, 'index'])->name('penduduk.index');
+    Route::post('/penduduk', [PendudukController::class, 'store'])->name('penduduk.store');
     Route::put('/penduduk/{nik}', [PendudukController::class, 'update'])->name('penduduk.update');
     Route::delete('/penduduk/{nik}', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
 

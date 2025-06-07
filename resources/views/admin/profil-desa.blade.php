@@ -1,5 +1,6 @@
 <x-admin-layout>
     <x-slot:title>Profil Desa</x-slot:title>
+
     {{-- Sejarah Desa --}}
     <section x-data="{
         editing: false,
@@ -41,11 +42,9 @@
             <div x-show="!sejarah && !editing" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
                 x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
-                x-transition:leave-end="opacity-0 scale-95" class="bg-white rounded-lg p-6 text-center">
+                x-transition:leave-end="opacity-0 scale-95" class="rounded-lg p-6 text-center">
 
-                <h3 class="text-xl font-semibold mb-2">Belum ada sejarah desa</h3>
-                <p class="text-gray-700 mb-4">Tambahkan informasi penting tentang sejarah desa untuk generasi sekarang
-                    dan mendatang.</p>
+                <p class="text-gray-700 mb-4">Belum ada sejarah desa</p>
                 <x-button @click="editing = true">
                     Tambahkan sejarah
                 </x-button>
@@ -69,8 +68,7 @@
                 placeholder="Tulis sejarah desa di sini..."></textarea>
 
             <div class="flex justify-end space-x-4">
-                <x-button type="button" @click="editing = false; editedSejarah = sejarah"
-                    variant="secondary">
+                <x-button type="button" @click="editing = false; editedSejarah = sejarah" variant="secondary">
                     Batal
                 </x-button>
                 <x-button type="submit" @click="sejarah = editedSejarah; editing = false">
@@ -80,28 +78,94 @@
         </form>
     </section>
 
-
-
     {{-- Visi & Misi --}}
-    <section class="py-16 px-6 md:px-16">
+    <section class="py-16 px-6 md:px-16" x-data="{
+        editing: false,
+        visi: @js($visimisi->visi ?? ''),
+        misi: @js($visimisi->misi ?? ''),
+        editedVisi: @js($visimisi->visi ?? ''),
+        editedMisi: @js($visimisi->misi ?? '')
+    }">
+
+        @if (session('success'))
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
+                class="relative bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
+                role="alert">
+                <strong class="font-semibold">Sukses!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+                <button @click="show = false"
+                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-green-700 hover:text-green-900">
+                    &times;
+                </button>
+            </div>
+        @endif
+        @error('visimisi')
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
+                class="relative bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
+                role="alert">
+                <strong class="font-semibold">Gagal!</strong>
+                <span class="block sm:inline">Sejarah tidak boleh kosong!</span>
+                <button @click="show = false"
+                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-red-700 hover:text-red-900">
+                    &times;
+                </button>
+            </div>
+        @enderror
+
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Visi & Misi</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
-                <p class="text-gray-700">Menjadi desa mandiri, berdaya saing, dan sejahtera melalui pembangunan
-                    berbasis partisipasi masyarakat dan potensi lokal.</p>
+
+        @if ($visimisi)
+            <div class="grid md:grid-cols-2 gap-8" x-show="!editing">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
+                    <p class="text-gray-700"></p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        @foreach (explode("\n", $visimisi->misi) as $misiItem)
+                            <li>{{ $misiItem }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
-            <div class="bg-white rounded-lg shadow p-6">
-                <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-2">
-                    <li>Mengembangkan potensi ekonomi lokal</li>
-                    <li>Meningkatkan kualitas pendidikan dan kesehatan</li>
-                    <li>Mendorong partisipasi aktif masyarakat</li>
-                    <li>Menjaga kelestarian lingkungan dan budaya lokal</li>
-                </ul>
+        @else
+            <div class="text-center">
+                <p class="text-gray-700 mb-4">Belum ada visi-misi</p>
+                <div class="flex justify-center mb-6">
+                    <button @click="editing = true"
+                        class="bg-green-600 text-white text-sm px-6 py-2 rounded-full hover:bg-green-700">
+                        Tambah Visi & Misi
+                    </button>
+                </div>
             </div>
-        </div>
+        @endif
+
+        @if (!$visimisi)
+            <form action="{{ route('visimisi.update') }}" method="POST"
+                class="max-w-3xl mx-auto bg-white rounded-lg shadow p-6 space-y-4" x-show="editing">
+                @csrf
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Visi</label>
+                    <textarea name="visi" rows="3" class="w-full border rounded p-2" required></textarea>
+                </div>
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-1">Misi (Pisahkan dengan Enter)</label>
+                    <textarea name="misi" rows="5" class="w-full border rounded p-2" required></textarea>
+                </div>
+                <div class="flex justify-end gap-4">
+                    <button type="button" @click="editing = false"
+                        class="px-4 py-2 rounded-full border text-gray-600 hover:bg-gray-100">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        @endif
     </section>
+
 
     {{-- Data Wilayah --}}
     <section class="py-16 px-6 md:px-16 bg-gray-50">

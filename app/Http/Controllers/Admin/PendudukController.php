@@ -76,21 +76,21 @@ class PendudukController extends Controller
         try {
             $validated = $request->validate([
                 'nik' => 'required|numeric|unique:penduduk,nik',
-                'nama' => 'required|string|max:255',
-                'jenis_kelamin' => 'required|in:L,P',
-                'tempat_lahir' => 'required|string|max:255',
-                'tanggal_lahir' => 'required|date',
-                'agama' => 'nullable|string|max:100',
+                'nama' => 'nullable|string|max:255',
+                'jenis_kelamin' => 'nullable|in:L,P',
+                'tempat_lahir' => 'nullable|string|max:100',
+                'tanggal_lahir' => 'nullable|date',
+                'agama' => 'nullable|string|max:50',
                 'pendidikan' => 'nullable|string|max:100',
                 'pekerjaan' => 'nullable|string|max:100',
                 'status_perkawinan' => 'nullable|string|max:50',
                 'golongan_darah' => 'nullable|string|max:10',
                 'kewarganegaraan' => 'nullable|string|max:100',
-                'kode_keluarga' => 'nullable|string|max:50',
                 'hubungan' => 'nullable|string|max:50',
-                'alamat' => 'nullable|string|max:255',
+                'kode_keluarga' => 'required|string|size:16',
                 'rt' => 'nullable|string|max:10',
                 'rw' => 'nullable|string|max:10',
+                'alamat' => 'nullable|string|max:255',
                 'status_tinggal' => 'nullable|string|max:50',
             ]);
 

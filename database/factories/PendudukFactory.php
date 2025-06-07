@@ -18,7 +18,7 @@ class PendudukFactory extends Factory
     public function definition(): array
     {
         return [
-            'nik' => $this->faker->unique()->numerify('###############'), // 16 digit
+            'nik' => $this->faker->unique()->numerify('################'), // 16 digit
             'nama' => $this->faker->name(),
             'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
             'tempat_lahir' => $this->faker->city(),

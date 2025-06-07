@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Models\Sejarah;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Visimisi;
 
 class AdminProfilDesaController extends Controller
 {
@@ -13,10 +14,12 @@ class AdminProfilDesaController extends Controller
      */
     public function index()
     {
-        $sejarah = Sejarah::first(); // tanpa new Sejarah
+        $sejarah = Sejarah::first();
+        $visimisi = Visimisi::first();
 
         return view('admin.profil-desa', [
             'sejarah' => $sejarah,
+            'visimisi' => $visimisi,
         ]);
     }
 
@@ -42,6 +45,36 @@ class AdminProfilDesaController extends Controller
                 Sejarah::create([
                     'sejarah' => $request->sejarah,
                     'foto' => $request->foto ?? '',
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Sejarah desa berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('failed', 'Gagal memperbarui sejarah: ' . $e->getMessage());
+        }
+    }
+
+    public function updateVisimisi(Request $request)
+    {
+        $request->validate([
+            'visi' => 'required|text',
+            'misi' => 'required|text',
+        ]);
+
+        try {
+            // Ambil entri pertama
+            $visimisi = Visimisi::first();
+
+            if ($visimisi) {
+                $visimisi->update([
+                    'visi' => $request->visi,
+                    'misi' => $request->misi ?? '',
+                ]);
+            } else {
+                // Kalau belum ada, baru buat
+                Visimisi::create([
+                    'visi' => $request->visi,
+                    'misi' => $request->misi ?? '',
                 ]);
             }
 

@@ -126,7 +126,7 @@
         <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
             showSuccess = false;
             showError = false
-        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
+        }, 8000)" class="fixed top-5 right-5 z-50 space-y-2">
 
             <!-- Berhasil -->
             <div x-show="showSuccess" x-transition
