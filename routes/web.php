@@ -52,15 +52,10 @@ Route::get('/informasi/kependudukan', function () {
     return view('user.penduduk', ['title' => 'Informasi Penduduk']);
 });
 
-// Route::get('/informasi/apbdes', function () {
-//     return view('informasi.keuangan.keuangan', ['title' => 'Informasi Keuangan']);
-// });
-
 Route::get('/informasi/apbdes', function () {
     $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
     return redirect("/informasi/apbdes/{$tahunTerbaru}");
 });
-
 
 Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
 Route::get('/administrasi/ajukan/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');

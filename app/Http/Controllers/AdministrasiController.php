@@ -2,32 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use App\Models\Administrasi;
 use Illuminate\Http\Request;
+use App\Models\PengajuanAdministrasi;
 
 class AdministrasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = [
-            [
-                'id' => 1,
-                'title' => 'Pembuatan KTP',
-                'short_description' => 'Layanan pembuatan KTP untuk warga desa.',
-                'full_description' => 'Dokumen yang diperlukan: fotokopi KK, akta kelahiran, dan surat pengantar RT/RW.',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Pembuatan Surat Domisili',
-                'short_description' => 'Surat keterangan domisili untuk keperluan administrasi.',
-                'full_description' => 'Dokumen yang diperlukan: fotokopi KK dan KTP, serta surat permohonan.',
-            ],
-            // Tambahkan layanan lain di sini
-        ];
+        $query = Administrasi::with('user');
 
-        // Kalau kamu juga punya data history pengajuan user
-        $submissions = []; // kosongkan dulu atau ambil dari database kalau sudah ada
+        if ($request->has('search')) {
+            $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
+        }
 
-        return view('user.administrasi', compact('services', 'submissions'));
+
+        // Filter berdasarkan role
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Pagination dengan query string tetap
+        $administrasi = $query->paginate(8)->appends($request->query());
+
+        // Data untuk JavaScript (Alpine)
+        $transformed = collect($administrasi->items())->map(function ($item) {
+            return [
+                'id_administrasi'         => $item->id_administrasi,
+                'nama_administrasi'      => $item->nama_administrasi,
+                'deskripsi'        => \Illuminate\Support\Str::limit($item->deskripsi, 100),
+                'deskripsi_full'        => $item->deskripsi,
+                'persyaratan'        => $item->persyaratan,
+                'form'      => $item->form,
+                'name_form' => Str::limit(Str::after(basename($item->form), '_'), 35),
+                'name_form_edit' => Str::limit(Str::after(basename($item->form), '_'), 25),
+            ];
+        });
+
+        // $penulis = User::select('id_user')->get();
+
+        $jumlahLayanan = PengajuanAdministrasi::count();
+        $jumlahMasuk = PengajuanAdministrasi::whereIn('status_pengajuan', ['baru', 'ditinjau'])->count();
+        $jumlahSiapTtd = PengajuanAdministrasi::where('status_pengajuan', 'diproses')->count();
+        $jumlahSelesaiTahunIni = PengajuanAdministrasi::where('status_pengajuan', 'selesai')
+            ->whereYear('tanggal_pengajuan', Carbon::now()->year)
+            ->count();
+
+        return view('user.administrasi', [
+            'administrasi'      => $administrasi,
+            'administrasiJs'    => $transformed,
+            'search'    => $request->search,
+            'filter'    => $request->filter,
+            // 'penulis'   => $penulis,
+            'role'      => $request->role,
+            'status'    => $request->status,
+            'jumlahLayanan' => $jumlahLayanan,
+            'jumlahMasuk' => $jumlahMasuk,
+            'jumlahSiapTtd' => $jumlahSiapTtd,
+            'jumlahSelesaiTahunIni' => $jumlahSelesaiTahunIni,
+
+        ]);
     }
 
     public function apply($id)

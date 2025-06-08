@@ -1,7 +1,15 @@
-<nav x-data="{ mobileMenuOpen: false, scrolled: false }" x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })"
-    :class="scrolled ? 'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900' :
-        'bg-transparent text-white'"
+<nav x-data="{
+    mobileMenuOpen: false,
+    scrolled: false,
+    onBeranda: window.location.pathname === '/',
+}" x-init="window.addEventListener('scroll', () => {
+    scrolled = window.scrollY > 50;
+});"
+    :class="(onBeranda && !scrolled) ?
+    'bg-transparent text-white' :
+    'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900'"
     class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out px-6 py-3">
+
 
     <div class="flex justify-between items-center">
         <!-- Logo -->
