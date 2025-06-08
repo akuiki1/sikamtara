@@ -34,22 +34,22 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 // Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
 
 Route::get('/profil-desa', function () {
-    return view('profil.profil-desa', ['title' => 'Profil Desa']);
+    return view('user.profil-desa', ['title' => 'Profil Desa']);
 });
 
 Route::get('/informasi/pengumuman', function () {
-    return view('informasi.pengumuman.pengumuman', ['title' => 'pengumuman']);
+    return view('user.pengumuman', ['title' => 'pengumuman']);
 });
 
 Route::get('/informasi/berita', [BeritaController::class, 'index']);
 
 
 Route::get('informasi/berita/detail', function () {
-    return view('informasi.berita.detailberita', ['title' => 'Detail Berita']);
+    return view('user.detailberita', ['title' => 'Detail Berita']);
 });
 
 Route::get('/informasi/kependudukan', function () {
-    return view('informasi.penduduk.penduduk', ['title' => 'Informasi Penduduk']);
+    return view('user.penduduk', ['title' => 'Informasi Penduduk']);
 });
 
 // Route::get('/informasi/apbdes', function () {
@@ -66,11 +66,11 @@ Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->n
 Route::get('/administrasi/ajukan/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
 
 Route::get('/layanan/pengaduan', function () {
-    return view('layanan.pengaduan.pengaduan', ['title' => 'Pengaduan']);
+    return view('user.pengaduan', ['title' => 'Pengaduan']);
 });
 
 Route::get('/keuangan', function () {
-    return view('informasi.keuangan.keuangan', ['title' => 'Informasi Keuangan']);
+    return view('user.keuangan', ['title' => 'Informasi Keuangan']);
 });
 
 

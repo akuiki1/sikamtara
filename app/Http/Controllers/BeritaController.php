@@ -14,6 +14,6 @@ class BeritaController extends Controller
             ->take(6)
             ->get();
 
-        return view('informasi.berita.berita', compact('berita'));
+        return view('user.berita', compact('berita'));
     }
 }

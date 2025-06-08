@@ -27,7 +27,7 @@ class AdministrasiController extends Controller
         // Kalau kamu juga punya data history pengajuan user
         $submissions = []; // kosongkan dulu atau ambil dari database kalau sudah ada
 
-        return view('layanan.administrasi.administrasi', compact('services', 'submissions'));
+        return view('user.administrasi', compact('services', 'submissions'));
     }
 
     public function apply($id)
