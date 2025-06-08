@@ -18,6 +18,10 @@ class AdministrasiController extends Controller
             $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->has('search.riwayat')) {
+            $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
+        }
+
 
         // Filter berdasarkan role
         if ($request->filled('status')) {

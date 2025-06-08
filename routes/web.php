@@ -7,16 +7,17 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 // use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
 use App\Http\Controllers\admin\PendudukController;
 use App\Http\Controllers\admin\AdminApbdesController;
 use App\Http\Controllers\admin\AdminBeritaController;
 use App\Http\Controllers\admin\AdminDApbdesController;
-use App\Http\Controllers\Admin\AdminPengumumanController;
-use App\Http\Controllers\admin\AdminAdministrasiController;
-use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminProfileController;
+use App\Http\Controllers\Admin\AdminPengumumanController;
+use App\Http\Controllers\admin\AdminProfilDesaController;
+use App\Http\Controllers\admin\AdminAdministrasiController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -52,16 +53,26 @@ Route::get('/informasi/kependudukan', function () {
     return view('user.penduduk', ['title' => 'Informasi Penduduk']);
 });
 
+// Route::get('/informasi/apbdes', function () {
+//     $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
+//     return redirect("/informasi/apbdes/{$tahunTerbaru}");
+// });
+
 Route::get('/informasi/apbdes', function () {
-    $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
-    return redirect("/informasi/apbdes/{$tahunTerbaru}");
+    // $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
+    return redirect("/informasi/apbdes");
 });
 
-Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
-Route::get('/administrasi/ajukan/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
+Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
+    Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
+    Route::get('/administrasi/ajukan/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
 
-Route::get('/layanan/pengaduan', function () {
-    return view('user.pengaduan', ['title' => 'Pengaduan']);
+    Route::get('/layanan/pengaduan', function () {
+        return view('user.pengaduan', ['title' => 'Pengaduan']);
+    });
+
+    Route::get('profile/edit', [UserProfileController::class, 'edit'])->name('profil.edit');
+    Route::post('profile/update', [UserProfileController::class, 'update'])->name('profil.update');
 });
 
 Route::get('/keuangan', function () {
@@ -125,10 +136,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');
     Route::post('/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
     Route::delete('/apbdes/delete/{id}', [AdminApbdesController::class, 'destroy'])->name('adminapbdes.destroy');
-    
+
     Route::get('/detail-apbdes', [AdminDApbdesController::class, 'index'])->name('admindapbdes.index');
     Route::post('/detail-apbdes', [AdminDApbdesController::class, 'store'])->name('admindapbdes.store');
     Route::post('/detail-apbdes/update/{id}', [AdminDApbdesController::class, 'update'])->name('admindapbdes.update');
     Route::delete('/detail-apbdes/delete/{id}', [AdminDApbdesController::class, 'destroy'])->name('admindapbdes.destroy');
-    
 });

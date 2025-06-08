@@ -26,7 +26,7 @@
             <x-nav-link href="/profil-desa" :active="request()->is('profil-desa')">PROFIL DESA</x-nav-link>
 
             <x-nav-link :dropdown="true" :active="request()->is('layanan/*')" label="LAYANAN ONLINE" :items="[
-                ['label' => 'Administrasi', 'href' => '/layanan/administrasi'],
+                ['label' => 'Administrasi', 'href' => route('administrasi')],
                 ['label' => 'Pengaduan', 'href' => '/layanan/pengaduan'],
             ]" />
 
@@ -44,30 +44,39 @@
                 <!-- Tombol Avatar/Profile -->
                 <button @click="open = !open" @click.away="open = false"
                     class="flex items-center space-x-2 px-3 py-2 rounded-lg shadow text-white focus:outline-none hover:shadow">
-                    <img src="{{ Auth::user()->foto }}" class="w-8 h-8 rounded-full">
+                    <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                        class="w-8 h-8 rounded-full object-cover" alt="Foto Profil">
                     <span class="font-medium">{{ Auth::user()->username }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-chevron-up-icon lucide-chevron-up transition-transform duration-300"
-                        :class="{ '-rotate-180': open }">
+                        class="lucide lucide-chevron-up transition-transform duration-300" :class="{ '-rotate-180': open }">
                         <path d="m18 15-6-6-6 6" />
                     </svg>
                 </button>
 
-
                 <!-- Dropdown Menu -->
                 <div x-show="open" x-transition
-                    class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                    <!-- Edit Profil -->
-                    <a href="/profile/edit" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                    class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4">
+
+                    <!-- Profil Detail -->
+                    <div class="flex flex-col items-center border-b border-gray-200 pb-4 mb-4">
+                        <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                            class="w-20 h-20 rounded-full object-cover mb-3" alt="Foto Profil Besar">
+                        <h3 class="text-lg font-semibold">{{ Auth::user()->username }}</h3>
+                        <p class="text-sm text-gray-600 truncate max-w-full">{{ Auth::user()->email }}</p>
+                    </div>
+
+                    <!-- Tombol Edit Profil -->
+                    <a href="{{ route('profil.edit') }}"
+                        class="block w-full text-center bg-blue-600 text-white font-semibold py-2 rounded-full hover:bg-blue-700 hover:scale-105 transition">
                         Edit Profil
                     </a>
 
                     <!-- Logout -->
-                    <form method="POST" action="/logout">
+                    <form method="POST" action="/logout" class="mt-3">
                         @csrf
                         <button type="submit"
-                            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 hover:text-red-800">
+                            class="w-full text-center text-red-600 border border-red-600 font-semibold py-2 rounded-full hover:bg-red-600 hover:text-white hover:scale-105 transition">
                             Logout
                         </button>
                     </form>
@@ -77,11 +86,12 @@
             <!-- Login Button -->
             <form method="GET" action="/login" class="hidden md:block">
                 <x-button variant="warning" size="lg"
-                    class="bg-yellow-300 hover:bg-yellow-400 text-black font-semibold px-4 py-2 shadow-lg">
+                    class="bg-yellow-300 hover:bg-yellow-400 text-black font-semibold px-4 py-2 shadow-lg hover:scale-105">
                     Login
                 </x-button>
             </form>
         @endauth
+
 
 
         <!-- Mobile Toggle -->
@@ -102,7 +112,7 @@
         class="md:hidden mt-4 bg-white/90 text-black font-semibold space-y-4 py-4 px-4 rounded shadow">
         <a href="/" class="block hover:text-yellow-500 transition">Beranda</a>
         <a href="/profil-desa" class="block hover:text-yellow-500 transition">Profil Desa</a>
-        <a href="/layanan/administrasi" class="block hover:text-yellow-500 transition">Administrasi</a>
+        <a href="{{ route('administrasi') }}" class="block hover:text-yellow-500 transition">Administrasi</a>
         <a href="/layanan/pengaduan" class="block hover:text-yellow-500 transition">Pengaduan</a>
         <a href="/informasi/berita-desa" class="block hover:text-yellow-500 transition">Berita Desa</a>
         <a href="/informasi/apbdes" class="block hover:text-yellow-500 transition">APBDes</a>

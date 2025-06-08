@@ -368,8 +368,8 @@
 
                 {{-- Button --}}
                 <div class="text-center">
-                    <a href="#"
-                        class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
+                    <a href="/informasi/apbdes"
+                        class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -421,7 +421,7 @@
                 <div class="mt-10 text-center">
                     <div class="text-center">
                         <a href="#"
-                            class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-gray-800 to-gray-900 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
+                            class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
                             {{-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
