@@ -236,7 +236,7 @@
         <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
             showSuccess = false;
             showError = false
-        }, 8000)" class="fixed top-5 right-5 z-50 space-y-2">
+        }, 20000)" class="fixed top-5 right-5 z-50 space-y-2">
 
             <!-- Berhasil -->
             <div x-show="showSuccess" x-transition
@@ -328,10 +328,9 @@
         {{-- Modal ajukan sekarang --}}
         <x-modal show="showAddModal">
 
-            <form method="POST" :action="'/admin/layanan/administrasi/' + selectedAdministrasi.id_administrasi"
+            <form method="POST" :action="'/user/layanan/administrasi/' + selectedAdministrasi.id_administrasi"
                 enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
 
                 <!-- Header -->
                 <div class="mb-6 space-y-1">
@@ -416,6 +415,7 @@
                         </div>
                     </div>
 
+                    {{-- File Lampiran --}}
                     <div x-data="{
                         fileName: '',
                         clearFile() {
@@ -430,7 +430,7 @@
                         </label>
 
                         <!-- Input File (Hidden) -->
-                        <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
+                        <input x-ref="fileInput" type="file" name="lampiran" accept=".pdf,.doc,.docx"
                             class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
 
                         <!-- Baris Tombol & Info -->
@@ -484,33 +484,6 @@
                             Ajukan Sekarang
                         </x-button>
                     </div>
-            </form>
-        </x-modal>
-
-
-        <!-- Modal hapus -->
-        <x-modal show="showDeleteModal" title="Hapus Layanan">
-            <div>
-                <p class="mb-4">Apakah Anda yakin ingin menghapus layanan untuk <strong
-                        x-text="selectedAdministrasi.nama_administrasi"></strong> ?
-                </p>
-            </div>
-            <form :action="'/admin/layanan/administrasi/' + selectedAdministrasi.id_administrasi" method="POST">
-                @csrf
-                @method('DELETE')
-
-                <div class="flex justify-center gap-4">
-                    <x-button type="button" @click="showDeleteModal = false; showDetailModal = true"
-                        variant="secondary" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Batal
-                    </x-button>
-                    <x-button variant="danger" type="submit">Hapus</x-button>
-                </div>
             </form>
         </x-modal>
     </section>
@@ -770,7 +743,7 @@
             </div>
             <div class="my-4">
                 <h2 class="mb-1 text-gray-700 ">Form yang dikirim</h2>
-                <a :href="'/storage/' + selectedPengajuanAdministrasi.surat_final" download
+                <a :href="'/storage/' + selectedPengajuanAdministrasi.form" download
                     class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2 hover:scale-105">
                     <!-- Icon Download -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -783,7 +756,7 @@
             </div>
             <div class="">
                 <h2 class="mb-1 text-gray-700 ">Lampiran yang dikirim</h2>
-                <a :href="'/storage/' + selectedPengajuanAdministrasi.surat_final" download
+                <a :href="'/storage/' + selectedPengajuanAdministrasi.lampiran" download
                     class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2 hover:scale-105">
                     <!-- Icon Download -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"

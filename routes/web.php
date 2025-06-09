@@ -65,7 +65,7 @@ Route::get('/informasi/apbdes', function () {
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
-    Route::get('/administrasi/ajukan/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
+    Route::post('layanan/administrasi/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
 
     Route::get('/layanan/pengaduan', function () {
         return view('user.pengaduan', ['title' => 'Pengaduan']);

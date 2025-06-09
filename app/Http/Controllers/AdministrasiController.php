@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Administrasi;
@@ -89,8 +90,8 @@ class AdministrasiController extends Controller
                 'nama_administrasi'   => $item->administrasi->nama_administrasi,
                 'id_user'           => $item->id_user,
                 'tanggal_pengajuan'      => \Carbon\Carbon::parse($item->tanggal_pengajuan)->diffForHumans(),
-                'form'         => $item->form,
-                'lampiran'                => $item->lampiran,
+                'form'         => Str::limit(Str::after(basename($item->form), '_'), 35),
+                'lampiran'         => Str::limit(Str::after(basename($item->lampiran), '_'), 35),
                 'status_pengajuan'           => $item->status_pengajuan,
                 'surat_final'      => $item->surat_final,
                 'updated_at'      => \Carbon\Carbon::parse($item->updated_at)->diffForHumans(),
@@ -124,17 +125,43 @@ class AdministrasiController extends Controller
         ];
     }
 
-    public function apply($id)
+    public function apply(Request $request, $id_administrasi)
     {
-        // Nanti bisa fetch data service dari database berdasarkan ID.
-        // Untuk sementara kita kasih dummy saja.
+        $request->validate([
+            'form' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
 
-        $service = [
-            'id' => $id,
-            'title' => 'Contoh Layanan',
-            'description' => 'Ini halaman untuk mengajukan layanan dengan ID: ' . $id,
-        ];
+        try {
+            $userId = Auth::id();
 
-        return view('layanan.administrasi.apply', compact('service'));
+            // Simpan file
+            if ($request->hasFile('form')) {
+                $formFile = $request->file('form');
+                $formFilename = time() . '_' . $formFile->getClientOriginalName();
+                $formPath = $formFile->storeAs('formulir', $formFilename, 'public');
+            }
+
+            $lampiranPath = null;
+            if ($request->hasFile('lampiran')) {
+                $lampiranFile = $request->file('lampiran');
+                $lampiranFilename = time() . '_' . $lampiranFile->getClientOriginalName();
+                $lampiranPath = $lampiranFile->storeAs('lampiran', $lampiranFilename, 'public');
+            }
+
+            // Simpan ke DB
+            PengajuanAdministrasi::create([
+                'id_user' => $userId,
+                'id_administrasi' => $id_administrasi,
+                'form' => $formPath,
+                'lampiran' => $lampiranPath,
+                'status' => 'diajukan',
+                'tanggal_pengajuan' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'Berhasil membuat pengajuan!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
 }
