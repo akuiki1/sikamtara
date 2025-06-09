@@ -4,7 +4,7 @@
 ])
 
 @php
-$base = 'inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out';
+$base = 'inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105';
 $colors = [
     'primary' => 'bg-indigo-400 hover:bg-indigo-600 text-white',
     'secondary' => 'bg-gray-200 hover:bg-gray-300 text-gray-700',
