@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\PengaduanController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
@@ -67,9 +68,7 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
     Route::post('layanan/administrasi/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
 
-    Route::get('/layanan/pengaduan', function () {
-        return view('user.pengaduan', ['title' => 'Pengaduan']);
-    });
+    Route::get('/layanan/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan');
 
     Route::get('profile/edit', [UserProfileController::class, 'edit'])->name('profil.edit');
     Route::post('profile/update', [UserProfileController::class, 'update'])->name('profil.update');
@@ -95,7 +94,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
     Route::put('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');
     Route::delete('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'destroy'])->name('adminadministrasi.destroy');
-
 
     Route::get('/layanan/pengaduan', function () {
         return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);

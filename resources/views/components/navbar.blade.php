@@ -27,7 +27,7 @@
 
             <x-nav-link :dropdown="true" :active="request()->is('layanan/*')" label="LAYANAN ONLINE" :items="[
                 ['label' => 'Administrasi', 'href' => route('administrasi')],
-                ['label' => 'Pengaduan', 'href' => '/layanan/pengaduan'],
+                ['label' => 'Pengaduan', 'href' => route('pengaduan')],
             ]" />
 
             <x-nav-link :dropdown="true" :active="request()->is('informasi/*')" label="INFORMASI" :items="[

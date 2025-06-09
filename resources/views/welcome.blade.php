@@ -267,7 +267,7 @@
             <div class="max-w-7xl mx-auto px-6">
                 {{-- Section Title --}}
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl font-extrabold text-gray-800">Ringkasan Keuangan Desa</h2>
+                    <h2 class="text-4xl font-extrabold text-gray-800">RINGKASAN KEUANGAN DESA</h2>
                     <p class="mt-4 text-gray-500 text-lg max-w-2xl mx-auto">
                         Update keuangan desa secara real-time, transparan, dan terpercaya.
                     </p>
@@ -385,7 +385,7 @@
         <section id="berita" class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">
-                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Berita Terbaru Desa</h2>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">BERITA TERBARU DESA</h2>
                     <p class="text-gray-500">Stay tuned sama kabar-kabar gokil dari desa kita! 🌾🔥</p>
                 </div>
 
