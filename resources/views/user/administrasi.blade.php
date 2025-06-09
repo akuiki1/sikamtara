@@ -196,8 +196,6 @@
                     </div>
                 </template>
 
-
-
                 <!-- Card binding alpine -->
                 <template x-for="item in filteredAdministrasi" :key="item.id_administrasi">
                     <div
@@ -213,7 +211,7 @@
                                 @click="selectedAdministrasi = item; showDetailModal = true">
                                 Detail
                             </x-button>
-                            <x-button variant="primary" @click="selectedAdministrasi = item; showEditModal = true"
+                            <x-button variant="primary" @click="selectedAdministrasi = item; showAddModal = true"
                                 class="flex items-center gap-2">
                                 <!-- Icon Edit -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
@@ -262,7 +260,6 @@
         {{-- Modal Detail --}}
         <x-modal show="showDetailModal">
             <!-- Header -->
-
             <div class="mb-6 space-y-1">
                 <h2 class="text-2xl font-bold text-gray-900">
                     Detail Layanan <span x-text="selectedAdministrasi.nama_administrasi"></span>
@@ -282,7 +279,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
                         </svg>
-                        Unduh Formulir Pengisian
+                        <span>Unduh Formulir Pengisian</span>
                     </a>
                 </div>
 
@@ -315,7 +312,7 @@
                     Tutup
                 </x-button>
 
-                <x-button variant="primary" @click="showDetailModal = false; showEditModal = true"
+                <x-button variant="primary" @click="showDetailModal = false; showAddModal = true"
                     class="flex items-center gap-2">
                     <!-- Icon Edit -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -328,113 +325,165 @@
             </div>
         </x-modal>
 
-        {{-- Modal Edit --}}
-        <x-modal show="showEditModal">
+        {{-- Modal ajukan sekarang --}}
+        <x-modal show="showAddModal">
+
             <form method="POST" :action="'/admin/layanan/administrasi/' + selectedAdministrasi.id_administrasi"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
                 <!-- Header -->
-                <div class="relative w-full mb-6">
-                    <h2 class="peer px-4 pt-5 pb-2 border-b border-gray-300 rounded-xl text-gray-900 text-2xl font-bold w-full"
-                        :value="selectedAdministrasi.nama_administrasi">
+                <div class="mb-6 space-y-1">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        Formulir pengajuan surat <span x-text="selectedAdministrasi.nama_administrasi"></span>
                     </h2>
-                </div>
-
-                {{-- File Form --}}
-                <div x-data="{
-                    fileName: '',
-                    clearFile() {
-                        this.fileName = '';
-                        this.$refs.fileInput.value = '';
-                    }
-                }" class="mb-6">
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Formulir Administrasi
-                        <span class="text-xs text-gray-400 font-normal">(opsional - hanya jika ingin
-                            mengganti)</span>
-                    </label>
-
-                    <!-- Input File (Hidden) -->
-                    <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx" class="hidden"
-                        @change="fileName = $refs.fileInput.files[0]?.name">
-
-                    <!-- Baris Tombol & Info -->
-                    <div class="flex items-center gap-4">
-                        <!-- Tombol Upload -->
-                        <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
-                            class="flex items-center">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                    <p class="text-sm text-gray-500">Pastikan anda sudah mengunduh dan mengisi formulir di bawah ini.</p>
+                    <div class="">
+                        <a :href="'/storage/' + selectedAdministrasi.form" download
+                            class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
+                            <!-- Icon Download -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
                             </svg>
-                            <span class="ml-2">Upload File Baru</span>
+                            Unduh Formulir Pengisian
+                        </a>
+                        <div class="py-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Persyaratan</h3>
+                            <p class="text-gray-700 leading-relaxed"
+                                x-html="selectedAdministrasi.persyaratan.replaceAll('\n', '<br>')">
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- File Form --}}
+                    <div x-data="{
+                        fileName: '',
+                        clearFile() {
+                            this.fileName = '';
+                            this.$refs.fileInput.value = '';
+                        }
+                    }" class="py-4">
+
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Formulir yang sudah diisi
+                            <span class="text-xs text-gray-400 font-normal">(Lampirkan formulir yang sudah anda isi sebelumnya)</span>
+                        </label>
+
+                        <!-- Input File (Hidden) -->
+                        <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
+                            class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
+
+                        <!-- Baris Tombol & Info -->
+                        <div class="flex items-center gap-4">
+                            <!-- Tombol Upload -->
+                            <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
+                                class="flex items-center">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                </svg>
+                                <span class="ml-2">Upload Form</span>
+                            </x-button>
+
+                            <!-- Info File Baru -->
+                            <template x-if="fileName">
+                                <div
+                                    class="flex items-center gap-2 px-2 py-1 text-sm text-blue-700 bg-blue-50 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-paperclip-icon lucide-paperclip">
+                                        <path d="M13.234 20.252 21 12.3" />
+                                        <path
+                                            d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+                                    </svg>
+                                    <span class="font-medium"
+                                        x-text="fileName.length > 25 ? fileName.slice(0, 25) + '...' : fileName"></span>
+
+                                    <!-- Tombol X -->
+                                    <button type="button" @click="clearFile()"
+                                        class="text-blue-400 hover:text-red-500 transition">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div x-data="{
+                        fileName: '',
+                        clearFile() {
+                            this.fileName = '';
+                            this.$refs.fileInput.value = '';
+                        }
+                    }" class="py-4">
+
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Lampirkan persyaratan
+                            <span class="text-xs text-gray-400 font-normal">(gabungkan seluruh persyaratan menjadi 1 file pdf)</span>
+                        </label>
+
+                        <!-- Input File (Hidden) -->
+                        <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
+                            class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
+
+                        <!-- Baris Tombol & Info -->
+                        <div class="flex items-center gap-4">
+                            <!-- Tombol Upload -->
+                            <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
+                                class="flex items-center">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                </svg>
+                                <span class="ml-2">Upload Lampiran</span>
+                            </x-button>
+
+                            <!-- Info File Baru -->
+                            <template x-if="fileName">
+                                <div
+                                    class="flex items-center gap-2 px-2 py-1 text-sm text-blue-700 bg-blue-50 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-paperclip-icon lucide-paperclip">
+                                        <path d="M13.234 20.252 21 12.3" />
+                                        <path
+                                            d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+                                    </svg>
+                                    <span class="font-medium"
+                                        x-text="fileName.length > 25 ? fileName.slice(0, 25) + '...' : fileName"></span>
+
+                                    <!-- Tombol X -->
+                                    <button type="button" @click="clearFile()"
+                                        class="text-blue-400 hover:text-red-500 transition">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                        <x-button type="button" @click="showAddModal = false" variant="secondary"
+                            class="flex items-center gap-2">
+                            Batal
                         </x-button>
 
-                        <!-- Info File Baru -->
-                        <template x-if="fileName">
-                            <div class="flex items-center gap-2 px-2 py-1 text-sm text-blue-700 bg-blue-50 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-paperclip-icon lucide-paperclip">
-                                    <path d="M13.234 20.252 21 12.3" />
-                                    <path
-                                        d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
-                                </svg>
-                                <span class="font-medium"
-                                    x-text="fileName.length > 25 ? fileName.slice(0, 25) + '...' : fileName"></span>
-
-                                <!-- Tombol X -->
-                                <button type="button" @click="clearFile()"
-                                    class="text-blue-400 hover:text-red-500 transition">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </template>
-
-                        <!-- Info File Lama -->
-                        <template x-if="!fileName && selectedAdministrasi.name_form_edit">
-                            <div class="flex items-center gap-2 px-2 py-1 text-sm text-gray-700 bg-gray-50 rounded-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-paperclip-icon lucide-paperclip">
-                                    <path d="M13.234 20.252 21 12.3" />
-                                    <path
-                                        d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
-                                </svg>
-                                <span class="font-medium" x-text="selectedAdministrasi.name_form_edit"></span>
-                            </div>
-                        </template>
+                        <x-button type="submit" variant="primary" class="flex items-center gap-2">
+                            Ajukan Sekarang
+                        </x-button>
                     </div>
-                </div>
-
-                <!-- CTA -->
-                <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                    <x-button type="button" @click="showEditModal = false" variant="secondary"
-                        class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Batal
-                    </x-button>
-
-                    <x-button type="submit" variant="primary" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 13l4 4L19 7" />
-                        </svg>
-                        Simpan Perubahan
-                    </x-button>
-                </div>
             </form>
         </x-modal>
 
@@ -748,8 +797,7 @@
 
             <!-- Tombol Aksi -->
             <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                <x-button type="button" @click="showDetailModal = false" variant="secondary"
-                    size="md">
+                <x-button type="button" @click="showDetailModal = false" variant="secondary" size="md">
                     Tutup
                 </x-button>
             </div>
