@@ -8,60 +8,32 @@ use App\Models\DetailApbdes;
 
 class KeuanganController extends Controller
 {
-    public function pendapatanLain($tahun)
+    public function index(Request $request)
     {
-        $apbdes = Apbdes::with('rincian')->where('tahun', $tahun)->first();
+        $tahun = $request->input('tahun', date('Y'));
 
-        if (!$apbdes) {
-            return response()->json([
-                'summary' => [
-                    'pendapatan' => 0,
-                    'belanja' => 0,
-                    'selisih' => 0
-                ],
-                'detailPendapatan' => [],
-                'detailBelanja' => [],
-                'detailPembiayaan' => [],
-            ]);
+        // Ambil ID Apbdes berdasarkan tahun
+        $apbdes = Apbdes::where('tahun', $tahun)->first();
+
+        $detail = collect();
+
+        if ($apbdes) {
+            $detail = DetailApbdes::where('id_apbdes', $apbdes->id)->get();
         }
 
-        $rincian = $apbdes->rincian;
-
-        $pendapatan = $rincian->where('kategori', 'pendapatan');
-        $belanja = $rincian->where('kategori', 'belanja');
-        $pembiayaan = $rincian->where('kategori', 'pembiayaan');
-
-        $totalPendapatan = $pendapatan->sum('realisasi');
-        $totalBelanja = $belanja->sum('realisasi');
-        $selisih = $totalPendapatan - $totalBelanja;
-
-        return response()->json([
-            'summary' => [
-                'pendapatan' => $totalPendapatan,
-                'belanja' => $totalBelanja,
-                'selisih' => $selisih
-            ],
-            'detailPendapatan' => $pendapatan->map(function ($item) {
-                return [
-                    'id' => $item->id_rincian,
-                    'nama' => $item->sub_judul ?: $item->judul,
-                    'nilai' => $item->realisasi
-                ];
-            }),
-            'detailBelanja' => $belanja->map(function ($item) {
-                return [
-                    'id' => $item->id_rincian,
-                    'nama' => $item->sub_judul ?: $item->judul,
-                    'nilai' => $item->realisasi
-                ];
-            }),
-            'detailPembiayaan' => $pembiayaan->map(function ($item) {
-                return [
-                    'id' => $item->id_rincian,
-                    'nama' => $item->sub_judul ?: $item->judul,
-                    'nilai' => $item->realisasi
-                ];
-            }),
+        return view('user.keuangan', [
+            'tahun'      => $tahun,
+            'tahunList'  => Apbdes::pluck('tahun'),
+            'pendapatan' => $detail->where('kategori', 'pendapatan'),
+            'belanja'    => $detail->where('kategori', 'belanja'),
+            'pembiayaan' => $detail->where('kategori', 'pembiayaan'),
         ]);
+    }
+
+
+    public function export(Request $request)
+    {
+        $tahun = $request->input('tahun');
+        return Excel::download(new ApbdesExport($tahun), "apbdes-{$tahun}.xlsx");
     }
 }

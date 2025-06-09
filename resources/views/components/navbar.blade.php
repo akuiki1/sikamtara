@@ -33,7 +33,7 @@
             <x-nav-link :dropdown="true" :active="request()->is('informasi/*')" label="INFORMASI" :items="[
                 ['label' => 'Pengumuman', 'href' => '/informasi/pengumuman'],
                 ['label' => 'Berita Desa', 'href' => '/informasi/berita'],
-                ['label' => 'APBDes', 'href' => '/informasi/apbdes'],
+                ['label' => 'APBDes', 'href' => route ('apbdes')],
                 ['label' => 'Kependudukan', 'href' => '/informasi/kependudukan'],
             ]" />
         </div>

@@ -18,6 +18,7 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\PengaduanController;
 
 Route::get('/', function () {
@@ -59,10 +60,7 @@ Route::get('/informasi/kependudukan', function () {
 //     return redirect("/informasi/apbdes/{$tahunTerbaru}");
 // });
 
-Route::get('/informasi/apbdes', function () {
-    // $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
-    return redirect("/informasi/apbdes");
-});
+Route::get('/layanan/apbdes', [KeuanganController::class, 'index'])->name('apbdes');
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
