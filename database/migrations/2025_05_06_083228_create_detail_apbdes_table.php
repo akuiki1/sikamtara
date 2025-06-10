@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_apbdes');
             $table->enum('kategori', ['pendapatan', 'belanja', 'pembiayaan']);
             $table->string('judul')->nullable();
-            $table->string('sub_judul');
+            $table->string('sub_judul')->nullable();
             $table->decimal('anggaran', 18, 2);
             $table->decimal('realisasi', 18, 2);
             $table->timestamps();

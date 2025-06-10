@@ -74,7 +74,7 @@
             <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-500 text-sm">Menunggu Tanda Tangan</p>
+                        <p class="text-gray-500 text-sm">Menunggu tanda tangan</p>
                         <h2 class="text-xl font-bold text-gray-900 mt-1">{{ $jumlahSiapTtd }}</h2>
                     </div>
                     <div class="text-amber-400 scale-x-[-1]">

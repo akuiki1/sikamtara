@@ -14,12 +14,13 @@ class DetailApbdes extends Model
 
     protected $fillable = [
         'id_apbdes',
-        'kategori',
         'judul',
         'sub_judul',
         'anggaran',
         'realisasi',
+        'kategori',
     ];
+
 
     public $timestamps = false;
 
