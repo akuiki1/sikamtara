@@ -10,23 +10,39 @@ class KeuanganController extends Controller
 {
     public function index(Request $request)
     {
-        $tahun = $request->input('tahun', date('Y'));
+        $query = DetailApbdes::with('apbdes');
 
-        // Ambil ID Apbdes berdasarkan tahun
-        $apbdes = Apbdes::where('tahun', $tahun)->first();
-
-        $detail = collect();
-
-        if ($apbdes) {
-            $detail = DetailApbdes::where('id_apbdes', $apbdes->id)->get();
+        if ($request->filled('search')) {
+            $query->where('judul', 'like', '%' . $request->search . '%');
         }
 
+        if ($request->filled('filter')) {
+            $query->where('kategori', $request->filter);
+        }
+
+        $paginate = $query->paginate(10)->appends($request->query());
+
+        $detailJs = collect($paginate->items())->map(function ($item) {
+            return [
+                'id_rincian' => $item->id_rincian,
+                'tahun'      => optional($item->apbdes)->tahun,
+                'kategori'   => $item->kategori,
+                'judul'      => $item->judul,
+                'sub_judul'  => $item->sub_judul,
+                'anggaran' => 'Rp ' . number_format($item->anggaran, 2, ',', '.'),
+                'realisasi' => 'Rp ' . number_format($item->realisasi, 2, ',', '.'),
+            ];
+        });
+
+        $tahun = Apbdes::select('id_apbdes', 'tahun')->orderByDesc('tahun')->get();
+
         return view('user.keuangan', [
-            'tahun'      => $tahun,
-            'tahunList'  => Apbdes::pluck('tahun'),
-            'pendapatan' => $detail->where('kategori', 'pendapatan'),
-            'belanja'    => $detail->where('kategori', 'belanja'),
-            'pembiayaan' => $detail->where('kategori', 'pembiayaan'),
+            'paginate'  => $paginate,
+            'detailJs'  => $detailJs,
+            'search'    => $request->search,
+            'filter'    => $request->filter,
+            'tahun'     => $tahun,
+            'title'     => "Kelola Detail APBDes"
         ]);
     }
 

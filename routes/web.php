@@ -60,7 +60,7 @@ Route::get('/informasi/kependudukan', function () {
 //     return redirect("/informasi/apbdes/{$tahunTerbaru}");
 // });
 
-Route::get('/layanan/apbdes', [KeuanganController::class, 'index'])->name('apbdes');
+Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('apbdes');
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');

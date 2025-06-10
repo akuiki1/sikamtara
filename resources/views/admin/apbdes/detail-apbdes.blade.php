@@ -155,76 +155,73 @@
 
         {{-- modal tambah --}}
         <x-modal show="showAddModal" title="Tambah Akun Baru">
-            <div class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
-                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl relative max-h-screen overflow-y-auto">
-                    <h2 class="text-xl font-bold mb-6 text-gray-800">Tambah Data APBDes</h2>
+            <form action="{{ route('admindapbdes.store') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900">
 
-                    <form action="{{ route('admindapbdes.store') }}" method="POST">
-                        @csrf
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-900">
+                    <!-- Tahun -->
+                    <div>
+                        <label for="id_apbdes" class="block mb-2 font-semibold">Tahun</label>
+                        <select name="id_apbdes" id="tahun" x-model="selectedApbdes.tahun"
+                            class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                            required>
+                            <option value="">-- Pilih Tahun --</option>
+                            <template x-for="item in {{ Js::from($tahun) }}" :key="item.id_apbdes">
+                                <option :value="item.id_apbdes" x-text="item.tahun"></option>
+                            </template>
+                        </select>
+                    </div>
 
-                            <!-- Tahun -->
-                            <div>
-                                <label for="id_apbdes" class="block mb-2 font-semibold">Tahun</label>
-                                <select name="id_apbdes" id="id_apbdes" class="w-full border p-3 rounded-lg"
-                                    required>
-                                    <template x-for="item in daftarApbdes" :key="item.id_apbdes">
-                                        <option :value="item.id_apbdes" x-text="item.tahun"></option>
-                                    </template>
-                                </select>
-                            </div>
+                    <!-- Judul -->
+                    <div>
+                        <label for="judul" class="block mb-2 font-semibold">Judul</label>
+                        <input type="text" name="judul" id="judul" placeholder="Judul"
+                            class="w-full border p-3 rounded-lg" required>
+                    </div>
 
-                            <!-- Judul -->
-                            <div>
-                                <label for="judul" class="block mb-2 font-semibold">Judul</label>
-                                <input type="text" name="judul" id="judul" placeholder="Judul"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
+                    <!-- Sub Judul -->
+                    <div class="md:col-span-2">
+                        <label for="sub_judul" class="block mb-2 font-semibold">Sub Judul / Deskripsi</label>
+                        <textarea name="sub_judul" id="sub_judul" rows="3"
+                            class="w-full border p-3 rounded-lg resize-y focus:ring-2 focus:ring-yellow-600"
+                            placeholder="Contoh: Belanja Bidang Pembangunan Desa untuk Infrastruktur Jalan..." required></textarea>
+                    </div>
 
-                            <!-- Sub Judul -->
-                            <div class="md:col-span-2">
-                                <label for="sub_judul" class="block mb-2 font-semibold">Sub Judul / Deskripsi</label>
-                                <textarea name="sub_judul" id="sub_judul" rows="3"
-                                    class="w-full border p-3 rounded-lg resize-y focus:ring-2 focus:ring-yellow-600"
-                                    placeholder="Contoh: Belanja Bidang Pembangunan Desa untuk Infrastruktur Jalan..." required></textarea>
-                            </div>
+                    <!-- Anggaran -->
+                    <div>
+                        <label for="anggaran" class="block mb-2 font-semibold">Anggaran (Rp)</label>
+                        <input type="number" name="anggaran" id="anggaran"
+                            placeholder="jangan pakai koma (contoh 10000 untuk 10.000)"
+                            class="w-full border p-3 rounded-lg" required>
+                    </div>
 
-                            <!-- Anggaran -->
-                            <div>
-                                <label for="anggaran" class="block mb-2 font-semibold">Anggaran (Rp)</label>
-                                <input type="number" name="anggaran" id="anggaran"
-                                    placeholder="jangan pakai koma (contoh 10000 untuk 10.000)"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
+                    <!-- Realisasi -->
+                    <div>
+                        <label for="realisasi" class="block mb-2 font-semibold">Realisasi (Rp)</label>
+                        <input type="number" name="realisasi" id="realisasi"
+                            placeholder="jangan pakai koma (contoh 10000 untuk 10.000)"
+                            class="w-full border p-3 rounded-lg" required>
+                    </div>
 
-                            <!-- Realisasi -->
-                            <div>
-                                <label for="realisasi" class="block mb-2 font-semibold">Realisasi (Rp)</label>
-                                <input type="number" name="realisasi" id="realisasi"
-                                    placeholder="jangan pakai koma (contoh 10000 untuk 10.000)"
-                                    class="w-full border p-3 rounded-lg" required>
-                            </div>
-
-                            <!-- Kategori -->
-                            <select name="kategori" x-model="filter"
-                                class="border rounded-lg px-3 py-2 text-sm text-gray-700">
-                                <option value="">Semua Kategori</option>
-                                <option value="pendapatan">Pendapatan</option>
-                                <option value="belanja">Belanja</option>
-                                <option value="pembiayaan">Pembiayaan</option>
-                            </select>
-                        </div>
-
-                        <!-- Tombol aksi -->
-                        <div class="mt-6 flex justify-end gap-3">
-                            <button type="button" @click="showAddModal = false"
-                                class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Batal</button>
-                            <button type="submit"
-                                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Simpan</button>
-                        </div>
-                    </form>
+                    <!-- Kategori -->
+                    <select name="kategori" x-model="filter"
+                        class="border rounded-lg px-3 py-2 text-sm text-gray-700">
+                        <option value="">Semua Kategori</option>
+                        <option value="pendapatan">Pendapatan</option>
+                        <option value="belanja">Belanja</option>
+                        <option value="pembiayaan">Pembiayaan</option>
+                    </select>
                 </div>
-            </div>
+
+                <!-- Tombol aksi -->
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" @click="showAddModal = false"
+                        class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition">Batal</button>
+                    <button type="submit"
+                        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Simpan</button>
+                </div>
+            </form>
+
         </x-modal>
 
         <!-- Modal edit -->
