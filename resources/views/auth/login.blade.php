@@ -39,7 +39,8 @@
                 </div>
             @endif
             <div class="bg-white p-8 rounded shadow-md w-full max-w-md" x-show="true" x-transition.duration.700ms>
-                <h2 class="text-3xl font-bold text-purple-700 mb-6 text-center">Login</h2>
+
+                <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Login</h2>
 
                 {{-- code login error --}}
                 @if (session()->has('loginError'))
@@ -88,7 +89,7 @@
                     }">
                         <input x-model ="email" name="email" type="email" placeholder="Email" required
                             autocomplete="username"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 @error('email') is-invalid @enderror" />
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') is-invalid @enderror" />
                         <button type="button" @click="email=''" x-show="email.length > 0"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -110,7 +111,7 @@
                     <div class="relative mb-6">
                         <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
                             placeholder="Password" required autocomplete="current-password"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500 @error('password') is-invalid @enderror" />
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') is-invalid @enderror" />
 
                         <button type="button" @click="showPassword = !showPassword"
                             class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
@@ -143,16 +144,16 @@
                     <!-- Checkbox Agree -->
                     <div class="flex items-center space-x-2 mb-6">
                         <input x-model="agree" type="checkbox" required
-                            class="rounded border-gray-300 text-purple-600 focus:ring-purple-500" id="agree" />
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500" id="agree" />
                         <label for="agree" class="text-gray-600 text-sm select-none">
-                            I agree to the <a href="#" class="text-purple-600 hover:underline">Terms &
+                            I agree to the <a href="#" class="text-blue-600 hover:underline">Terms &
                                 Conditions</a>
                         </label>
                     </div>
 
                     <!-- Login Button -->
                     <button type="submit"
-                        class="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition font-bold">
+                        class="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800 transition font-bold">
                         Login
                     </button>
 
@@ -180,84 +181,112 @@
         <div class="flex w-full md:w-1/2 p-8 relative z-10 flex-col justify-center">
             <!-- Register Form -->
             <div x-show="!isLogin" class="transition duration-700 ease-in-out">
-                <h2 class="text-3xl font-bold text-purple-700 mb-6">Register
-                </h2>
-                <div class="flex flex-col space-y-6">
-                    <div>
-                        <input type="text" placeholder="Name"
-                            class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <h2 class="text-3xl font-bold text-blue-700 mb-6">Register</h2>
+
+                {{-- Error validation --}}
+                @if ($errors->any())
+                    <div class="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
+                        <ul class="list-disc pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
-                    <div>
-                        <input x-model="registerEmail" type="email" placeholder="Email"
-                            class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
-                    </div>
-                    <div class="relative">
-                        <input :type="showRegisterPassword ? 'text' : 'password'" x-model="registerPassword"
-                            placeholder="Password"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <button type="button" @click="showRegisterPassword = !showRegisterPassword"
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <template x-if="!showRegisterPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-eye-closed-icon lucide-eye-closed">
-                                    <path d="m15 18-.722-3.25" />
-                                    <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                    <path d="m20 15-1.726-2.05" />
-                                    <path d="m4 15 1.726-2.05" />
-                                    <path d="m9 18 .722-3.25" />
-                                </svg>
-                            </template>
-                            <template x-if="showRegisterPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-eye-icon lucide-eye">
-                                    <path
-                                        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                            </template>
+                @endif
+
+                <form method="POST" action="{{ route('register') }}">
+                    @csrf
+                    <div class="flex flex-col space-y-6">
+                        <div>
+                            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
+                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="relative">
+                            <input :type="showRegisterPassword ? 'text' : 'password'" name="password"
+                                placeholder="Password"
+                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" @click="showRegisterPassword = !showRegisterPassword"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <template x-if="!showRegisterPassword">
+                                    <!-- eye closed -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-eye-closed-icon lucide-eye-closed">
+                                        <path d="m15 18-.722-3.25" />
+                                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                                        <path d="m20 15-1.726-2.05" />
+                                        <path d="m4 15 1.726-2.05" />
+                                        <path d="m9 18 .722-3.25" />
+                                    </svg>
+                                </template>
+                                <template x-if="showRegisterPassword">
+                                    <!-- eye open -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-eye-icon lucide-eye">
+                                        <path
+                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </template>
+                            </button>
+                        </div>
+
+                        <div>
+                            <input type="password" name="password_confirmation" placeholder="Confirm Password"
+                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" required
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label class="text-gray-600 text-sm">
+                                I agree to the <a href="#" class="text-blue-600 hover:underline">Terms &
+                                    Conditions</a>
+                            </label>
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800 transition font-bold">
+                            Register
                         </button>
+                        <div class="flex items-center my-4">
+                            <div class="flex-grow border-t border-gray-300"></div>
+                            <span class="mx-2 text-gray-400 text-sm">OR</span>
+                            <div class="flex-grow border-t border-gray-300"></div>
+                        </div>
+                        <a href="{{ url('/auth/google') }}"
+                            class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
+                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
+                                class="w-5 h-5 mr-2">
+                            <span class="text-gray-700 font-semibold">Login with Google</span>
+                        </a>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" class="rounded border-gray-300 text-purple-600 focus:ring-purple-500">
-                        <label class="text-gray-600 text-sm">
-                            I agree to the <a href="#" class="text-purple-600 hover:underline">Terms &
-                                Conditions</a>
-                        </label>
-                    </div>
-                    <button type="submit"
-                        class="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition font-bold">
-                        Register
-                    </button>
-                    <div class="flex items-center my-4">
-                        <div class="flex-grow border-t border-gray-300"></div>
-                        <span class="mx-2 text-gray-400 text-sm">OR</span>
-                        <div class="flex-grow border-t border-gray-300"></div>
-                    </div>
-                    <button type="button"
-                        class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                            class="w-5 h-5 mr-2">
-                        <span class="text-gray-700 font-semibold">Login with Google</span>
-                    </button>
-                </div>
+                </form>
             </div>
         </div>
 
+
         <!-- Sliding Panel -->
-        <div class="hidden md:flex w-1/2 bg-gradient-to-r from-purple-700 to-purple-500 text-white items-center justify-center p-8 absolute top-0 left-0 h-full transition-transform duration-700 ease-in-out z-20"
+        <div class="hidden md:flex w-1/2 bg-gradient-to-r from-blue-700 to-blue-900 text-white items-center justify-center p-8 absolute top-0 left-0 h-full transition-transform duration-700 ease-in-out z-20"
             :class="isLogin ? 'translate-x-full' : 'translate-x-0'">
             <div class="text-center">
-                <h2 class="text-4xl font-bold mb-4" x-text="isLogin ? 'Hello, Friend!' : 'Welcome Back!'"></h2>
+
+                <!-- Logo Instansi -->
+                <div class="flex justify-center items-center space-x-4 mb-6 border-b-1">
+                    <img src="{{ asset('img/logoHST.png') }}" alt="Logo Desa" class="h-10">
+                    <img src="{{ asset('img/LogoProv.png') }}" alt="Logo Kabupaten" class="h-10">
+                    {{-- <img src="{{ asset('img/LogoKemdagri.png') }}" alt="Logo Lain" class="h-10"> --}}
+                </div>
+
+                <h2 class="text-4xl font-bold mb-4" x-text="isLogin ? 'Halo, Warga Desa!' : 'Akses Layanan Digital Desa'"></h2>
                 <p class="mb-8"
-                    x-text="isLogin ? 'Don’t have an account? Register now!' : 'Already have an account? Login here!'">
+                    x-text="isLogin ? 'Belum punya akun? Daftar sekarang untuk menikmati kemudahan layanan online.' : 'Sudah punya akun? silahkan login ya...'">
                 </p>
                 <button @click="isLogin = !isLogin"
-                    class="bg-white text-purple-700 py-2 px-6 rounded-full font-bold transition hover:bg-gray-100">
-                    <span x-text="isLogin ? 'Register' : 'Login'"></span>
+                    class="bg-white text-blue-700 py-2 px-6 rounded-full font-bold transition hover:bg-gray-100">
+                    <span x-text="isLogin ? 'Buat Akun' : 'Login'"></span>
                 </button>
             </div>
         </div>
@@ -276,10 +305,10 @@
                     <!-- Tabs -->
                     <div class="flex justify-around mb-6">
                         <button @click="tab = 'login'"
-                            :class="tab === 'login' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'"
+                            :class="tab === 'login' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'"
                             class="pb-2 font-semibold text-lg">Login</button>
                         <button @click="tab = 'register'"
-                            :class="tab === 'register' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'"
+                            :class="tab === 'register' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500'"
                             class="pb-2 font-semibold text-lg">Register</button>
                     </div>
                 </div>
@@ -288,7 +317,7 @@
                 <div x-show="tab === 'login'" class="flex flex-col space-y-4">
                     <div class="relative">
                         <input type="email" placeholder="Email" x-model="emailLogin"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="button" @click="emailLogin=''" x-show="emailLogin?.length > 0"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <!-- X Icon -->
@@ -303,7 +332,7 @@
                     <div class="relative">
                         <input :type="showLoginPassword ? 'text' : 'password'" placeholder="Password"
                             x-model="passwordLogin"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="button" @click="showLoginPassword = !showLoginPassword"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <template x-if="!showLoginPassword">
@@ -328,14 +357,14 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition font-bold">Login</button>
+                        class="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800 transition font-bold">Login</button>
                 </div>
 
                 <!-- Form Register -->
                 <div x-show="tab === 'register'" class="flex flex-col space-y-4" x-cloak>
                     <div class="relative">
                         <input type="text" placeholder="Name" x-model="nameRegister"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="button" @click="nameRegister=''" x-show="nameRegister?.length > 0"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <!-- X Icon -->
@@ -349,7 +378,7 @@
 
                     <div class="relative">
                         <input type="email" placeholder="Email" x-model="emailRegister"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="button" @click="emailRegister=''" x-show="emailRegister?.length > 0"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <!-- X Icon -->
@@ -364,7 +393,7 @@
                     <div class="relative">
                         <input :type="showRegisterPassword ? 'text' : 'password'" placeholder="Password"
                             x-model="passwordRegister"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <button type="button" @click="showRegisterPassword = !showRegisterPassword"
                             class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                             <template x-if="!showRegisterPassword">
@@ -389,7 +418,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full bg-purple-700 text-white py-3 rounded hover:bg-purple-800 transition font-bold">Register</button>
+                        class="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800 transition font-bold">Register</button>
                 </div>
             </div>
         </div>
