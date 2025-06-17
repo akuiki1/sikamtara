@@ -8,14 +8,14 @@
     :class="(onBeranda && !scrolled) ?
     'bg-transparent text-white' :
     'bg-gradient-to-r from-blue-700/90 to-blue-900/90 backdrop-blur shadow-md text-gray-900'"
-    class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out px-6 py-3">
+    class="fixed top-0 w-full z-50 transition-all duration-500 ease-in-out px-6 py-4">
 
 
     <div class="flex justify-between items-center">
         <!-- Logo -->
         <a href="/">
             <div class="flex items-center gap-2">
-                <img src="{{ asset('img/LogoHST.png') }}" alt="Logo" class="h-14">
+                <img src="{{ asset('img/LogoHST.png') }}" alt="Logo" class="h-10">
                 <span class="font-semibold text-lg hidden md:inline text-white">SIKAMTARA</span>
             </div>
         </a>
@@ -25,7 +25,7 @@
             <x-nav-link href="/" :active="request()->is('/')">BERANDA</x-nav-link>
             <x-nav-link href="/profil-desa" :active="request()->is('profil-desa')">PROFIL DESA</x-nav-link>
 
-            <x-nav-link :dropdown="true" :active="request()->is('layanan/*')" label="LAYANAN ONLINE" :items="[
+            <x-nav-link :dropdown="true" :active="request()->is('user/layanan/*')" label="LAYANAN ONLINE" :items="[
                 ['label' => 'Administrasi', 'href' => route('administrasi')],
                 ['label' => 'Pengaduan', 'href' => route('pengaduan')],
             ]" />

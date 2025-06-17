@@ -198,6 +198,11 @@
                     @csrf
                     <div class="flex flex-col space-y-6">
                         <div>
+                            <input type="text" name="nik" placeholder="NIK" value="{{ old('nik') }}"
+                                maxlength="16"
+                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
                             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
                                 class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
@@ -240,7 +245,7 @@
                         </div>
 
                         <div class="flex items-center space-x-2">
-                            <input type="checkbox" required
+                            <input type="checkbox" name="terms" required
                                 class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             <label class="text-gray-600 text-sm">
                                 I agree to the <a href="#" class="text-blue-600 hover:underline">Terms &
@@ -280,7 +285,8 @@
                     {{-- <img src="{{ asset('img/LogoKemdagri.png') }}" alt="Logo Lain" class="h-10"> --}}
                 </div>
 
-                <h2 class="text-4xl font-bold mb-4" x-text="isLogin ? 'Halo, Warga Desa!' : 'Akses Layanan Digital Desa'"></h2>
+                <h2 class="text-4xl font-bold mb-4"
+                    x-text="isLogin ? 'Halo, Warga Desa!' : 'Akses Layanan Digital Desa'"></h2>
                 <p class="mb-8"
                     x-text="isLogin ? 'Belum punya akun? Daftar sekarang untuk menikmati kemudahan layanan online.' : 'Sudah punya akun? silahkan login ya...'">
                 </p>

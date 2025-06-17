@@ -38,7 +38,7 @@
             </div>
 
             <div>
-                <label class="block font-medium">Username</label>
+                <label class="block font-medium">Username <span class="text-red-500">*</span> </label>
                 <input type="text" name="username" value="{{ old('username', $user->username) }}"
                     class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring focus:ring-blue-200">
                 @error('username')
@@ -47,7 +47,7 @@
             </div>
 
             <div>
-                <label class="block font-medium">Email</label>
+                <label class="block font-medium">Email<span class="text-red-500">*</span></label>
                 <input type="email" name="email" value="{{ old('email', $user->email) }}"
                     class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring focus:ring-blue-200">
                 @error('email')
