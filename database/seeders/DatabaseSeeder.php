@@ -3,9 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Apbdes;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
 use App\Models\Administrasi;
+use App\Models\DetailApbdes;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\PengajuanAdministrasi;
@@ -61,5 +63,15 @@ class DatabaseSeeder extends Seeder
                 'id_administrasi' => $administrasis->random()->id_administrasi,
             ]);
         }
+
+        // Buat 5 APBDes
+        $apbdesList = Apbdes::factory(5)->create();
+
+        // Untuk tiap APBDes, buat 10 rincian
+        $apbdesList->each(function ($apbdes) {
+            DetailApbdes::factory(10)->create([
+                'id_apbdes' => $apbdes->id_apbdes,
+            ]);
+        });
     }
 }

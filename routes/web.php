@@ -2,10 +2,12 @@
 
 use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdministrasiController;
@@ -18,11 +20,18 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
-use App\Http\Controllers\KeuanganController;
-use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\socialiteController;
 
 Route::get('/', function () {
     return view('welcome', ['title' => 'Beranda']);
+});
+
+Route::get('/auth/google', [socialiteController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [socialiteController::class, 'callback'])->name('google.callback');
+
+
+Route::get('/auth/google', function () {
+    return Socialite::driver('google')->redirect();
 });
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');

@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('apbdes', function (Blueprint $table) {
             $table->id('id_apbdes');
             $table->year('tahun');
-            $table->decimal('total_anggaran', 18, 2)->nullable();
-            $table->decimal('total_realisasi', 18, 2)->nullable();
             $table->timestamp('created_at')->useCurrent();
         });
     }

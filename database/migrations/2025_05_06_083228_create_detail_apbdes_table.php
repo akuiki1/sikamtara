@@ -22,10 +22,10 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraint
-            // $table->foreign('id_apbdes')
-            //       ->references('id_apbdes')
-            //       ->on('apbdes')
-            //       ->onDelete('cascade');
+            $table->foreign('id_apbdes')
+                ->references('id_apbdes')
+                ->on('apbdes')
+                ->onDelete('cascade');
         });
     }
 

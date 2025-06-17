@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('tanggal_lahir')->nullable();
             $table->string('agama', 20)->nullable();
             $table->string('pendidikan', 50)->nullable();
-            $table->string('pekerjaan', 50)->nullable();
+            $table->string('pekerjaan', 255)->nullable();
             $table->enum('status_perkawinan', ['Belum Kawin', 'Kawin', 'Cerai'])->nullable();
             $table->string('golongan_darah', 3)->nullable();
             $table->string('kewarganegaraan', 10)->default('WNI');
