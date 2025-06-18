@@ -21,7 +21,7 @@ class Apbdes extends Model
     public $timestamps = false;
 
     // Relasi ke detail_apbdes
-    public function rincian()
+    public function detail_apbdes()
     {
         return $this->hasMany(DetailApbdes::class, 'id_apbdes', 'id_apbdes');
     }

@@ -70,6 +70,8 @@ Route::get('/informasi/kependudukan', function () {
 // });
 
 Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('apbdes');
+Route::get('/apbdes/export', [KeuanganController::class, 'export'])->name('apbdes.export');
+
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');

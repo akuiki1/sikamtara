@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Apbdes;
 use App\Models\DetailApbdes;
 use Illuminate\Http\Request;
+use App\Exports\ApbdesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class KeuanganController extends Controller
@@ -30,19 +31,35 @@ class KeuanganController extends Controller
                 'kategori'   => $item->kategori,
                 'judul'      => $item->judul,
                 'sub_judul'  => $item->sub_judul,
-                'anggaran' => 'Rp ' . number_format($item->anggaran, 2, ',', '.'),
-                'realisasi' => 'Rp ' . number_format($item->realisasi, 2, ',', '.'),
+                'anggaran' => (float) $item->anggaran,
+                'realisasi' => (float) $item->realisasi,
+
             ];
         });
 
-        $tahun = Apbdes::select('id_apbdes', 'tahun')->orderByDesc('tahun')->get();
+
+        $tahunOptions = Apbdes::select('id_apbdes', 'tahun')->orderByDesc('tahun')->get();
+        $tahunTerbaru = $tahunOptions->first()?->tahun ?? now()->year;
+
+        // Kelompokkan data belanja berdasarkan sub_judul
+        $groupedBelanja = $detailJs->where('kategori', 'belanja')
+            ->groupBy('sub_judul')
+            ->map(function ($items, $judul) {
+                return [
+                    'judul' => $judul,
+                    'children' => $items->values()
+                ];
+            })->values(); // values() untuk reset key ke numeric
+
 
         return view('user.keuangan', [
             'paginate'  => $paginate,
-            'detailJs'  => $detailJs,
+            'groupedBelanja' => $groupedBelanja->toArray(),
+            'detailJs' => $detailJs->toArray(),
             'search'    => $request->search,
             'filter'    => $request->filter,
-            'tahun'     => $tahun,
+            'tahun'         => $tahunOptions,
+            'tahunTerbaru'  => $tahunTerbaru,
             'title'     => "Kelola Detail APBDes"
         ]);
     }
