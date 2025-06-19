@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Apbdes;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BeritaController;
@@ -20,11 +19,10 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\socialiteController;
 
-Route::get('/', function () {
-    return view('welcome', ['title' => 'Beranda']);
-});
+Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 
 Route::get('/auth/google', [socialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [socialiteController::class, 'callback'])->name('google.callback');
@@ -53,7 +51,7 @@ Route::get('/informasi/pengumuman', function () {
     return view('user.pengumuman', ['title' => 'pengumuman']);
 });
 
-Route::get('/informasi/berita', [BeritaController::class, 'index']);
+Route::get('/informasi/berita', [BeritaController::class, 'index'])->name('berita.index');
 
 
 Route::get('informasi/berita/detail', function () {

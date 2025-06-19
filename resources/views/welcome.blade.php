@@ -368,13 +368,8 @@
 
                 {{-- Button --}}
                 <div class="text-center">
-                    <a href="/informasi/apbdes"
+                    <a href="{{ route('apbdes') }}"
                         class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
                         Lihat Semua Laporan
                     </a>
                 </div>
@@ -386,31 +381,33 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">BERITA TERBARU DESA</h2>
-                    <p class="text-gray-500">Stay tuned sama kabar-kabar gokil dari desa kita! 🌾🔥</p>
+                    <p class="text-gray-500">Stay tuned sama kabar-kabar gokil dari desa kita!</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {{-- Card Berita --}}
-                    @foreach (range(1, 3) as $item)
+                    @foreach ($berita as $item)
                         <div
                             class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                            <img class="h-36 w-full object-cover" src="https://via.placeholder.com/400x250"
+                            <img class="h-36 w-full object-cover" src="{{ asset('storage/' . $item->gambar_cover) }}"
                                 alt="Foto Berita">
                             <div class="p-4 flex flex-col justify-between flex-grow">
                                 <div>
-                                    <p class="text-[11px] text-gray-400 mb-1">Diterbitkan pada 25 April 2025</p>
-                                    <h3 class="text-base font-semibold text-gray-800 mb-1 line-clamp-2">Judul Berita
-                                        Desa
-                                        Singkat & Gacor</h3>
+                                    <p class="text-[11px] text-gray-400 mb-1">Diterbitkan pada
+                                        {{ \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d F Y') }}
+                                    </p>
+                                    <h3 class="text-base font-semibold text-gray-800 mb-1 line-clamp-2">
+                                        {{ $item->judul_berita }}</h3>
                                     <p class="text-sm text-gray-600 mb-3 line-clamp-3">
-                                        Deskripsi singkat berita terbaru yang membuat warga makin cinta desa sendiri.
+                                        {{ Str::limit(strip_tags($item->isi_berita), 100) }}
                                     </p>
                                 </div>
                                 <div class="mt-auto flex flex-col space-y-2">
-                                    <a href="#"
-                                        class="text-primary-600 text-sm font-medium hover:underline">Baca
-                                        Selengkapnya →</a>
-                                    <p class="text-[11px] text-gray-400 text-right">Oleh Admin Desa</p>
+                                    <a href="{{ route('berita.index', $item->id_berita) }}"
+                                        class="text-primary-600 text-sm font-medium hover:underline">Baca Selengkapnya
+                                        →</a>
+                                    <p class="text-[11px] text-gray-400 text-right">Oleh
+                                        {{ $item->user->name ?? 'Admin Desa' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -420,19 +417,13 @@
                 {{-- Tombol Lihat Semua Berita --}}
                 <div class="mt-10 text-center">
                     <div class="text-center">
-                        <a href="#"
+                        <a href="{{ route('berita.index') }}"
                             class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
-                            {{-- <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg> --}}
                             Lihat Berita Lainnya
                         </a>
                     </div>
                 </div>
             </div>
         </section>
-
     </div>
 </x-layout>

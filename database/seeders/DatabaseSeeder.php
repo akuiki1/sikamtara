@@ -73,5 +73,8 @@ class DatabaseSeeder extends Seeder
                 'id_apbdes' => $apbdes->id_apbdes,
             ]);
         });
+
+        // Buat 10 berita dummy
+        \App\Models\Berita::factory(10)->create();
     }
 }
