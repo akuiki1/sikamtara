@@ -661,58 +661,69 @@
                                     'Content-Type': 'application/json',
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                 },
-                                body: JSON.stringify({
-                                    id: id,
-                                    status: status
-                                })
+                                body: JSON.stringify({ id, status })
                             });
                 
                             if (!res.ok) throw new Error('Gagal mengirim data');
                 
                             const result = await res.json();
                 
-                            // Update status di UI tanpa reload
-                            const item = this.layanan.find(i => i.id === id);
-                            if (item) item.status = status;
+                            const index = this.layanan.findIndex(i => i.id === id);
+                
+                            if (index !== -1) {
+                                if (status === 'diproses') {
+                                    // Hanya update status (tidak perlu hapus)
+                                    this.layanan[index].status = status;
+                                } else {
+                                    // Misalnya ditolak → hapus dari list
+                                    this.layanan.splice(index, 1);
+                                }
+                            }
                 
                             this.selected = null;
-                
                             alert(result.message ?? 'Status berhasil diperbarui');
                         } catch (err) {
                             alert('Terjadi kesalahan: ' + err.message);
                         }
                     }
+                
                 }" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
 
                     {{-- Header --}}
                     <h2 class="text-lg font-semibold">Layanan Diproses</h2>
 
                     {{-- Daftar Layanan --}}
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <template x-for="item in layanan" :key="item.id">
-
-                            <div @click="selected = item"
-                                class="cursor-pointer p-4 bg-gray-100 rounded-xl border-l-4 hover:border-blue-500 hover:bg-blue-50"
-                                :class="{
-                                    'border-blue-600 bg-blue-50': selected?.id === item.id
-                                }">
-                                <h3 class="font-semibold text-gray-800" x-text="item.nama_layanan"></h3>
-                                <p class="text-sm text-gray-600">Pengguna: <span x-text="item.nama_user"></span></p>
-                                <p class="text-sm text-gray-600">Tanggal: <span
-                                        x-text="item.tanggal_pengajuan"></span></p>
-                                <p class="text-sm text-gray-600">Status:
-                                    <span class="px-2 py-1 rounded text-white text-xs"
-                                        :class="{
-                                            'bg-yellow-500': item.status === 'baru',
-                                            'bg-indigo-500': item.status === 'ditinjau',
-                                            'bg-green-500': item.status === 'diproses',
-                                            'bg-red-500': item.status === 'ditolak'
-                                        }"
-                                        x-text="item.status">
-                                    </span>
-                                </p>
+                    <div>
+                        <template x-if="layanan.length === 0">
+                            <div class="text-center text-gray-500 italic py-4">
+                                Belum ada layanan diproses.
                             </div>
                         </template>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="layanan.length > 0">
+                            <template x-for="item in layanan" :key="item.id">
+                                <div @click="selected = item"
+                                    class="cursor-pointer p-4 bg-gray-100 rounded-xl border-l-4 hover:border-blue-500 hover:bg-blue-50"
+                                    :class="{ 'border-blue-600 bg-blue-50': selected?.id === item.id }">
+                                    <h3 class="font-semibold text-gray-800" x-text="item.nama_layanan"></h3>
+                                    <p class="text-sm text-gray-600">Pengguna: <span x-text="item.nama_user"></span>
+                                    </p>
+                                    <p class="text-sm text-gray-600">Tanggal: <span
+                                            x-text="item.tanggal_pengajuan"></span></p>
+                                    <p class="text-sm text-gray-600">Status:
+                                        <span class="px-2 py-1 rounded text-white text-xs"
+                                            :class="{
+                                                'bg-yellow-500': item.status === 'baru',
+                                                'bg-indigo-500': item.status === 'ditinjau',
+                                                'bg-green-500': item.status === 'diproses',
+                                                'bg-red-500': item.status === 'ditolak'
+                                            }"
+                                            x-text="item.status">
+                                        </span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
                     </div>
 
                     {{-- Detail Modal --}}
@@ -893,8 +904,31 @@
                         </div>
                     </div>
                     {{-- body --}}
-                    <div class="w-full h-80 relative">
+                    <div x-data="{ layanan: @js($layananRiwayat) }">
+                        <template x-if="layanan.length === 0">
+                            <div class="text-center text-gray-500 italic">Belum ada riwayat layanan.</div>
+                        </template>
 
+                        <div class="space-y-4" x-show="layanan.length > 0">
+                            <template x-for="item in layanan" :key="item.id">
+                                <div class="p-4 bg-gray-50 border rounded-xl shadow-sm">
+                                    <h3 class="font-semibold text-gray-800" x-text="item.nama_layanan"></h3>
+                                    <p class="text-sm text-gray-600">Pengguna: <span x-text="item.nama_user"></span>
+                                    </p>
+                                    <p class="text-sm text-gray-600">Tanggal: <span
+                                            x-text="item.tanggal_pengajuan"></span></p>
+                                    <p class="text-sm text-gray-600">Status:
+                                        <span class="px-2 py-1 rounded text-white text-xs"
+                                            :class="{
+                                                'bg-green-600': item.status === 'selesai',
+                                                'bg-red-500': item.status === 'ditolak'
+                                            }"
+                                            x-text="item.status">
+                                        </span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>

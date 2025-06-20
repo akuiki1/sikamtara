@@ -60,6 +60,7 @@ class AdminAdministrasiController extends Controller
         // $penulis = User::select('id_user')->get();
         $layananDiproses = $this->layananDiproses();
         $layananMasuk = $this->layananMasuk();
+        $layananRiwayat = $this->layananRiwayat();
         $jumlahLayanan = Administrasi::count();
         $jumlahMasuk = PengajuanAdministrasi::whereIn('status_pengajuan', ['baru', 'ditinjau'])->count();
         $jumlahSiapTtd = PengajuanAdministrasi::where('status_pengajuan', 'diproses')->count();
@@ -73,7 +74,7 @@ class AdminAdministrasiController extends Controller
             'search'    => $request->search,
             'filter'    => $request->filter,
             'layananDiproses' => $layananDiproses,
-            // 'penulis'   => $penulis,
+            'layananRiwayat' => $layananRiwayat,
             'role'      => $request->role,
             'status'    => $request->status,
             'jumlahLayanan' => $jumlahLayanan,
@@ -108,6 +109,25 @@ class AdminAdministrasiController extends Controller
     {
         return PengajuanAdministrasi::with('user', 'administrasi')
             ->where('status_pengajuan', 'diproses')
+            ->orderByDesc('tanggal_pengajuan')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id_pengajuan_administrasi,
+                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
+                    'tanggal_pengajuan' => \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
+                    'status' => $item->status_pengajuan,
+                    'form' => $item->form,
+                    'lampiran' => $item->lampiran,
+                ];
+            });
+    }
+
+    public function layananRiwayat()
+    {
+        return PengajuanAdministrasi::with(['user', 'administrasi'])
+            ->whereIn('status_pengajuan', ['ditolak', 'selesai'])
             ->orderByDesc('tanggal_pengajuan')
             ->get()
             ->map(function ($item) {
