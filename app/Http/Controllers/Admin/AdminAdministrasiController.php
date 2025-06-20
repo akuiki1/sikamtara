@@ -58,7 +58,8 @@ class AdminAdministrasiController extends Controller
         });
 
         // $penulis = User::select('id_user')->get();
-
+        $layananDiproses = $this->layananDiproses();
+        $layananMasuk = $this->layananMasuk();
         $jumlahLayanan = Administrasi::count();
         $jumlahMasuk = PengajuanAdministrasi::whereIn('status_pengajuan', ['baru', 'ditinjau'])->count();
         $jumlahSiapTtd = PengajuanAdministrasi::where('status_pengajuan', 'diproses')->count();
@@ -71,6 +72,7 @@ class AdminAdministrasiController extends Controller
             'administrasiJs'    => $transformed,
             'search'    => $request->search,
             'filter'    => $request->filter,
+            'layananDiproses' => $layananDiproses,
             // 'penulis'   => $penulis,
             'role'      => $request->role,
             'status'    => $request->status,
@@ -78,9 +80,83 @@ class AdminAdministrasiController extends Controller
             'jumlahMasuk' => $jumlahMasuk,
             'jumlahSiapTtd' => $jumlahSiapTtd,
             'jumlahSelesaiTahunIni' => $jumlahSelesaiTahunIni,
+            'layananMasuk' => $layananMasuk,
 
         ]);
     }
+
+    public function layananMasuk()
+    {
+        return PengajuanAdministrasi::with(['user', 'administrasi'])
+            ->whereIn('status_pengajuan', ['baru', 'ditinjau'])
+            ->orderByDesc('tanggal_pengajuan')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id_pengajuan_administrasi,
+                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
+                    'tanggal_pengajuan' => Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
+                    'status' => $item->status_pengajuan,
+                    'form' => $item->form,
+                    'lampiran' => $item->lampiran,
+                ];
+            });
+    }
+
+    public function layananDiproses()
+    {
+        return PengajuanAdministrasi::with('user', 'administrasi')
+            ->where('status_pengajuan', 'diproses')
+            ->orderByDesc('tanggal_pengajuan')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id_pengajuan_administrasi,
+                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
+                    'tanggal_pengajuan' => \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
+                    'status' => $item->status_pengajuan,
+                    'form' => $item->form,
+                    'lampiran' => $item->lampiran,
+                ];
+            });
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            // Tambahkan ini agar bisa parsing body JSON (karena fetch mengirim raw JSON)
+            if ($request->isJson()) {
+                $request->merge(json_decode($request->getContent(), true));
+            }
+
+            $request->validate([
+                'id' => 'required|exists:pengajuan_administrasis,id_pengajuan_administrasi',
+                'status' => 'required|in:ditinjau,diproses,ditolak',
+            ]);
+
+            $pengajuan = PengajuanAdministrasi::findOrFail($request->id);
+            $pengajuan->status_pengajuan = $request->status;
+            $pengajuan->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status berhasil diperbarui.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status',
+                'error' => $e->getMessage(), // 👈 tambahan log
+            ], 500);
+        }
+    }
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.

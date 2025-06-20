@@ -24,7 +24,7 @@
         }
     }">
 
-    {{-- section card --}}
+        {{-- section card --}}
         <section>
             {{-- container card --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -509,15 +509,261 @@
         <section>
             {{-- container tabel belah 2 --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-                {{-- container tabel Pengaduan Masuk --}}
-                <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow">
+
+                {{-- container tabel pengajuan Masuk --}}
+                <div x-data="{
+                    layanan: {{ $layananMasuk }},
+                    selected: null,
+                    async submitForm(status) {
+                        if (!this.selected) return;
+                
+                        const id = this.selected.id;
+                        const url = '{{ route('layanan.updateStatus') }}';
+                
+                        try {
+                            const res = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({ id, status })
+                            });
+                
+                            if (!res.ok) throw new Error('Gagal mengirim data');
+                
+                            const result = await res.json();
+                
+                            const index = this.layanan.findIndex(i => i.id === id);
+                
+                            if (index !== -1) {
+                                const updated = { ...this.layanan[index], status };
+                                // Jika diproses → pindah ke list layananDiproses
+                                if (status === 'diproses') {
+                                    if (window.layananDiproses) {
+                                        window.layananDiproses.unshift(updated);
+                                    }
+                                }
+                                // Hapus dari layananMasuk (bagian ini)
+                                this.layanan.splice(index, 1);
+                            }
+                
+                            this.selected = null;
+                            alert(result.message ?? 'Status berhasil diperbarui');
+                        } catch (err) {
+                            alert('Terjadi kesalahan: ' + err.message);
+                        }
+                    }
+                }" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
+
                     {{-- Header --}}
-                    <h2 class="text-lg font-semibold mb-4">Layanan Masuk</h2>
+                    <h2 class="text-lg font-semibold">Layanan Masuk</h2>
 
-                    {{-- Body --}}
-                    <div class="w-full h-80 relative">
+                    {{-- Daftar Layanan --}}
+                    <div>
+                        <template x-if="layanan.length === 0">
+                            <div class="text-center text-gray-500 italic py-4">
+                                Belum ada pengajuan masuk.
+                            </div>
+                        </template>
 
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="layanan.length > 0">
+                            <template x-for="item in layanan" :key="item.id">
+                                <div @click="selected = item"
+                                    class="cursor-pointer p-4 bg-gray-100 rounded-xl border-l-4 hover:border-blue-500 hover:bg-blue-50"
+                                    :class="{ 'border-blue-600 bg-blue-50': selected?.id === item.id }">
+                                    <h3 class="font-semibold text-gray-800" x-text="item.nama_layanan"></h3>
+                                    <p class="text-sm text-gray-600">Pengguna: <span x-text="item.nama_user"></span>
+                                    </p>
+                                    <p class="text-sm text-gray-600">Tanggal: <span
+                                            x-text="item.tanggal_pengajuan"></span></p>
+                                    <p class="text-sm text-gray-600">Status:
+                                        <span class="px-2 py-1 rounded text-white text-xs"
+                                            :class="{
+                                                'bg-yellow-500': item.status === 'baru',
+                                                'bg-indigo-500': item.status === 'ditinjau',
+                                                'bg-green-500': item.status === 'diproses',
+                                                'bg-red-500': item.status === 'ditolak'
+                                            }"
+                                            x-text="item.status">
+                                        </span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
                     </div>
+
+                    {{-- Detail Modal --}}
+                    <x-modal show="selected">
+                        <div class="p-4 mt-4 bg-white border rounded-xl shadow">
+                            <h3 class="text-md font-semibold text-gray-800 mb-2">Detail Layanan</h3>
+                            <p><span class="font-medium text-gray-600">Nama Layanan:</span> <span
+                                    x-text="selected.nama_layanan"></span></p>
+                            <p><span class="font-medium text-gray-600">Pengguna:</span> <span
+                                    x-text="selected.nama_user"></span></p>
+                            <p><span class="font-medium text-gray-600">Tanggal Pengajuan:</span> <span
+                                    x-text="selected.tanggal_pengajuan"></span></p>
+                            <p><span class="font-medium text-gray-600">Status:</span> <span
+                                    x-text="selected.status"></span></p>
+
+                            <template x-if="selected.form">
+                                <p class="mt-2">
+                                    <a :href="'/storage/' + selected.form" target="_blank"
+                                        class="text-indigo-600 underline hover:text-indigo-800">
+                                        Unduh Formulir
+                                    </a>
+                                </p>
+                            </template>
+
+                            <template x-if="selected.lampiran">
+                                <p>
+                                    <a :href="'/storage/' + selected.lampiran" target="_blank"
+                                        class="text-indigo-600 underline hover:text-indigo-800">
+                                        Unduh Lampiran
+                                    </a>
+                                </p>
+                            </template>
+
+                            <button @click="selected = null"
+                                class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm">
+                                Tutup Detail
+                            </button>
+
+                            <div class="flex gap-2 mt-4">
+                                <button type="button" @click="submitForm('diproses')"
+                                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                                    ACC
+                                </button>
+
+                                <button type="button" @click="submitForm('ditolak')"
+                                    class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm">
+                                    Tolak
+                                </button>
+                            </div>
+                        </div>
+                    </x-modal>
+                </div>
+
+                {{-- container tabel pengajuan di proses --}}
+                <div x-data="{
+                    layanan: @js($layananDiproses),
+                    selected: null,
+                    async submitForm(status) {
+                        if (!this.selected) return;
+                
+                        const id = this.selected.id;
+                        const url = '{{ route('layanan.updateStatus') }}';
+                
+                        try {
+                            const res = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    id: id,
+                                    status: status
+                                })
+                            });
+                
+                            if (!res.ok) throw new Error('Gagal mengirim data');
+                
+                            const result = await res.json();
+                
+                            // Update status di UI tanpa reload
+                            const item = this.layanan.find(i => i.id === id);
+                            if (item) item.status = status;
+                
+                            this.selected = null;
+                
+                            alert(result.message ?? 'Status berhasil diperbarui');
+                        } catch (err) {
+                            alert('Terjadi kesalahan: ' + err.message);
+                        }
+                    }
+                }" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
+
+                    {{-- Header --}}
+                    <h2 class="text-lg font-semibold">Layanan Diproses</h2>
+
+                    {{-- Daftar Layanan --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <template x-for="item in layanan" :key="item.id">
+
+                            <div @click="selected = item"
+                                class="cursor-pointer p-4 bg-gray-100 rounded-xl border-l-4 hover:border-blue-500 hover:bg-blue-50"
+                                :class="{
+                                    'border-blue-600 bg-blue-50': selected?.id === item.id
+                                }">
+                                <h3 class="font-semibold text-gray-800" x-text="item.nama_layanan"></h3>
+                                <p class="text-sm text-gray-600">Pengguna: <span x-text="item.nama_user"></span></p>
+                                <p class="text-sm text-gray-600">Tanggal: <span
+                                        x-text="item.tanggal_pengajuan"></span></p>
+                                <p class="text-sm text-gray-600">Status:
+                                    <span class="px-2 py-1 rounded text-white text-xs"
+                                        :class="{
+                                            'bg-yellow-500': item.status === 'baru',
+                                            'bg-indigo-500': item.status === 'ditinjau',
+                                            'bg-green-500': item.status === 'diproses',
+                                            'bg-red-500': item.status === 'ditolak'
+                                        }"
+                                        x-text="item.status">
+                                    </span>
+                                </p>
+                            </div>
+                        </template>
+                    </div>
+
+                    {{-- Detail Modal --}}
+                    <x-modal show="selected">
+                        <div class="p-4 mt-4 bg-white border rounded-xl shadow">
+                            <h3 class="text-md font-semibold text-gray-800 mb-2">Detail Layanan</h3>
+                            <p><span class="font-medium text-gray-600">Nama Layanan:</span> <span
+                                    x-text="selected.nama_layanan"></span></p>
+                            <p><span class="font-medium text-gray-600">Pengguna:</span> <span
+                                    x-text="selected.nama_user"></span></p>
+                            <p><span class="font-medium text-gray-600">Tanggal Pengajuan:</span> <span
+                                    x-text="selected.tanggal_pengajuan"></span></p>
+                            <p><span class="font-medium text-gray-600">Status:</span> <span
+                                    x-text="selected.status"></span></p>
+
+                            <template x-if="selected.form">
+                                <p class="mt-2">
+                                    <a :href="'/storage/' + selected.form" target="_blank"
+                                        class="text-indigo-600 underline hover:text-indigo-800">
+                                        Unduh Formulir
+                                    </a>
+                                </p>
+                            </template>
+
+                            <template x-if="selected.lampiran">
+                                <p>
+                                    <a :href="'/storage/' + selected.lampiran" target="_blank"
+                                        class="text-indigo-600 underline hover:text-indigo-800">
+                                        Unduh Lampiran
+                                    </a>
+                                </p>
+                            </template>
+
+                            <button @click="selected = null"
+                                class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm">
+                                Tutup Detail
+                            </button>
+
+                            <div class="flex gap-2 mt-4">
+                                <button type="button" @click="submitForm('diproses')"
+                                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm">
+                                    ACC
+                                </button>
+
+                                <button type="button" @click="submitForm('ditolak')"
+                                    class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm">
+                                    Tolak
+                                </button>
+                            </div>
+                        </div>
+                    </x-modal>
                 </div>
 
                 {{-- container tabel Riwayat Layanan --}}

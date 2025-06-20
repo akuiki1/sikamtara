@@ -101,7 +101,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
     Route::put('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');
     Route::delete('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'destroy'])->name('adminadministrasi.destroy');
-
+    Route::post('/layanan/update-status', [AdminAdministrasiController::class, 'updateStatus'])->name('layanan.updateStatus');
+    
     Route::get('/layanan/pengaduan', function () {
         return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
     });
