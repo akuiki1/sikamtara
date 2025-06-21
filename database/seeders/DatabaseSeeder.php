@@ -76,5 +76,9 @@ class DatabaseSeeder extends Seeder
 
         // Buat 10 berita dummy
         \App\Models\Berita::factory(10)->create();
+
+        $this->call([
+            APBDesSeeder::class,
+        ]);
     }
 }
