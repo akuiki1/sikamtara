@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Administrasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanAdministrasi;
 
@@ -122,6 +123,26 @@ class AdminAdministrasiController extends Controller
                     'lampiran' => $item->lampiran,
                 ];
             });
+    }
+
+    public function uploadSuratFinal(Request $request, $id)
+    {
+        $request->validate([
+            'surat_final' => 'required|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        $pengajuan = PengajuanAdministrasi::findOrFail($id);
+
+        $path = $request->file('surat_final')->store('surat_final', 'public');
+
+        $pengajuan->surat_final = $path;
+        $pengajuan->status_pengajuan = 'selesai';
+        $pengajuan->save();
+
+        return response()->json([
+            'message' => 'Surat final berhasil diunggah.',
+            'path' => $path,
+        ]);
     }
 
     public function layananRiwayat()

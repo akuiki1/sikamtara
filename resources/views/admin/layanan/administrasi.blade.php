@@ -695,9 +695,10 @@
                 </div>
 
                 {{-- container tabel pengajuan di proses --}}
-                <div x-data="{
+                <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4" x-data="{
                     layanan: @js($layananDiproses),
                     selected: null,
+                
                     async submitForm(status) {
                         if (!this.selected) return;
                 
@@ -722,10 +723,8 @@
                 
                             if (index !== -1) {
                                 if (status === 'diproses') {
-                                    // Hanya update status (tidak perlu hapus)
                                     this.layanan[index].status = status;
                                 } else {
-                                    // Misalnya ditolak → hapus dari list
                                     this.layanan.splice(index, 1);
                                 }
                             }
@@ -735,9 +734,35 @@
                         } catch (err) {
                             alert('Terjadi kesalahan: ' + err.message);
                         }
-                    }
+                    },
                 
-                }" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
+                    async uploadSuratFinal(event) {
+                        const formData = new FormData(event.target);
+                        try {
+                            const response = await fetch(event.target.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                },
+                            });
+                
+                            const resJson = await response.json();
+                
+                            if (response.ok) {
+                                alert('Surat final berhasil diunggah');
+                                this.selected.surat_final = resJson.path;
+                                this.selected.status = 'selesai'; // ✅ Update status di frontend
+                                this.layanan = this.layanan.filter(i => i.id !== this.selected.id);
+                                this.selected = null;
+                            } else {
+                                alert('Gagal mengunggah: ' + (resJson.error ?? 'Periksa format dan ukuran file'));
+                            }
+                        } catch (e) {
+                            alert('Terjadi kesalahan saat mengunggah');
+                        }
+                    }
+                }">
 
                     {{-- Header --}}
                     <h2 class="text-lg font-semibold">Layanan Diproses</h2>
@@ -868,18 +893,34 @@
                                 </div>
                             </div>
 
-                            <!-- Actions -->
-                            <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                                <button @click="submitForm('diproses')"
-                                    class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
-                                    ACC
-                                </button>
+                            <!-- Upload Surat Final -->
+                            <form x-show="selected" :action="`/admin/upload-surat-final/${selected.id}`"
+                                method="POST" enctype="multipart/form-data"
+                                @submit.prevent="uploadSuratFinal($event)" class="space-y-4">
+                                <label for="surat_final" class="block text-sm font-medium text-gray-700">
+                                    Upload Surat Final <span class="text-red-500">*</span>
+                                    <small class="block text-xs text-gray-400">Format: PDF, DOC, DOCX • Maks
+                                        2MB</small>
+                                </label>
 
-                                <button @click="submitForm('ditolak')"
-                                    class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2">
-                                    Tolak
-                                </button>
-                            </div>
+                                <input id="surat_final" type="file" name="surat_final" required
+                                    accept=".pdf,.doc,.docx" maxlength="2048"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
+
+                                <!-- Tombol Upload -->
+                                <div class="flex justify-end pt-6 mt-8 border-t border-gray-200">
+                                    <button type="submit"
+                                        class="inline-flex items-center rounded-md bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 transition">
+                                        Upload
+                                    </button>
+                                </div>
+                            </form>
+                            <template x-if="selected?.surat_final">
+                                <a :href="`/storage/${selected.surat_final}`" target="_blank"
+                                    class="inline-flex items-center gap-2 text-green-600 hover:text-green-800 transition underline text-sm">
+                                    📄 Lihat Surat Final
+                                </a>
+                            </template>
                         </div>
                     </x-modal>
                 </div>
@@ -956,9 +997,7 @@
                     <div x-data="{
                         layanan: @js($layananRiwayat),
                         selected: null,
-                        init() {
-                            window.layananRiwayat = this.layanan;
-                        },
+                    
                         hapusLayanan(id) {
                             if (confirm('Yakin ingin menghapus pengaduan ini?')) {
                                 fetch(`/admin/layanan/hapus/${id}`, {
