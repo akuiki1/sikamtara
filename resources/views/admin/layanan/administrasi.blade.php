@@ -956,6 +956,9 @@
                     <div x-data="{
                         layanan: @js($layananRiwayat),
                         selected: null,
+                        init() {
+                            window.layananRiwayat = this.layanan;
+                        },
                         hapusLayanan(id) {
                             if (confirm('Yakin ingin menghapus pengaduan ini?')) {
                                 fetch(`/admin/layanan/hapus/${id}`, {
