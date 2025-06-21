@@ -146,7 +146,6 @@ class AdminAdministrasiController extends Controller
     public function updateStatus(Request $request)
     {
         try {
-            // Tambahkan ini agar bisa parsing body JSON (karena fetch mengirim raw JSON)
             if ($request->isJson()) {
                 $request->merge(json_decode($request->getContent(), true));
             }
@@ -168,13 +167,23 @@ class AdminAdministrasiController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memperbarui status',
-                'error' => $e->getMessage(), // 👈 tambahan log
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 
+    public function hapusLayanan($id)
+    {
+        $pengajuan = PengajuanAdministrasi::findOrFail($id);
 
+        if ($pengajuan->status_pengajuan !== 'ditolak') {
+            return response()->json(['message' => 'Hanya pengajuan ditolak yang bisa dihapus.'], 403);
+        }
 
+        $pengajuan->delete();
+
+        return response()->json(['message' => 'Berhasil dihapus']);
+    }
 
 
 
