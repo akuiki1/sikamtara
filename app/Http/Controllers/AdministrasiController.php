@@ -9,6 +9,7 @@ use App\Models\Administrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanAdministrasi;
+use Illuminate\Support\Facades\Storage;
 
 class AdministrasiController extends Controller
 {
@@ -163,5 +164,28 @@ class AdministrasiController extends Controller
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
+    }
+
+   public function downloadSuratFinal($id)
+    {
+        $pengajuan = PengajuanAdministrasi::with(['user', 'administrasi'])->findOrFail($id);
+
+        if (!$pengajuan->surat_final) {
+            return abort(404, 'Surat final tidak ditemukan.');
+        }
+
+        $path = $pengajuan->surat_final;
+
+        if (!Storage::disk('public')->exists($path)) {
+            return abort(404, 'File tidak tersedia di penyimpanan.');
+        }
+
+        // Siapkan nama file dari nama layanan dan nama user
+        $namaLayanan = Str::slug($pengajuan->administrasi->nama_administrasi ?? 'layanan');
+        $namaUser = Str::slug($pengajuan->user->username ?? 'user');
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $filename = "{$namaLayanan}-{$namaUser}.{$ext}";
+
+        return Storage::disk('public')->download($path, $filename);
     }
 }

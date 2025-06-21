@@ -74,6 +74,7 @@ Route::get('/apbdes/export', [KeuanganController::class, 'export'])->name('apbde
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
     Route::post('layanan/administrasi/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
+    Route::get('layanan/administrasi/surat-final/{id}', [AdministrasiController::class, 'downloadSuratFinal'])->name('surat.final.download');
 
     Route::get('/layanan/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan');
 

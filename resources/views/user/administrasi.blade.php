@@ -315,7 +315,8 @@
                     <h2 class="text-2xl font-bold text-gray-900">
                         Formulir pengajuan surat <span x-text="selectedAdministrasi.nama_administrasi"></span>
                     </h2>
-                    <p class="text-sm text-gray-500">Pastikan anda sudah mengunduh dan mengisi formulir di bawah ini.</p>
+                    <p class="text-sm text-gray-500">Pastikan anda sudah mengunduh dan mengisi formulir di bawah ini.
+                    </p>
                     <div class="">
                         <a :href="'/storage/' + selectedAdministrasi.form" download
                             class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
@@ -346,7 +347,8 @@
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Formulir yang sudah diisi
-                            <span class="text-xs text-gray-400 font-normal">(Lampirkan formulir yang sudah anda isi sebelumnya)</span>
+                            <span class="text-xs text-gray-400 font-normal">(Lampirkan formulir yang sudah anda isi
+                                sebelumnya)</span>
                         </label>
 
                         <!-- Input File (Hidden) -->
@@ -404,7 +406,8 @@
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Lampirkan persyaratan
-                            <span class="text-xs text-gray-400 font-normal">(gabungkan seluruh persyaratan menjadi 1 file pdf)</span>
+                            <span class="text-xs text-gray-400 font-normal">(gabungkan seluruh persyaratan menjadi 1
+                                file pdf)</span>
                         </label>
 
                         <!-- Input File (Hidden) -->
@@ -634,8 +637,9 @@
                                     <!-- Tombol aksi seperti Lihat / Edit -->
                                     <x-button @click="selectedPengajuanAdministrasi = item; showDetailModal = true"
                                         size="sm">Detail</x-button>
-                                    <template x-if="item.status_pengajuan === 'selesai'">
-                                        <a :href="`/path/ke/surat/${item.id}`" target="_blank"
+                                    <template x-if="item.status_pengajuan === 'selesai' && item.surat_final">
+                                        <a :href="`{{ route('surat.final.download', '') }}/${item.id_pengajuan_administrasi}`"
+                                            target="_blank"
                                             class="inline-block mt-2 text-white bg-green-600 hover:bg-green-700 rounded-full text-xs px-3 py-1 hover:scale-105">
                                             Unduh Surat Final
                                         </a>
