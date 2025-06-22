@@ -79,7 +79,7 @@
                 </div>
             </template>
 
-            <template x-for="item in filteredApbdes" :key="item.id_apbdes">
+            <template x-for="item in filteredApbdes" :key="item.id_tahun_anggaran">
                 <div @click="selectedApbdes = item; showDetailModal = true"
                     class="cursor-pointer hover:scale-105 bg-white rounded-2xl hover:shadow-lg transition-all border border-black/10 p-6 flex flex-col justify-between h-full">
                     <div class="text-center text-lg font-semibold text-gray-800">
@@ -128,11 +128,11 @@
                 </div>
 
                 <div class="flex flex-wrap gap-3 pt-4">
-                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/pendapatan`"
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_tahun_anggaran}/pendapatan`"
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Pendapatan</a>
-                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/belanja`"
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_tahun_anggaran}/belanja`"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Belanja</a>
-                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/pembiayaan`"
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_tahun_anggaran}/pembiayaan`"
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Pembiayaan</a>
                 </div>
             </div>

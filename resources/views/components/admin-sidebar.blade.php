@@ -266,7 +266,7 @@
         </div>
 
         <!-- APBDes -->
-       <div x-data="{ open: {{ request()->routeIs('adminapbdes.*') || request()->routeIs('admindapbdes.*') ? 'true' : 'false' }} }">
+       <div x-data="{ open: {{ request()->routeIs('adminapbdes.*') || request()->routeIs('admin.apbdes.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -297,8 +297,8 @@
 
 
                 </a>
-                <a href="{{ route('adminapbdes.pendapatan') }}"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.pendapatan') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
+                <a href="{{ route('admin.apbdes.pendapatan.latest') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('admin.apbdes.pendapatan*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"

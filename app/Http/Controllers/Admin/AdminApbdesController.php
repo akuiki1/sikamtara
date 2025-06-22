@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Models\Apbdes;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
 use App\Models\RincianAnggaran;
@@ -20,28 +19,28 @@ class AdminApbdesController extends Controller
      */
     public function dataAnggaran(Request $request)
     {
-        $query = Apbdes::query();
+        $query = TahunAnggaran::query();
 
         if ($request->has('search')) {
             $query->where('tahun', 'like', '%' . $request->search . '%');
         }
 
-        $apbdes = $query->paginate(10)->appends($request->query());
+        $tahun_anggaran = $query->paginate(10)->appends($request->query());
 
         // Transformasi data jadi JS-ready
-        $transformed = collect($apbdes->items())->map(function ($item) {
+        $transformed = collect($tahun_anggaran->items())->map(function ($item) {
             $id_tahun = DB::table('tahun_anggaran')->where('tahun', $item->tahun)->value('id_tahun_anggaran');
 
             $totalPendapatan = DB::table('rincian_anggaran')
-                ->join('sub_kategori_anggaran', 'rincian_anggaran.sub_kategori_id', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
-                ->join('kategori_anggaran', 'sub_kategori_anggaran.kategori_id', '=', 'kategori_anggaran.id_kategori_anggaran')
+                ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
+                ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
                 ->where('kategori_anggaran.nama', 'Pendapatan')
                 ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
                 ->sum('anggaran');
 
             $totalBelanja = DB::table('rincian_anggaran')
-                ->join('sub_kategori_anggaran', 'rincian_anggaran.sub_kategori_id', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
-                ->join('kategori_anggaran', 'sub_kategori_anggaran.kategori_id', '=', 'kategori_anggaran.id_kategori_anggaran')
+                ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
+                ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
                 ->where('kategori_anggaran.nama', 'Belanja')
                 ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
                 ->sum('anggaran');
@@ -51,7 +50,7 @@ class AdminApbdesController extends Controller
             $totalPembiayaan = $penerimaan - $pengeluaran;
 
             return [
-                'id_apbdes'         => $item->id_apbdes,
+                'id_tahun_anggaran'         => $item->id_tahun_anggaran,
                 'tahun'             => $item->tahun,
                 'total_pendapatan'  => $totalPendapatan,
                 'total_belanja'     => $totalBelanja,
@@ -61,21 +60,72 @@ class AdminApbdesController extends Controller
 
         // Berikan kembali hasil transformasi ke Blade via JS
         return view('admin.apbdes.dataAnggaran', [
-            'apbdes'   => $apbdes,
+            'apbdes'   => $tahun_anggaran,
             'apbdesJs' => $transformed,
             'search'   => $request->search,
             'title'    => 'APBDes Tahun ' . now()->year,
         ]);
     }
 
-
-
-    public function pendapatan()
+    public function pendapatan($id_tahun_anggaran)
     {
+        // Ambil tahun dari id_tahun_anggaran
+        $tahun = DB::table('tahun_anggaran')->where('id_tahun_anggaran', $id_tahun_anggaran)->value('tahun');
+
+        // Ambil rincian pendapatan berdasarkan id_tahun
+        $pendapatan = DB::table('rincian_anggaran')
+            ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
+            ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
+            ->where('kategori_anggaran.nama', 'Pendapatan')
+            ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun_anggaran)
+            ->select(
+                'rincian_anggaran.id_rincian_anggaran',
+                'rincian_anggaran.nama',
+                'rincian_anggaran.anggaran',
+                'rincian_anggaran.realisasi',
+                DB::raw('(rincian_anggaran.anggaran - rincian_anggaran.realisasi) as selisih')
+            )
+            ->get();
+
+        $pendapatanJs = $pendapatan->map(function ($item) use ($tahun) {
+            $id_tahun = DB::table('tahun_anggaran')->where('tahun', $item->tahun)->value('id_tahun_anggaran');
+            return [
+                'id' => $item->id_rincian,
+                'nama' => $item->nama,
+                'anggaran' => $item->anggaran,
+                'realisasi' => $item->realisasi,
+                'selisih' => $item->selisih,
+                'tahun' => $tahun,
+            ];
+        });
+
+        $tahunList = DB::table('tahun_anggaran')
+            ->orderByDesc('tahun')
+            ->select('id_tahun_anggaran as id', 'tahun')
+            ->get();
+
+        $tahunAktif = DB::table('tahun_anggaran')->where('id_tahun_anggaran', $id_tahun_anggaran)->value('tahun');
+
         return view('admin.apbdes.pendapatan', [
-            'title' => 'APBDes Tahun ' . now()->year,
+            'pendapatanJs' => $pendapatanJs,
+            'tahunListJs' => $tahunList,
+            'tahunAktif'        => $tahunAktif,
+            'tahun' => $tahun,
+            'title' => 'APBDes Tahun ' . now()->year
         ]);
     }
+
+    public function pendapatanTerbaru()
+    {
+        $id_terbaru = DB::table('tahun_anggaran')
+            ->orderByDesc('tahun')
+            ->value('id_tahun_anggaran');
+
+        return redirect()->route('admin.apbdes.pendapatan', $id_terbaru);
+    }
+
+
+
     public function belanja()
     {
         return view('admin.apbdes.belanja', [
@@ -114,13 +164,13 @@ class AdminApbdesController extends Controller
         ]);
 
         try {
-            Apbdes::create([
+            TahunAnggaran::create([
                 'tahun' => $request->tahun,
             ]);
 
-            return redirect()->back()->with('success', 'Apbdes Baru berhasil ditambahkan!');
+            return redirect()->back()->with('success', 'Tahun Anggaran Baru berhasil ditambahkan!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan APBDes: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menambahkan Tahun Anggaran: ' . $e->getMessage());
         }
     }
 
@@ -150,14 +200,14 @@ class AdminApbdesController extends Controller
         ]);
 
         try {
-            $apbdes = Apbdes::findOrFail($id);
-            $apbdes->update([
+            $tahun_anggaran = TahunAnggaran::findOrFail($id);
+            $tahun_anggaran->update([
                 'tahun' => $request->tahun,
             ]);
 
-            return redirect()->back()->with('success', 'Data APBDes berhasil diperbarui!');
+            return redirect()->back()->with('success', 'Data tahun anggaran berhasil diperbarui!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal mengedit APBDes: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal mengedit tahun anggaran: ' . $e->getMessage());
         }
     }
 
@@ -167,12 +217,12 @@ class AdminApbdesController extends Controller
     public function destroy($id)
     {
         try {
-            $apbdes = Apbdes::findOrFail($id);
-            $apbdes->delete();
+            $tahun_anggaran = TahunAnggaran::findOrFail($id);
+            $tahun_anggaran->delete();
 
-            return redirect()->back()->with('success', 'Data APBDes berhasil dihapus!');
+            return redirect()->back()->with('success', 'Data tahun anggaran berhasil dihapus!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus APBDes: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus tahun anggaran: ' . $e->getMessage());
         }
     }
 }

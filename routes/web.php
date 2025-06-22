@@ -1,12 +1,15 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\socialiteController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdministrasiController;
@@ -19,8 +22,6 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
-use App\Http\Controllers\BerandaController;
-use App\Http\Controllers\socialiteController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 
@@ -145,7 +146,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     //halaman admin - apbdes
     // Route::get('/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
     Route::get('/apbdes/dataAnggaran', [AdminApbdesController::class, 'dataAnggaran'])->name('adminapbdes.dataAnggaran');
-    Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatan'])->name('adminapbdes.pendapatan');
+
+    Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatanTerbaru'])
+        ->name('admin.apbdes.pendapatan.latest');
+
+    Route::get('/apbdes/pendapatan/{id_tahun_anggaran}', [AdminApbdesController::class, 'pendapatan'])
+        ->name('admin.apbdes.pendapatan');
+
     Route::get('/apbdes/belanja', [AdminApbdesController::class, 'belanja'])->name('adminapbdes.belanja');
     Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');
     Route::get('/apbdes/rekapitulasi', [AdminApbdesController::class, 'rekapitulasi'])->name('adminapbdes.rekapitulasi');
