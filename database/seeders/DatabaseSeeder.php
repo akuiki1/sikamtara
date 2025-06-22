@@ -12,6 +12,13 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\PengajuanAdministrasi;
 
+use App\Models\KategoriAnggaran;
+use App\Models\SubKategoriAnggaran;
+use App\Models\TahunAnggaran;
+use App\Models\RincianAnggaran;
+use App\Models\PenerimaanPembiayaan;
+use App\Models\PengeluaranPembiayaan;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -74,11 +81,36 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
-        // Buat 10 berita dummy
-        \App\Models\Berita::factory(10)->create();
+        // 3 Tahun Anggaran
+        $tahunList = TahunAnggaran::factory()->count(3)->create();
 
-        $this->call([
-            APBDesSeeder::class,
-        ]);
+        // 5 Kategori + SubKategori + Rincian
+        $kategoriList = KategoriAnggaran::factory()->count(5)->create();
+
+        $kategoriList->each(function ($kategori) use ($tahunList) {
+            $subKategoriList = SubKategoriAnggaran::factory()->count(3)->create([
+                'id_kategori_anggaran' => $kategori->id_kategori_anggaran,
+            ]);
+
+            foreach ($subKategoriList as $sub) {
+                foreach ($tahunList as $tahun) {
+                    RincianAnggaran::factory()->count(2)->create([
+                        'id_sub_kategori_anggaran' => $sub->id_sub_kategori_anggaran,
+                        'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+                    ]);
+                }
+            }
+        });
+
+        // Pembiayaan
+        foreach ($tahunList as $tahun) {
+            PenerimaanPembiayaan::factory()->count(2)->create([
+                'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+            ]);
+
+            PengeluaranPembiayaan::factory()->count(2)->create([
+                'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+            ]);
+        }
     }
 }

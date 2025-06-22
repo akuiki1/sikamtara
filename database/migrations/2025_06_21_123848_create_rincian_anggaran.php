@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rincian_anggaran', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sub_kategori_id')->constrained('sub_kategori_anggaran')->onDelete('cascade');
-            $table->foreignId('tahun_id')->constrained('tahun_anggaran')->onDelete('cascade');
+            $table->id('id_rincian_anggaran');
+            
+            $table->unsignedBigInteger('id_sub_kategori_anggaran');
+            $table->foreign('id_sub_kategori_anggaran')->references('id_sub_kategori_anggaran')->on('sub_kategori_anggaran');
+
+            
+            $table->unsignedBigInteger('id_tahun_anggaran');
+            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran');
+
             $table->string('nama');
             $table->decimal('anggaran', 20, 2)->default(0);
             $table->decimal('realisasi', 20, 2)->default(0);

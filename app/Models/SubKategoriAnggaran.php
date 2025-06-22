@@ -3,19 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubKategoriAnggaran extends Model
 {
+    use HasFactory;
+    
     protected $table = 'sub_kategori_anggaran';
-    protected $fillable = ['kategori_id', 'nama'];
+    protected $primaryKey = 'id_sub_kategori_anggaran';
+    public $timestamps = false;
+
+    protected $fillable = ['id_kategori_anggaran', 'nama'];
 
     public function kategori()
     {
-        return $this->belongsTo(KategoriAnggaran::class, 'kategori_id');
+        return $this->belongsTo(KategoriAnggaran::class, 'id_kategori_anggaran', 'id_kategori_anggaran');
     }
 
     public function rincian()
     {
-        return $this->hasMany(RincianAnggaran::class, 'sub_kategori_id');
+        return $this->hasMany(RincianAnggaran::class, 'id_sub_kategori_anggaran', 'id_sub_kategori_anggaran');
     }
 }

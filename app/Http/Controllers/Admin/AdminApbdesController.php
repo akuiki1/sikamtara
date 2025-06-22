@@ -10,6 +10,8 @@ use App\Models\KategoriAnggaran;
 use App\Http\Controllers\Controller;
 use App\Models\PenerimaanPembiayaan;
 use App\Models\PengeluaranPembiayaan;
+use Illuminate\Support\Facades\DB;
+
 
 class AdminApbdesController extends Controller
 {
@@ -20,31 +22,53 @@ class AdminApbdesController extends Controller
     {
         $query = Apbdes::query();
 
-        // Pencarian berdasarkan tahun
         if ($request->has('search')) {
             $query->where('tahun', 'like', '%' . $request->search . '%');
         }
 
-        // Pagination dengan query string tetap
         $apbdes = $query->paginate(10)->appends($request->query());
 
-        // Data untuk JavaScript (Alpine)
+        // Transformasi data jadi JS-ready
         $transformed = collect($apbdes->items())->map(function ($item) {
+            $id_tahun = DB::table('tahun_anggaran')->where('tahun', $item->tahun)->value('id_tahun_anggaran');
+
+            $totalPendapatan = DB::table('rincian_anggaran')
+                ->join('sub_kategori_anggaran', 'rincian_anggaran.sub_kategori_id', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
+                ->join('kategori_anggaran', 'sub_kategori_anggaran.kategori_id', '=', 'kategori_anggaran.id_kategori_anggaran')
+                ->where('kategori_anggaran.nama', 'Pendapatan')
+                ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
+                ->sum('anggaran');
+
+            $totalBelanja = DB::table('rincian_anggaran')
+                ->join('sub_kategori_anggaran', 'rincian_anggaran.sub_kategori_id', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
+                ->join('kategori_anggaran', 'sub_kategori_anggaran.kategori_id', '=', 'kategori_anggaran.id_kategori_anggaran')
+                ->where('kategori_anggaran.nama', 'Belanja')
+                ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
+                ->sum('anggaran');
+
+            $penerimaan = DB::table('penerimaan_pembiayaan')->where('id_tahun_anggaran', $id_tahun)->sum('nilai');
+            $pengeluaran = DB::table('pengeluaran_pembiayaan')->where('id_tahun_anggaran', $id_tahun)->sum('nilai');
+            $totalPembiayaan = $penerimaan - $pengeluaran;
+
             return [
-                'id_apbdes' => $item->id_apbdes,
-                'tahun'     => $item->tahun,
-                'anggaran'  => $item->anggaran,
-                'realisasi' => $item->realisasi,
+                'id_apbdes'         => $item->id_apbdes,
+                'tahun'             => $item->tahun,
+                'total_pendapatan'  => $totalPendapatan,
+                'total_belanja'     => $totalBelanja,
+                'total_pembiayaan'  => $totalPembiayaan,
             ];
         });
 
+        // Berikan kembali hasil transformasi ke Blade via JS
         return view('admin.apbdes.dataAnggaran', [
             'apbdes'   => $apbdes,
             'apbdesJs' => $transformed,
             'search'   => $request->search,
-            'title' => 'APBDes Tahun ' . now()->year,
+            'title'    => 'APBDes Tahun ' . now()->year,
         ]);
     }
+
+
 
     public function pendapatan()
     {

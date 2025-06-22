@@ -16,6 +16,13 @@
                 const matchesTahun = this.tahun === '' || item.tahun.toString() === this.tahun;
                 return matchesSearch && matchesTahun;
             });
+        },
+        formatCurrency(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
         }
     }">
         {{-- search bar + filter + tambah tahun --}}
@@ -91,6 +98,44 @@
 
         <!-- Modal Detail -->
         <x-modal show="showDetailModal" title="Detail APBDes">
+            {{-- isi --}}
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Ringkasan APBDes Tahun <span
+                        x-text="selectedApbdes.tahun"></span></h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-gray-100 rounded-xl p-4">
+                        <div class="text-sm text-gray-500">Total Pendapatan</div>
+                        <div class="text-xl font-bold text-green-600"
+                            x-text="formatCurrency(selectedApbdes.total_pendapatan || 0)"></div>
+                    </div>
+                    <div class="bg-gray-100 rounded-xl p-4">
+                        <div class="text-sm text-gray-500">Total Belanja</div>
+                        <div class="text-xl font-bold text-red-600"
+                            x-text="formatCurrency(selectedApbdes.total_belanja || 0)"></div>
+                    </div>
+                    <div class="bg-gray-100 rounded-xl p-4">
+                        <div class="text-sm text-gray-500">Total Pembiayaan</div>
+                        <div class="text-xl font-bold text-blue-600"
+                            x-text="formatCurrency(selectedApbdes.total_pembiayaan || 0)"></div>
+                    </div>
+                    <div class="bg-gray-100 rounded-xl p-4">
+                        <div class="text-sm text-gray-500">Surplus / Defisit</div>
+                        <div class="text-xl font-bold text-indigo-600"
+                            x-text="formatCurrency((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0))">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-4">
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/pendapatan`"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Pendapatan</a>
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/belanja`"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Belanja</a>
+                    <a :href="`/admin/apbdes/${selectedApbdes.id_apbdes}/pembiayaan`"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Pembiayaan</a>
+                </div>
+            </div>
 
 
             {{-- button --}}
@@ -101,7 +146,6 @@
                 <x-button type="button" @click="showDetailModal = false; showDeleteModal = true"
                     variant="danger">Hapus</x-button>
             </div>
-
         </x-modal>
 
         {{-- modal tambah --}}
@@ -127,7 +171,8 @@
 
                 {{-- button --}}
                 <div class="mt-6 flex justify-end gap-2">
-                    <x-button type="button" @click="{{ 'showAddModal' }} = false" variant="secondary">Batal</x-button>
+                    <x-button type="button" @click="{{ 'showAddModal' }} = false"
+                        variant="secondary">Batal</x-button>
                     <x-button type="submit">Tambah</x-button>
                 </div>
             </form>

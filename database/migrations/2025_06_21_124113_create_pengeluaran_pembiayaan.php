@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pengeluaran_pembiayaan', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('tahun_id')->constrained('tahun_anggaran')->onDelete('cascade');
+            $table->id('id_pengeluaran_pembiayaan');
+
+            $table->unsignedBigInteger('id_tahun_anggaran');
+            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran');
+            
             $table->string('nama');
             $table->decimal('nilai', 20, 2)->default(0);
             $table->timestamps();

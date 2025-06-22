@@ -3,14 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PenerimaanPembiayaan extends Model
 {
+    use HasFactory;
+    
     protected $table = 'penerimaan_pembiayaan';
-    protected $fillable = ['tahun_id', 'nama', 'nilai'];
+    protected $primaryKey = 'id_penerimaan_pembiayaan';
+    public $timestamps = false;
 
-    public function tahun()
+    protected $fillable = ['id_tahun_anggaran', 'nama', 'nilai'];
+
+    public function tahunAnggaran()
     {
-        return $this->belongsTo(TahunAnggaran::class, 'tahun_id');
+        return $this->belongsTo(TahunAnggaran::class, 'id_tahun_anggaran', 'id_tahun_anggaran');
     }
+
 }
