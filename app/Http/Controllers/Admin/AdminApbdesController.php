@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Apbdes;
 use Illuminate\Http\Request;
+use App\Models\TahunAnggaran;
+use App\Models\RincianAnggaran;
+use App\Models\KategoriAnggaran;
+use App\Http\Controllers\Controller;
+use App\Models\PenerimaanPembiayaan;
+use App\Models\PengeluaranPembiayaan;
 
 class AdminApbdesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function dataAnggaran(Request $request)
     {
         $query = Apbdes::query();
 
@@ -33,10 +38,35 @@ class AdminApbdesController extends Controller
             ];
         });
 
-        return view('admin.apbdes.apbdes', [
+        return view('admin.apbdes.dataAnggaran', [
             'apbdes'   => $apbdes,
             'apbdesJs' => $transformed,
             'search'   => $request->search,
+            'title' => 'APBDes Tahun ' . now()->year,
+        ]);
+    }
+
+    public function pendapatan()
+    {
+        return view('admin.apbdes.pendapatan', [
+            'title' => 'APBDes Tahun ' . now()->year,
+        ]);
+    }
+    public function belanja()
+    {
+        return view('admin.apbdes.belanja', [
+            'title' => 'APBDes Tahun ' . now()->year,
+        ]);
+    }
+    public function pembiayaan()
+    {
+        return view('admin.apbdes.pembiayaan', [
+            'title' => 'APBDes Tahun ' . now()->year,
+        ]);
+    }
+    public function rekapitulasi()
+    {
+        return view('admin.apbdes.rekapitulasi', [
             'title' => 'APBDes Tahun ' . now()->year,
         ]);
     }
