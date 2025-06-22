@@ -71,16 +71,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Buat 5 APBDes
-        $apbdesList = Apbdes::factory(5)->create();
-
-        // Untuk tiap APBDes, buat 10 rincian
-        $apbdesList->each(function ($apbdes) {
-            DetailApbdes::factory(10)->create([
-                'id_apbdes' => $apbdes->id_apbdes,
-            ]);
-        });
-
         // 3 Tahun Anggaran
         $tahunList = TahunAnggaran::factory()->count(3)->create();
 
