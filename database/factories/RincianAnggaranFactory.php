@@ -17,11 +17,11 @@ class RincianAnggaranFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_sub_kategori_anggaran' => \App\Models\SubKategoriAnggaran::factory(),
-            'id_tahun_anggaran' => \App\Models\TahunAnggaran::factory(),
+            'id_sub_kategori_anggaran' => 1,
+            'id_tahun_anggaran' => 1,
             'nama' => $this->faker->sentence(3),
-            'anggaran' => $this->faker->randomFloat(2, 1000000, 100000000),
-            'realisasi' => fn(array $attributes) => $this->faker->randomFloat(2, 0, $attributes['anggaran']),
+            'anggaran' => $this->faker->numberBetween(1000000, 100000000),
+            'realisasi' => $this->faker->numberBetween(1000000, 100000000),
         ];
     }
 }

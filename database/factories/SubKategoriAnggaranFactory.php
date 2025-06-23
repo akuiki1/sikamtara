@@ -17,7 +17,6 @@ class SubKategoriAnggaranFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_kategori_anggaran' => \App\Models\KategoriAnggaran::factory(),
             'nama' => $this->faker->words(2, true),
         ];
     }

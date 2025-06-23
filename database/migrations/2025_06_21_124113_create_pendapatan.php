@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penerimaan_pembiayaan', function (Blueprint $table) {
-            $table->id('id_penerimaan_pembiayaan');
+        Schema::create('pendapatan', function (Blueprint $table) {
+            $table->id('id_pendapatan');
 
             $table->unsignedBigInteger('id_tahun_anggaran');
             $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran');
-           
+            
             $table->string('nama');
-            $table->decimal('nilai', 20, 2)->default(0);
+            $table->decimal('anggaran', 20, 2)->default(0);
+            $table->decimal('realisasi', 20, 2)->default(0);
+            $table->decimal('selisih', 20, 2)->storedAs('anggaran - realisasi');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penerimaan_pembiayaan');
+        Schema::dropIfExists('pendapatan');
     }
 };

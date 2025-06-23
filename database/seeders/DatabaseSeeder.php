@@ -71,36 +71,79 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // 3 Tahun Anggaran
-        $tahunList = TahunAnggaran::factory()->count(3)->create();
+        // 1. tahun anggaran apbdes
+        
+        $tahun = TahunAnggaran::factory()->create([
+            'tahun' => 2024
+        ]);
 
-        // 5 Kategori + SubKategori + Rincian
-        $kategoriList = KategoriAnggaran::factory()->count(5)->create();
+        // 2. Kategori & SubKategori Anggaran
+        $kategoriMap = [
+            'PENDAPATAN DESA' => [
+                ['nama' => 'Bagi Hasil BUMDes', 'anggaran' => 3852340.00, 'realisasi' => 3852340.00],
+                ['nama' => 'Dana Desa', 'anggaran' => 1019855000.00, 'realisasi' => 1019855000.00],
+                ['nama' => 'Alokasi Dana Desa', 'anggaran' => 645360000.00, 'realisasi' => 641560582.00],
+                ['nama' => 'Bagi Hasil Pajak Daerah dan Retribusi Daerah', 'anggaran' => 14266920.00, 'realisasi' => 12827000.00],
+                ['nama' => 'Bunga Bank', 'anggaran' => 400000.00, 'realisasi' => 224047.59],
+            ],
+            'BELANJA DESA - BIDANG PENYELENGGARAAN PEMERINTAHAN DESA' => [
+                ['nama' => 'Belanja Siltap, Tunjangan dan Operasional Pemerintahan Desa', 'anggaran' => 482340433.00, 'realisasi' => 458627188.52],
+                ['nama' => 'Penyediaan Sarana Prasarana Pemerintahan Desa', 'anggaran' => 49154943.00, 'realisasi' => 446313.00],
+                ['nama' => 'Administrasi Kependudukan, Pencatatan Sipil, Statistik dan Kearsipan', 'anggaran' => 3700000.00, 'realisasi' => 3700000.00],
+                ['nama' => 'Tata Praja Pemerintahan, Perencanaan, Keuangan dan Pelaporan', 'anggaran' => 18693000.00, 'realisasi' => 1963000.00],
+                ['nama' => 'Pertanahan', 'anggaran' => 5000000.00, 'realisasi' => 5000000.00],
+            ],
+            'BELANJA DESA - BIDANG PELAKSANAAN PEMBANGUNAN DESA' => [
+                ['nama' => 'Bidang Kesehatan', 'anggaran' => 314423364.00, 'realisasi' => 304061880.00],
+                ['nama' => 'Bidang Pekerjaan Umum dan Penataan Ruang', 'anggaran' => 36876847.00, 'realisasi' => 34404520.00],
+                ['nama' => 'Bidang Kawasan Permukiman', 'anggaran' => 7210000.00, 'realisasi' => 7210000.00],
+                ['nama' => 'Bidang Perhubungan, Komunikasi dan Informatika', 'anggaran' => 4503500.00, 'realisasi' => 4348800.00],
+            ],
+            'BELANJA DESA - BIDANG PEMBINAAN KEMASYARAKATAN' => [
+                ['nama' => 'Bidang Kebudayaan dan Keagamaan', 'anggaran' => 3944008.73, 'realisasi' => 3940000.00],
+                ['nama' => 'Bidang Kelembagaan Masyarakat', 'anggaran' => 2500000.00, 'realisasi' => 2400000.00],
+            ],
+            'BELANJA DESA - BIDANG PEMBERDAYAAN MASYARAKAT' => [
+                ['nama' => 'Bidang Pertanian dan Peternakan', 'anggaran' => 149058272.00, 'realisasi' => 138164536.00],
+                ['nama' => 'Bidang Peningkatan Kapasitas Aparatur Desa', 'anggaran' => 6000000.00, 'realisasi' => 6000000.00],
+            ],
+            'BELANJA DESA - BIDANG PENANGGULANGAN BENCANA, DARURAT, DAN MENDESAK' => [
+                ['nama' => 'Penanggulangan Bencana', 'anggaran' => 43050000.00, 'realisasi' => 0.00],
+                ['nama' => 'Keadaan Mendesak', 'anggaran' => 187200000.00, 'realisasi' => 187200000.00],
+            ],
+        ];
 
-        $kategoriList->each(function ($kategori) use ($tahunList) {
-            $subKategoriList = SubKategoriAnggaran::factory()->count(3)->create([
-                'id_kategori_anggaran' => $kategori->id_kategori_anggaran,
-            ]);
 
-            foreach ($subKategoriList as $sub) {
-                foreach ($tahunList as $tahun) {
-                    RincianAnggaran::factory()->count(2)->create([
-                        'id_sub_kategori_anggaran' => $sub->id_sub_kategori_anggaran,
-                        'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
-                    ]);
-                }
+        foreach ($kategoriMap as $kategori => $subList) {
+            $kategoriModel = KategoriAnggaran::factory()->create(['nama' => $kategori]);
+
+            foreach ($subList as $sub) {
+                $subModel = SubKategoriAnggaran::factory()->create([
+                    'id_kategori_anggaran' => $kategoriModel->id_kategori_anggaran,
+                    'nama' => $sub['nama']
+                ]);
+
+                RincianAnggaran::factory()->create([
+                    'id_sub_kategori_anggaran' => $subModel->id_sub_kategori_anggaran,
+                    'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+                    'nama' => $sub['nama'],
+                    'anggaran' => $sub['anggaran'],
+                    'realisasi' => $sub['realisasi'],
+                ]);
             }
-        });
-
-        // Pembiayaan
-        foreach ($tahunList as $tahun) {
-            PenerimaanPembiayaan::factory()->count(2)->create([
-                'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
-            ]);
-
-            PengeluaranPembiayaan::factory()->count(2)->create([
-                'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
-            ]);
         }
+
+        // 3. Pembiayaan
+        PenerimaanPembiayaan::factory()->create([
+            'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+            'nama' => 'SILPA Tahun 2023',
+            'nilai' => 81729568.00
+        ]);
+
+        PengeluaranPembiayaan::factory()->create([
+            'id_tahun_anggaran' => $tahun->id_tahun_anggaran,
+            'nama' => 'Pengeluaran Pembiayaan / Penyertaan Modal',
+            'nilai' => 5000000.00
+        ]);
     }
 }

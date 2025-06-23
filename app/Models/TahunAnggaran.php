@@ -11,20 +11,21 @@ class TahunAnggaran extends Model
 
     protected $table = 'tahun_anggaran';
     protected $primaryKey = 'id_tahun_anggaran';
+
     protected $fillable = ['tahun'];
 
-    public function rincianAnggaran()
+    public function rincianBelanja()
     {
-        return $this->hasMany(RincianAnggaran::class, 'id_tahun_anggaran');
+        return $this->hasMany(RincianBelanja::class, 'id_tahun_anggaran');
     }
 
-    public function penerimaanPembiayaan()
+    public function pembiayaan()
     {
-        return $this->hasMany(PenerimaanPembiayaan::class, 'id_tahun_anggaran');
+        return $this->hasMany(Pembiayaan::class, 'id_tahun_anggaran');
     }
 
-    public function pengeluaranPembiayaan()
+    public function pendapatan()
     {
-        return $this->hasMany(PengeluaranPembiayaan::class, 'id_tahun_anggaran');
+        return $this->hasMany(Pendapatan::class, 'id_tahun_anggaran');
     }
 }
