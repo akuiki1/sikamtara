@@ -2,7 +2,7 @@
     <x-slot:title>{{ $title }}</x-slot>
     💰 2. Pendapatan
     Menampilkan & mengisi data seperti Dana Desa, Alokasi Dana Desa, Bunga Bank, dll.
-    <section class="p-6 md:col-span-4 bg-white rounded-2xl shadow mt-4" x-data="{
+    <section class="md:col-span-4" x-data="{
         tahunAktif: '{{ strval($tahunAktif) }}',
         showAddModal: false,
         showEditModal: false,
@@ -108,15 +108,23 @@
         <x-table>
             <x-slot name="head">
                 <tr>
-                    <td>Nama Sumber</td>
-                    <td>Anggaran</td>
-                    <td>Realisasi</td>
-                    <td>selisih</td>
-                    <td>aksi</td>
+                    <td class="p-2 text-left">Nama Sumber</td>
+                    <td class="p-2 text-center">Anggaran</td>
+                    <td class="p-2 text-center">Realisasi</td>
+                    <td class="p-2 text-center">selisih</td>
+                    <td class="p-2 text-center">aksi</td>
                 </tr>
             </x-slot>
 
             <x-slot name="body">
+                <template x-if="filteredPendapatan.length === 0">
+                    <tr>
+                        <td colspan="5" class="text-center text-gray-500 italic p-6">
+                            Data pendapatan kosong
+                        </td>
+                    </tr>
+                </template>
+
                 <template x-for="item in filteredPendapatan" :key="item.id">
                     <tr>
                         <td x-text="item.nama"></td>
@@ -135,9 +143,10 @@
                 </template>
             </x-slot>
 
+
             <x-slot name="footer">
-                <tr class="font-semibold bg-gray-100">
-                    <td>Total Pendapatan tahun {{ $tahun }}</td>
+                <tr class="font-semibold bg-gray-100 text-sm">
+                    <td class="p-2">Total Pendapatan tahun {{ $tahun }}</td>
                     <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.anggaran, 0))"></td>
                     <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.realisasi, 0))"></td>
                     <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.selisih, 0))"></td>
@@ -194,8 +203,8 @@
 
                         <!-- Input + Tombol Atas Bawah -->
                         <div class="relative w-full">
-                            <input type="number" name="tahun" x-model="selectedApbdes.tahun" :placeholder="tahun"
-                                min="1900" max="2099"
+                            <input type="number" name="tahun" x-model="selectedApbdes.tahun"
+                                :placeholder="tahun" min="1900" max="2099"
                                 class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                                 required>
                         </div>

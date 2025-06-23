@@ -1,7 +1,7 @@
 <x-admin-layout>
     <x-slot:title>{{ $title }}</x-slot>
 
-    <section class="p-4 rounded-xl bg-white" x-data="{
+    <section class="" x-data="{
         search: '',
         tahun: '',
         showAddModal: false,
@@ -72,7 +72,7 @@
 
 
         <!-- Table -->
-        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4 bg-white p-6 rounded-xl">
             <template x-if="filteredApbdes.length === 0">
                 <div class="col-span-full text-center text-gray-400 py-6 text-sm">
                     Tidak ada data APBDes ditemukan.
