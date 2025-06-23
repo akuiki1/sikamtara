@@ -1,18 +1,10 @@
 <div x-data="{ collapsed: false }" :class="collapsed ? 'w-20' : 'w-64'"
-    class="h-auto bg-white border-r transition-all duration-300 flex flex-col">
+    class="min-h-screen bg-white border-r transition-all duration-300 flex flex-col">
+
 
     <!-- Logo & Collapse Button -->
     <div class="flex items-center justify-between px-4 py-4 border-b">
         <img src="{{ asset('img/LogoHST.png') }}" alt="Logo" class="h-10 w-auto" x-show="!collapsed">
-
-        {{-- <button @click="collapsed = !collapsed" class="text-gray-500 hover:text-gray-700">
-            <svg class="w-5 h-5 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg"
-                :class="collapsed ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="none">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="m15 19-7-7 7-7" />
-            </svg> --}}
-
-        </button>
     </div>
 
     <!-- Menu -->
@@ -266,7 +258,7 @@
         </div>
 
         <!-- APBDes -->
-       <div x-data="{ open: {{ request()->routeIs('adminapbdes.*') || request()->routeIs('admin.apbdes.*') ? 'true' : 'false' }} }">
+        <div x-data="{ open: {{ request()->routeIs('adminapbdes.*') || request()->routeIs('admin.apbdes.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -287,8 +279,8 @@
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
                 <a href="{{ route('adminapbdes.dataAnggaran') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.dataAnggaran') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                             d="M5.5 21h13M12 21V7m0 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2-1.8c3.073.661 2.467 2.8 5 2.8M5 8c3.359 0 2.192-2.115 5.012-2.793M7 9.556V7.75m0 1.806-1.95 4.393a.773.773 0 0 0 .37.962.785.785 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.776.776 0 0 0 .09-.716L7 9.556Zm10 0V7.313m0 2.243-1.95 4.393a.773.773 0 0 0 .37.962.786.786 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.775.775 0 0 0 .09-.716L17 9.556Z" />
                     </svg>
@@ -299,8 +291,8 @@
                 </a>
                 <a href="{{ route('admin.apbdes.pendapatan.latest') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('admin.apbdes.pendapatan*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                             d="M5.5 21h13M12 21V7m0 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm2-1.8c3.073.661 2.467 2.8 5 2.8M5 8c3.359 0 2.192-2.115 5.012-2.793M7 9.556V7.75m0 1.806-1.95 4.393a.773.773 0 0 0 .37.962.785.785 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.776.776 0 0 0 .09-.716L7 9.556Zm10 0V7.313m0 2.243-1.95 4.393a.773.773 0 0 0 .37.962.786.786 0 0 0 .362.089h2.436a.785.785 0 0 0 .643-.335.775.775 0 0 0 .09-.716L17 9.556Z" />
                     </svg>
@@ -311,8 +303,8 @@
                 </a>
                 <a href="{{ route('adminapbdes.belanja') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.belanja') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"
                             d="M16.5 15v1.5m0 0V18m0-1.5H15m1.5 0H18M3 9V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3M3 9v6a1 1 0 0 0 1 1h5M3 9h16m0 0v1M6 12h3m12 4.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                     </svg>
@@ -321,8 +313,8 @@
                 </a>
                 <a href="{{ route('adminapbdes.pembiayaan') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.pembiayaan') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"
                             d="M16.5 15v1.5m0 0V18m0-1.5H15m1.5 0H18M3 9V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3M3 9v6a1 1 0 0 0 1 1h5M3 9h16m0 0v1M6 12h3m12 4.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                     </svg>
@@ -331,8 +323,8 @@
                 </a>
                 <a href="{{ route('adminapbdes.rekapitulasi') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.rekapitulasi') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"
                             d="M16.5 15v1.5m0 0V18m0-1.5H15m1.5 0H18M3 9V6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v3M3 9v6a1 1 0 0 0 1 1h5M3 9h16m0 0v1M6 12h3m12 4.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                     </svg>

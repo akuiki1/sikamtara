@@ -19,28 +19,30 @@
 </head>
 
 <body class="bg-gray-100">
-    <div class="flex h-screen">
+    <div class="flex relative">
         {{-- Sidebar --}}
-        <div class="bg-white text-white">
+        <div id="sidebar" :class="collapsed ? 'w-20' : 'w-64'"
+            class="min-h-screen bg-white border-r flex-none transition-all duration-300">
             <x-admin-sidebar />
         </div>
 
-        {{-- Konten utama --}}
-        <div class="flex-1 flex flex-col">
+        {{-- Konten + Footer --}}
+        <div class="flex-1 flex flex-col relative">
             {{-- Header --}}
             <x-admin-header>{{ $title }}</x-admin-header>
-            {{-- <x-admin-nav-link>{{ $title }}</x-admin-nav-link> --}}
 
-            {{-- Body Konten --}}
-            <main class="flex-1 p-6 overflow-y-auto">
-                {{ $slot }} {{-- Konten halaman yang di-passing --}}
+            {{-- Main content --}}
+            <main class="flex-1 p-6">
+                {{ $slot }}
             </main>
 
             {{-- Footer --}}
-            <x-admin-footer />
+            <footer class="bg-gray-800 text-white text-sm font-semibold text-center p-2">
+                <p>&copy; 2025 Website Desa - All Rights Reserved</p>
+            </footer>
         </div>
     </div>
-
 </body>
+
 
 </html>

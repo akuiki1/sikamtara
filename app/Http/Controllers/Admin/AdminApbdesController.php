@@ -50,7 +50,7 @@ class AdminApbdesController extends Controller
             $totalPembiayaan = $penerimaan - $pengeluaran;
 
             return [
-                'id_tahun_anggaran'         => $item->id_tahun_anggaran,
+                'id_tahun_anggaran' => $item->id_tahun_anggaran,
                 'tahun'             => $item->tahun,
                 'total_pendapatan'  => $totalPendapatan,
                 'total_belanja'     => $totalBelanja,

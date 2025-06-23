@@ -169,10 +169,11 @@
 
         <!-- Modal Detail -->
         <x-modal show="showDetailModal">
-            <div class="space-y-8">
-                <div class="flex items-center justify-between mb-6 border-b pb-2">
-                    <h2 class="text-xl font-semibold text-gray-900 tracking-tight flex items-center gap-2">
-                        <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="space-y-6">
+                {{-- Header --}}
+                <div class="flex items-center justify-between mb-4 border-b pb-1">
+                    <h2 class="text-base font-semibold text-gray-900 tracking-tight flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 17v-6h13M4 6h16M4 10h16M4 14h10M4 18h10" />
                         </svg>
@@ -180,58 +181,58 @@
                     </h2>
                 </div>
 
-
-                <div class="grid grid-cols-1 gap-6">
+                <div class="grid grid-cols-1 gap-4">
                     {{-- Pendapatan --}}
                     <a :href="`/admin/apbdes/pendapatan/${selectedApbdes.id_tahun_anggaran}`"
-                        class="block bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-md transition hover:ring-1 hover:ring-green-400">
-                        <div class="text-sm font-medium text-gray-500 mb-1">Pendapatan</div>
-                        <div class="text-2xl font-semibold text-green-500 tracking-tight"
+                        class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-green-400">
+                        <div class="text-[11px] font-medium text-gray-500 mb-0.5">Pendapatan</div>
+                        <div class="text-base font-semibold text-green-500 tracking-tight"
                             x-text="formatCurrency(selectedApbdes.total_pendapatan || 0)">
                         </div>
                     </a>
 
                     {{-- Belanja --}}
                     <a :href="`/admin/apbdes/belanja/${selectedApbdes.id_tahun_anggaran}`"
-                        class="block bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-md transition hover:ring-1 hover:ring-red-400">
-                        <div class="text-sm font-medium text-gray-500 mb-1">Belanja</div>
-                        <div class="text-2xl font-semibold text-red-500 tracking-tight"
+                        class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-red-400">
+                        <div class="text-[11px] font-medium text-gray-500 mb-0.5">Belanja</div>
+                        <div class="text-base font-semibold text-red-500 tracking-tight"
                             x-text="formatCurrency(selectedApbdes.total_belanja || 0)">
                         </div>
                     </a>
 
                     {{-- Pembiayaan --}}
                     <a :href="`/admin/apbdes/pembiayaan/${selectedApbdes.id_tahun_anggaran}`"
-                        class="block bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-md transition hover:ring-1 hover:ring-blue-400">
-                        <div class="text-sm font-medium text-gray-500 mb-1">Pembiayaan</div>
-                        <div class="text-2xl font-semibold text-blue-500 tracking-tight"
+                        class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-blue-400">
+                        <div class="text-[11px] font-medium text-gray-500 mb-0.5">Pembiayaan</div>
+                        <div class="text-base font-semibold text-blue-500 tracking-tight"
                             x-text="formatCurrency(selectedApbdes.total_pembiayaan || 0)">
                         </div>
                     </a>
 
                     {{-- Surplus / Defisit --}}
-                    {{-- Surplus / Defisit --}}
                     <div
-                        class="bg-white border border-gray-200 rounded-xl p-6 shadow hover:shadow-md transition-all duration-200 space-y-2">
-                        <div class="flex items-center justify-between mb-1">
-                            <div class="text-sm font-medium text-gray-500 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
+                        class="bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition-all duration-200 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <div class="text-[11px] font-medium text-gray-500 flex items-center gap-1">
+                                <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 8v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
                                 </svg>
                                 Surplus / Defisit
                             </div>
-                            <div class="text-xs px-2 py-0.5 rounded-full font-medium"
+
+                            <div class="text-[10px] px-1.5 py-0.5 rounded font-medium"
                                 :class="((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0)) >= 0
                                     ?
                                     'bg-emerald-100 text-emerald-700' :
                                     'bg-rose-100 text-rose-700'"
-                                x-text="((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0)) >= 0 ? '+ Surplus' : '– Defisit'">
+                                x-text="((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0)) >= 0
+                            ? '+ Surplus' : '– Defisit'">
                             </div>
                         </div>
 
-                        <div class="text-2xl font-semibold tracking-tight"
+                        <div class="text-base font-semibold tracking-tight"
                             :class="((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0)) >= 0
                                 ?
                                 'text-emerald-500' :
@@ -239,8 +240,7 @@
                             x-text="formatCurrency((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0))">
                         </div>
 
-                        {{-- Progress bar visual --}}
-                        <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden mt-2">
+                        <div class="w-full bg-gray-100 h-1 rounded-full overflow-hidden">
                             <div class="h-full transition-all duration-300"
                                 :class="((selectedApbdes.total_pendapatan || 0) - (selectedApbdes.total_belanja || 0)) >= 0
                                     ?
@@ -254,7 +254,7 @@
             </div>
 
             {{-- Tombol Aksi --}}
-            <div class="flex justify-end gap-3 pt-8 mt-8 border-t border-gray-100">
+            <div class="flex justify-end gap-2 pt-6 mt-6 border-t border-gray-100 text-sm">
                 <x-button type="button" @click="showDetailModal = false" variant="secondary">Tutup</x-button>
                 <x-button type="button" @click="showDetailModal = false; showEditModal = true"
                     variant="primary">Edit</x-button>
@@ -262,7 +262,6 @@
                     variant="danger">Hapus</x-button>
             </div>
         </x-modal>
-
 
         {{-- modal tambah --}}
         <x-modal show="showAddModal" title="Tambah APBDes Baru">
@@ -372,16 +371,4 @@
             </div>
         </div>
     </section>
-    <section>
-        🔘 Detail Tahun Anggaran (ketika tahun diklik)
-
-        Ringkasan: Total Pendapatan, Belanja, Pembiayaan, Surplus/Defisit
-
-    </section>
-    <div>
-        Akses ke sub halaman:
-        Pendapatan
-        Belanja
-        Pembiayaan
-    </div>
 </x-admin-layout>
