@@ -28,4 +28,21 @@ class TahunAnggaran extends Model
     {
         return $this->hasMany(Pendapatan::class, 'id_tahun_anggaran');
     }
+
+    public function totalPendapatan()
+    {
+        return $this->pendapatan()->sum('anggaran');
+    }
+
+    public function totalBelanja()
+    {
+        return $this->rincianBelanja()->sum('anggaran');
+    }
+
+    public function totalPembiayaan()
+    {
+        $penerimaan = $this->pembiayaan()->where('jenis', 'penerimaan')->sum('anggaran');
+        $pengeluaran = $this->pembiayaan()->where('jenis', 'pengeluaran')->sum('anggaran');
+        return $penerimaan - $pengeluaran;
+    }
 }

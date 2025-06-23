@@ -70,102 +70,101 @@
             </div>
         </div>
 
-
         <!-- Table -->
-        <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4 bg-white p-6 rounded-xl">
-            <template x-if="filteredApbdes.length === 0">
-                <div class="col-span-full text-center text-gray-400 py-6 text-sm">
-                    Tidak ada data APBDes ditemukan.
-                </div>
-            </template>
-
-            <template x-for="item in filteredApbdes" :key="item.id_tahun_anggaran">
-                <div @click="selectedApbdes = item; showDetailModal = true"
-                    class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full cursor-pointer hover:scale-105">
-                    {{-- Tahun --}}
-                    <div class="mb-4 text-center">
-                        <div class="text-xs uppercase tracking-wide text-gray-400">Tahun Anggaran</div>
-                        <div class="text-xl font-semibold text-gray-800" x-text="item.tahun"></div>
+        <div class="bg-white p-6 rounded-xl">
+            <div class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4">
+                <template x-if="filteredApbdes.length === 0">
+                    <div class="col-span-full text-center text-gray-400 py-6 text-sm">
+                        Tidak ada data APBDes ditemukan.
                     </div>
+                </template>
 
-                    {{-- Ringkasan --}}
-                    <div class="space-y-3">
-                        <!-- Pendapatan -->
-                        <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
-                            <div class="text-[11px] text-gray-500">Pendapatan</div>
-                            <div class="flex justify-between items-end">
-                                <div></div> <!-- spacer biar angka tetap di kanan -->
-                                <div class="text-sm font-semibold text-green-500"
-                                    x-text="formatCurrency(item.total_pendapatan || 0)"></div>
-                            </div>
+                <template x-for="item in filteredApbdes" :key="item.id_tahun_anggaran">
+                    <div @click="selectedApbdes = item; showDetailModal = true"
+                        class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between h-full cursor-pointer hover:scale-105">
+                        {{-- Tahun --}}
+                        <div class="mb-4 text-center">
+                            <div class="text-xs uppercase tracking-wide text-gray-400">Tahun Anggaran</div>
+                            <div class="text-xl font-semibold text-gray-800" x-text="item.tahun"></div>
                         </div>
 
-                        <!-- Belanja -->
-                        <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
-                            <div class="text-[11px] text-gray-500">Belanja</div>
-                            <div class="flex justify-between items-end">
-                                <div></div>
-                                <div class="text-sm font-semibold text-red-500"
-                                    x-text="formatCurrency(item.total_belanja || 0)"></div>
-                            </div>
-                        </div>
-
-                        <!-- Pembiayaan -->
-                        <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
-                            <div class="text-[11px] text-gray-500">Pembiayaan</div>
-                            <div class="flex justify-between items-end">
-                                <div></div>
-                                <div class="text-sm font-semibold text-blue-500"
-                                    x-text="formatCurrency(item.total_pembiayaan || 0)"></div>
-                            </div>
-                        </div>
-
-                        <!-- Surplus / Defisit -->
-                        <div class="border rounded-lg px-4 py-3 space-y-1 ">
-                            <div class="flex justify-between items-center">
-                                <div class="text-xs text-gray-500 flex items-center gap-1">
-                                    <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                                    </svg>
-                                    Surplus / Defisit
+                        {{-- Ringkasan --}}
+                        <div class="space-y-3">
+                            <!-- Pendapatan -->
+                            <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
+                                <div class="text-[11px] text-gray-500">Pendapatan</div>
+                                <div class="flex justify-between items-end">
+                                    <div></div> <!-- spacer biar angka tetap di kanan -->
+                                    <div class="text-sm font-semibold text-green-500"
+                                        x-text="formatCurrency(item.total_pendapatan || 0)"></div>
                                 </div>
-                                <div class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                            </div>
+
+                            <!-- Belanja -->
+                            <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
+                                <div class="text-[11px] text-gray-500">Belanja</div>
+                                <div class="flex justify-between items-end">
+                                    <div></div>
+                                    <div class="text-sm font-semibold text-red-500"
+                                        x-text="formatCurrency(item.total_belanja || 0)"></div>
+                                </div>
+                            </div>
+
+                            <!-- Pembiayaan -->
+                            <div class="border rounded-lg px-4 py-2 flex flex-col justify-between h-[60px]">
+                                <div class="text-[11px] text-gray-500">Pembiayaan</div>
+                                <div class="flex justify-between items-end">
+                                    <div></div>
+                                    <div class="text-sm font-semibold text-blue-500"
+                                        x-text="formatCurrency(item.total_pembiayaan || 0)"></div>
+                                </div>
+                            </div>
+
+                            <!-- Surplus / Defisit -->
+                            <div class="border rounded-lg px-4 py-3 space-y-1 ">
+                                <div class="flex justify-between items-center">
+                                    <div class="text-xs text-gray-500 flex items-center gap-1">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                                        </svg>
+                                        Surplus / Defisit
+                                    </div>
+                                    <div class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                                        :class="(item.total_pendapatan - item.total_belanja) >= 0
+                                            ?
+                                            'bg-emerald-100 text-emerald-700' :
+                                            'bg-rose-100 text-rose-700'"
+                                        x-text="(item.total_pendapatan - item.total_belanja) >= 0 ? '+ Surplus' : '– Defisit'">
+                                    </div>
+                                </div>
+                                <div class="text-sm font-semibold"
                                     :class="(item.total_pendapatan - item.total_belanja) >= 0
                                         ?
-                                        'bg-emerald-100 text-emerald-700' :
-                                        'bg-rose-100 text-rose-700'"
-                                    x-text="(item.total_pendapatan - item.total_belanja) >= 0 ? '+ Surplus' : '– Defisit'">
+                                        'text-emerald-500' :
+                                        'text-rose-500'"
+                                    x-text="formatCurrency((item.total_pendapatan || 0) - (item.total_belanja || 0))">
                                 </div>
-                            </div>
-                            <div class="text-sm font-semibold"
-                                :class="(item.total_pendapatan - item.total_belanja) >= 0
-                                    ?
-                                    'text-emerald-500' :
-                                    'text-rose-500'"
-                                x-text="formatCurrency((item.total_pendapatan || 0) - (item.total_belanja || 0))">
-                            </div>
-                            <div class="w-full h-1.5 rounded-full bg-gray-200 overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-300"
-                                    :class="(item.total_pendapatan - item.total_belanja) >= 0
-                                        ?
-                                        'bg-emerald-400' :
-                                        'bg-rose-400'"
-                                    :style="`width: ${Math.min(100, Math.abs((item.total_pendapatan - item.total_belanja) / (item.total_pendapatan || 1)) * 100)}%`">
+                                <div class="w-full h-1.5 rounded-full bg-gray-200 overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-300"
+                                        :class="(item.total_pendapatan - item.total_belanja) >= 0
+                                            ?
+                                            'bg-emerald-400' :
+                                            'bg-rose-400'"
+                                        :style="`width: ${Math.min(100, Math.abs((item.total_pendapatan - item.total_belanja) / (item.total_pendapatan || 1)) * 100)}%`">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
+            {{-- pagination --}}
+            <div class="mt-8">
+                {{ $apbdes->links() }}
+            </div>
         </div>
-
-        {{-- pagination --}}
-        <div class="mt-4">
-            {{ $apbdes->links() }}
-        </div>
-
 
         <!-- Modal Detail -->
         <x-modal show="showDetailModal">
@@ -295,8 +294,9 @@
 
         <!-- Modal Edit -->
         <x-modal show="showEditModal" title="Edit data APBDes">
-            <form :action="`{{ url('/admin/apbdes/update') }}/${selectedApbdes.id_apbdes}`" method="POST">
+            <form :action="`{{ url('/admin/apbdes/update') }}/${selectedApbdes.id_tahun_anggaran}`" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="flex items-center gap-3 w-full">
                     <!-- Ikon Kalender -->
                     <svg class="w-6 h-6 text-gray-800 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -318,7 +318,7 @@
                 <div class="mt-6 flex justify-end gap-2">
                     <x-button type="button" @click="showEditModal = false; showDetailModal = true"
                         variant="secondary">Kembali</x-button>
-                    <x-button type="submit">Tambah</x-button>
+                    <x-button type="submit">Simpan</x-button>
                 </div>
             </form>
         </x-modal>
@@ -332,7 +332,7 @@
                         x-text="selectedApbdes.tahun"></strong>?
                 </p>
 
-                <form :action="`{{ url('/admin/apbdes/delete') }}/${selectedApbdes.id_apbdes}`" method="POST"
+                <form :action="`{{ url('/admin/apbdes/delete') }}/${selectedApbdes.id_tahun_anggaran}`" method="POST"
                     x-ref="deleteForm">
                     @csrf
                     @method('DELETE')
@@ -347,28 +347,6 @@
         </div>
 
         {{-- modal status --}}
-        <div x-data="{ showSuccess: {{ session('success') ? 'true' : 'false' }}, showError: {{ session('error') ? 'true' : 'false' }} }" x-init="setTimeout(() => {
-            showSuccess = false;
-            showError = false
-        }, 3000)" class="fixed top-5 right-5 z-50 space-y-2">
-
-            <!-- Berhasil -->
-            <div x-show="showSuccess" x-transition
-                class="flex items-center gap-3 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg shadow-lg">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>{{ session('success') }}</span>
-            </div>
-
-            <!-- Gagal -->
-            <div x-show="showError" x-transition
-                class="flex items-center gap-3 p-4 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-lg">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                <span>{{ session('error') }}</span>
-            </div>
-        </div>
+        <x-modalstatus></x-modalstatus>
     </section>
 </x-admin-layout>

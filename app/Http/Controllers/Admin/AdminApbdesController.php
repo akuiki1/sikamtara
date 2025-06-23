@@ -6,12 +6,9 @@ use App\Models\Belanja;
 use App\Models\Pendapatan;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
-use App\Models\RincianAnggaran;
-use App\Models\KategoriAnggaran;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\PenerimaanPembiayaan;
-use App\Models\PengeluaranPembiayaan;
+use Illuminate\Database\QueryException;
 
 
 class AdminApbdesController extends Controller
@@ -21,34 +18,35 @@ class AdminApbdesController extends Controller
      */
     public function dataAnggaran(Request $request)
     {
-        $query = TahunAnggaran::query();
+        $query = TahunAnggaran::orderBy('tahun', 'desc');
 
         if ($request->has('search')) {
             $query->where('tahun', 'like', '%' . $request->search . '%');
         }
 
-        $tahun_anggaran = $query->paginate(10)->appends($request->query());
+        $tahun_anggaran = $query->paginate(6)->appends($request->query());
 
-        // Transformasi data jadi JS-ready
         $transformed = collect($tahun_anggaran->items())->map(function ($item) {
-            $id_tahun = DB::table('tahun_anggaran')->where('tahun', $item->tahun)->value('id_tahun_anggaran');
+            $id_tahun = $item->id_tahun_anggaran;
 
-            $totalPendapatan = DB::table('rincian_anggaran')
-                ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
-                ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
-                ->where('kategori_anggaran.nama', 'Pendapatan')
-                ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
+            $totalPendapatan = DB::table('pendapatan')
+                ->where('id_tahun_anggaran', $id_tahun)
                 ->sum('anggaran');
 
-            $totalBelanja = DB::table('rincian_anggaran')
-                ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
-                ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
-                ->where('kategori_anggaran.nama', 'Belanja')
-                ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun)
+            $totalBelanja = DB::table('rincian_belanja')
+                ->where('id_tahun_anggaran', $id_tahun)
                 ->sum('anggaran');
 
-            $penerimaan = DB::table('penerimaan_pembiayaan')->where('id_tahun_anggaran', $id_tahun)->sum('nilai');
-            $pengeluaran = DB::table('pengeluaran_pembiayaan')->where('id_tahun_anggaran', $id_tahun)->sum('nilai');
+            $penerimaan = DB::table('pembiayaan')
+                ->where('id_tahun_anggaran', $id_tahun)
+                ->where('jenis', 'penerimaan')
+                ->sum('anggaran');
+
+            $pengeluaran = DB::table('pembiayaan')
+                ->where('id_tahun_anggaran', $id_tahun)
+                ->where('jenis', 'pengeluaran')
+                ->sum('anggaran');
+
             $totalPembiayaan = $penerimaan - $pengeluaran;
 
             return [
@@ -60,7 +58,7 @@ class AdminApbdesController extends Controller
             ];
         });
 
-        // Berikan kembali hasil transformasi ke Blade via JS
+
         return view('admin.apbdes.dataAnggaran', [
             'apbdes'   => $tahun_anggaran,
             'apbdesJs' => $transformed,
@@ -69,6 +67,65 @@ class AdminApbdesController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'tahun' => 'required|digits:4|integer',
+        ]);
+
+        try {
+            TahunAnggaran::create([
+                'tahun' => $request->tahun,
+            ]);
+
+            return redirect()->back()->with('success', 'Tahun Anggaran Baru berhasil ditambahkan!');
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()->back()->with('error', 'Tahun anggaran yang dimasukkan sudah tersedia.');
+            }
+
+            return redirect()->back()->with('error', 'Gagal menambahkan tahun anggaran: ' . $e->getMessage());
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'tahun' => 'required|digits:4|integer',
+        ]);
+
+        try {
+            $tahun_anggaran = TahunAnggaran::findOrFail($id);
+            $tahun_anggaran->update([
+                'tahun' => $request->tahun,
+            ]);
+
+            return redirect()->back()->with('success', 'Data tahun anggaran berhasil diperbarui!');
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return redirect()->back()->with('error', 'Tahun anggaran yang dimasukkan sudah tersedia.');
+            }
+
+            return redirect()->back()->with('error', 'Gagal mengedit tahun anggaran: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $tahun_anggaran = TahunAnggaran::findOrFail($id);
+            $tahun_anggaran->delete();
+
+            return redirect()->back()->with('success', 'Data tahun anggaran berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus tahun anggaran: ' . $e->getMessage());
+        }
+    }
+
+
+    /**
+     * Display a pendapatan of the resource.
+     */
     public function pendapatan(Request $request)
     {
         $tahunDipilih = $request->tahun;
@@ -144,6 +201,9 @@ class AdminApbdesController extends Controller
             ->with('success', 'Pendapatan berhasil dihapus.');
     }
 
+    /**
+     * Display a belanja of the resource.
+     */
     public function belanja(Request $request)
     {
         $tahunDipilih = $request->tahun;
@@ -167,97 +227,23 @@ class AdminApbdesController extends Controller
         ]);
     }
 
+    /**
+     * Display a pembiayaan of the resource.
+     */
     public function pembiayaan()
     {
         return view('admin.apbdes.pembiayaan', [
             'title' => 'APBDes Tahun ' . now()->year,
         ]);
     }
+
+    /**
+     * Display a rekapitulasi of the resource.
+     */
     public function rekapitulasi()
     {
         return view('admin.apbdes.rekapitulasi', [
             'title' => 'APBDes Tahun ' . now()->year,
         ]);
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'tahun' => 'required|digits:4|integer',
-        ]);
-
-        try {
-            TahunAnggaran::create([
-                'tahun' => $request->tahun,
-            ]);
-
-            return redirect()->back()->with('success', 'Tahun Anggaran Baru berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambahkan Tahun Anggaran: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tahun' => 'required|digits:4|integer',
-        ]);
-
-        try {
-            $tahun_anggaran = TahunAnggaran::findOrFail($id);
-            $tahun_anggaran->update([
-                'tahun' => $request->tahun,
-            ]);
-
-            return redirect()->back()->with('success', 'Data tahun anggaran berhasil diperbarui!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal mengedit tahun anggaran: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        try {
-            $tahun_anggaran = TahunAnggaran::findOrFail($id);
-            $tahun_anggaran->delete();
-
-            return redirect()->back()->with('success', 'Data tahun anggaran berhasil dihapus!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus tahun anggaran: ' . $e->getMessage());
-        }
     }
 }
