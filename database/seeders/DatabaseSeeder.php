@@ -11,15 +11,8 @@ use App\Models\Pendapatan;
 use App\Models\Administrasi;
 
 use App\Models\TahunAnggaran;
-use App\Models\RincianBelanja;
-use App\Models\RincianAnggaran;
 use Illuminate\Database\Seeder;
-use App\Models\KategoriAnggaran;
-use App\Models\SubKategoriAnggaran;
-use App\Models\PenerimaanPembiayaan;
-use Illuminate\Support\Facades\Hash;
 use App\Models\PengajuanAdministrasi;
-use App\Models\PengeluaranPembiayaan;
 use Database\Factories\RincianBelanjaFactory;
 
 class DatabaseSeeder extends Seeder

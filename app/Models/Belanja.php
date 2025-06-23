@@ -14,7 +14,7 @@ class Belanja extends Model
 
     protected $fillable = ['nama'];
 
-    public function rincian()
+    public function rincianBelanja()
     {
         return $this->hasMany(RincianBelanja::class, 'id_belanja');
     }

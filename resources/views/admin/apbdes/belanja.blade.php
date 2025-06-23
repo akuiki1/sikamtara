@@ -15,41 +15,36 @@
                 @endforeach
             </select>
         </form>
-
         @if ($tahunDipilih)
-            @foreach ($data as $kategori)
+            @foreach ($data as $belanja)
                 <div class="border rounded mb-4">
-                    <div class="bg-gray-100 px-4 py-2 font-semibold">{{ $kategori->nama }}</div>
+                    <div class="bg-gray-100 px-4 py-2 font-semibold">{{ $belanja->nama }}</div>
 
-                    @foreach ($kategori->subKategoriAnggaran as $sub)
+                    @foreach ($belanja->rincianBelanja as $rincian)
                         <div x-data="{ open: false }" class="border-t">
                             <button @click="open = !open"
                                 class="w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 flex justify-between">
-                                <span>{{ $sub->nama }}</span>
+                                <span>{{ $rincian->nama }}</span>
                                 <span x-text="open ? '-' : '+'"></span>
                             </button>
 
                             <div x-show="open" class="p-4 space-y-2">
-                                @forelse($sub->rincianAnggaran as $rincian)
-                                    <div class="border p-3 rounded bg-white shadow">
-                                        <div class="font-semibold">{{ $rincian->nama }}</div>
-                                        <div class="text-sm">Realisasi:
-                                            Rp{{ number_format($rincian->realisasi, 2, ',', '.') }}</div>
-                                        <div class="text-sm">Selisih:
-                                            Rp{{ number_format($rincian->selisih, 2, ',', '.') }}</div>
-
-                                        <div class="mt-2 space-x-2">
-                                            <button
-                                                @click="selectedItem = {{ json_encode($rincian) }}; showEditModal = true"
-                                                class="text-blue-600 hover:underline">Edit</button>
-                                            <button
-                                                @click="selectedItem = {{ json_encode($rincian) }}; showDeleteModal = true"
-                                                class="text-red-600 hover:underline">Hapus</button>
-                                        </div>
+                                <div class="border p-3 rounded bg-white shadow">
+                                    <div class="font-semibold">{{ $rincian->nama }}</div>
+                                    <div class="text-sm">Realisasi:
+                                        Rp{{ number_format($rincian->realisasi, 2, ',', '.') }}</div>
+                                    <div class="text-sm">Selisih: Rp{{ number_format($rincian->selisih, 2, ',', '.') }}
                                     </div>
-                                @empty
-                                    <p class="text-sm text-gray-500">Tidak ada rincian anggaran</p>
-                                @endforelse
+
+                                    <div class="mt-2 space-x-2">
+                                        <button
+                                            @click="selectedItem = {{ json_encode($rincian) }}; showEditModal = true"
+                                            class="text-blue-600 hover:underline">Edit</button>
+                                        <button
+                                            @click="selectedItem = {{ json_encode($rincian) }}; showDeleteModal = true"
+                                            class="text-red-600 hover:underline">Hapus</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endforeach
