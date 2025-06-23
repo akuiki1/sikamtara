@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\admin;
 
+use App\Models\Belanja;
+use App\Models\Pendapatan;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
 use App\Models\RincianAnggaran;
 use App\Models\KategoriAnggaran;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Belanja;
 use App\Models\PenerimaanPembiayaan;
 use App\Models\PengeluaranPembiayaan;
-use Illuminate\Support\Facades\DB;
 
 
 class AdminApbdesController extends Controller
@@ -76,11 +77,10 @@ class AdminApbdesController extends Controller
         $data = [];
 
         if ($tahunDipilih) {
-            $data = Belanja::with(['rincianBelanja' => function ($query) use ($tahunDipilih) {
-                $query->whereHas('tahunAnggaran', function ($q) use ($tahunDipilih) {
-                    $q->where('tahun', $tahunDipilih);
-                });
-            }])->get();
+            $data = Pendapatan::with('tahunAnggaran')
+                ->whereHas('tahunAnggaran', function ($query) use ($tahunDipilih) {
+                    $query->where('tahun', $tahunDipilih);
+                })->get();
         }
 
         return view('admin.apbdes.pendapatan', [
@@ -89,6 +89,59 @@ class AdminApbdesController extends Controller
             'tahunDipilih' => $tahunDipilih,
             'data' => $data,
         ]);
+    }
+
+    public function pendapatanStore(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'anggaran' => 'required|numeric',
+            'realisasi' => 'required|numeric',
+            'tahun' => 'required|integer'
+        ]);
+
+        Pendapatan::create([
+            'nama' => $request->nama,
+            'anggaran' => $request->anggaran,
+            'realisasi' => $request->realisasi,
+            'selisih' => $request->anggaran - $request->realisasi,
+            'tahun' => $request->tahun,
+        ]);
+
+        return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
+            ->with('success', 'Pendapatan berhasil ditambahkan.');
+    }
+
+    public function pendapatanUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'anggaran' => 'required|numeric',
+            'realisasi' => 'required|numeric',
+            'tahun' => 'required|integer'
+        ]);
+
+        $pendapatan = Pendapatan::findOrFail($id);
+        $pendapatan->update([
+            'nama' => $request->nama,
+            'anggaran' => $request->anggaran,
+            'realisasi' => $request->realisasi,
+            'selisih' => $request->anggaran - $request->realisasi,
+            'tahun' => $request->tahun,
+        ]);
+
+        return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
+            ->with('success', 'Pendapatan berhasil diperbarui.');
+    }
+
+    public function pendapatanDestroy($id)
+    {
+        $pendapatan = Pendapatan::findOrFail($id);
+        $tahun = $pendapatan->tahun;
+        $pendapatan->delete();
+
+        return redirect()->route('adminapbdes.pendapatan', ['tahun' => $tahun])
+            ->with('success', 'Pendapatan berhasil dihapus.');
     }
 
     public function belanja(Request $request)

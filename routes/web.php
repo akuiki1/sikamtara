@@ -147,10 +147,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Route::get('/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
     Route::get('/apbdes/dataAnggaran', [AdminApbdesController::class, 'dataAnggaran'])->name('adminapbdes.dataAnggaran');
 
-    Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatanTerbaru'])
-        ->name('admin.apbdes.pendapatan.latest');
-    Route::get('/apbdes/pendapatan/{id_tahun_anggaran}', [AdminApbdesController::class, 'pendapatan'])
-        ->name('admin.apbdes.pendapatan');
+    Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatan'])->name('adminapbdes.pendapatan');
+    Route::post('/apbdes/pendapatan/store', [AdminApbdesController::class, 'pendapatanStore'])->name('adminapbdes.pendapatan.store');
+    Route::put('/apbdes/pendapatan/{id}', [AdminApbdesController::class, 'pendapatanUpdate'])->name('adminapbdes.pendapatan.update');
+    Route::delete('/apbdes/pendapatan/{id}', [AdminApbdesController::class, 'pendapatanDestroy'])->name('adminapbdes.pendapatan.destroy');
 
     Route::get('/apbdes/belanja', [AdminApbdesController::class, 'belanja'])->name('adminapbdes.belanja');
     Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');

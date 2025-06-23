@@ -1,245 +1,189 @@
 <x-admin-layout>
     <x-slot:title>{{ $title }}</x-slot>
-    💰 2. Pendapatan
-    Menampilkan & mengisi data seperti Dana Desa, Alokasi Dana Desa, Bunga Bank, dll.
-    <section class="md:col-span-4" x-data="{
-        tahunAktif: '{{ strval($tahunAktif) }}',
+    <div class="container" x-data="{
         showAddModal: false,
         showEditModal: false,
         showDeleteModal: false,
         showDetailModal: false,
-        selectedPendapatan: null,
-        tahunList: @js($tahunListJs),
-        pendapatan: @js($pendapatanJs),
-        get filteredPendapatan() {
-            return this.pendapatan.filter(item => {
-                return this.tahunAktif === '' || item.tahun.toString() === this.tahunAktif.toString();
-            });
-        },
-    
-        handleTahunChange() {
-            const selected = this.tahunList.find(t => t.tahun == this.tahunAktif);
-            if (selected) {
-                window.location.href = `/admin/apbdes/pendapatan/${selected.id}`;
-            }
-        },
-    
-        formatCurrency(value) {
-            return new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                minimumFractionDigits: 0
-            }).format(value);
-        }
     }">
-        {{-- filter + tambah pendapatan --}}
+        {{-- header --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-            {{-- LEFT SECTION: Filter tahun --}}
-            <div class="flex items-center gap-3">
-                <!-- Dropdown dengan ikon & panah berputar -->
-                <div x-data="{
-                    open: false,
-                    selected: tahunAktif,
-                    items: tahunList,
-                    select(value) {
-                        this.selected = value;
-                        tahunAktif = value;
-                        handleTahunChange();
-                        this.open = false;
-                    }
-                }" class="relative w-64">
-                    <!-- Input dengan ikon filter di kiri -->
-                    <div
-                        class="flex items-center bg-white border border-gray-300 rounded-xl shadow-sm px-3 py-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-200 ease-in-out">
-                        <!-- Ikon filter -->
-                        <div class="mr-2 text-gray-600 flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round"
-                                    d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
-                            </svg>
-                        </div>
-
-                        <!-- Tombol dropdown -->
-                        <button id="tahunFilter" @click="open = !open" type="button"
-                            class="flex-1 text-left text-sm text-gray-800 pr-6 focus:outline-none">
-                            <span x-text="selected || 'Pilih Tahun'"></span>
-
-                            <!-- Panah dropdown -->
-                            <div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none transition-transform duration-300 ease-in-out"
-                                :class="open ? 'rotate-0' : 'rotate-180'">
-                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
+            <div class="flex flex-wrap items-center gap-2">
+                {{-- filter --}}
+                <form method="GET" action="{{ route('adminapbdes.pendapatan') }}" class="py-1">
+                    <div x-data="{ open: false }" class="relative w-48">
+                        <!-- Trigger Button -->
+                        <button type="button" @click="open = !open"
+                            class="w-full flex items-center justify-between px-4 py-2 border border-gray-300 rounded-full bg-white shadow-sm hover:bg-gray-50 focus:outline-none focus:ring focus:ring-blue-200 transition">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                    <path stroke-linecap="round"
+                                        d="M18.796 4H5.204a1 1 0 0 0-.753 1.659l5.302 6.058a1 1 0 0 1 .247.659v4.874a.5.5 0 0 0 .2.4l3 2.25a.5.5 0 0 0 .8-.4v-7.124a1 1 0 0 1 .247-.659l5.302-6.059c.566-.646.106-1.658-.753-1.658Z" />
                                 </svg>
+                                <span class="text-sm text-gray-700">
+                                    {{ $tahunDipilih ?? 'Pilih Tahun' }}
+                                </span>
                             </div>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                stroke-width="2">
+                                <path stroke-linecap="round" d="M6 9l6 6 6-6" />
+                            </svg>
                         </button>
-                    </div>
 
-                    <!-- Dropdown menu -->
-                    <div x-show="open" x-transition @click.outside="open = false"
-                        class="absolute mt-2 left-0 w-full z-20 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden ring-1 ring-black ring-opacity-5 max-h-60 overflow-y-auto">
-                        <template x-for="item in items" :key="item.id">
-                            <div @click="select(item.tahun)"
-                                class="px-4 py-2 text-sm cursor-pointer transition duration-150 ease-in-out"
-                                :class="selected === item.tahun ?
-                                    'text-indigo-400 font-semibold' :
-                                    'text-gray-700 hover:bg-gray-100'">
-                                <span x-text="item.tahun"></span>
-                            </div>
-                        </template>
+                        <!-- Dropdown Options -->
+                        <div x-show="open" @click.outside="open = false"
+                            class="absolute z-10 mt-2 w-full rounded-xl border border-gray-200 bg-white shadow-lg">
+                            @foreach ($tahunList as $tahun)
+                                <button type="submit" name="tahun" value="{{ $tahun->tahun }}"
+                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 transition">
+                                    {{ $tahun->tahun }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 
-
-            {{-- RIGHT SECTION: Tambah tahun --}}
+            {{-- tombol tambah --}}
             <div>
-                <x-button @click="selectedApbdes = null; showAddModal = true">
+                <x-button @click="showAddModal = true">
                     {{-- Plus Icon --}}
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <span>Tambah Pendapatan</span>
+                    <span>Tambah pendapatan</span>
                 </x-button>
             </div>
         </div>
-        <x-table>
-            <x-slot name="head">
-                <tr>
-                    <td class="p-2 text-left">Nama Sumber</td>
-                    <td class="p-2 text-center">Anggaran</td>
-                    <td class="p-2 text-center">Realisasi</td>
-                    <td class="p-2 text-center">selisih</td>
-                    <td class="p-2 text-center">aksi</td>
-                </tr>
-            </x-slot>
 
-            <x-slot name="body">
-                <template x-if="filteredPendapatan.length === 0">
-                    <tr>
-                        <td colspan="5" class="text-center text-gray-500 italic p-6">
-                            Data pendapatan kosong
-                        </td>
-                    </tr>
-                </template>
-
-                <template x-for="item in filteredPendapatan" :key="item.id">
-                    <tr>
-                        <td x-text="item.nama"></td>
-                        <td x-text="formatCurrency(item.anggaran)"></td>
-                        <td x-text="formatCurrency(item.realisasi)"></td>
-                        <td x-text="formatCurrency(item.selisih)"></td>
-                        <td>
-                            <div class="flex gap-2">
-                                <button @click="selectedPendapatan = item; showEditModal = true"
-                                    class="text-blue-600 hover:underline">Edit</button>
-                                <button @click="selectedPendapatan = item; showDeleteModal = true"
-                                    class="text-red-600 hover:underline">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                </template>
-            </x-slot>
-
-
-            <x-slot name="footer">
-                <tr class="font-semibold bg-gray-100 text-sm">
-                    <td class="p-2">Total Pendapatan tahun {{ $tahun }}</td>
-                    <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.anggaran, 0))"></td>
-                    <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.realisasi, 0))"></td>
-                    <td x-text="formatCurrency(filteredPendapatan.reduce((sum, p) => sum + p.selisih, 0))"></td>
-                    <td></td>
-                </tr>
-            </x-slot>
-
-        </x-table>
-
-        {{-- status crud --}}
-        <x-stat-card \>
-
-            {{-- modal tambah --}}
-            <x-modal show="showAddModal" title="Tambah APBDes Baru">
-                <form action="{{ route('adminapbdes.store') }}" method="POST">
-                    @csrf
-                    <div x-data="{ tahun: new Date().getFullYear() }" class="flex items-center gap-3 w-full">
-                        <!-- Ikon Kalender -->
-                        <svg class="w-6 h-6 text-gray-800 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
-                        </svg>
-
-                        <!-- Input + Tombol Atas Bawah -->
-                        <div class="relative w-full">
-                            <input type="number" name="tahun" x-model="tahun" :placeholder="tahun" min="1900"
-                                max="2099"
-                                class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                required>
-                        </div>
-                    </div>
-
-                    {{-- button --}}
-                    <div class="mt-6 flex justify-end gap-2">
-                        <x-button type="button" @click="{{ 'showAddModal' }} = false"
-                            variant="secondary">Batal</x-button>
-                        <x-button type="submit">Tambah</x-button>
-                    </div>
-                </form>
-            </x-modal>
-
-            <!-- Modal Edit -->
-            <x-modal show="showEditModal" title="Edit data APBDes">
-                <form :action="`{{ url('/admin/apbdes/update') }}/${selectedApbdes.id_apbdes}`" method="POST">
-                    @csrf
-                    <div class="flex items-center gap-3 w-full">
-                        <!-- Ikon Kalender -->
-                        <svg class="w-6 h-6 text-gray-800 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
-                        </svg>
-
-                        <!-- Input + Tombol Atas Bawah -->
-                        <div class="relative w-full">
-                            <input type="number" name="tahun" x-model="selectedApbdes.tahun"
-                                :placeholder="tahun" min="1900" max="2099"
-                                class="border w-full p-2 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                required>
-                        </div>
-                    </div>
-
-                    {{-- button --}}
-                    <div class="mt-6 flex justify-end gap-2">
-                        <x-button type="button" @click="showEditModal = false; showDetailModal = true"
-                            variant="secondary">Kembali</x-button>
-                        <x-button type="submit">Tambah</x-button>
-                    </div>
-                </form>
-            </x-modal>
-
-            {{-- Modal Hapus --}}
-            <div x-show="showDeleteModal" @click.away="showDeleteModal = false" x-transition
-                class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div class="bg-white rounded-xl shadow-2xl w-96 p-6 text-center">
-                    <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus APBDes?</h2>
-                    <p class="mb-4">Apakah Anda yakin ingin menghapus data APBDes tahun <strong
-                            x-text="selectedApbdes.tahun"></strong>?
-                    </p>
-
-                    <form :action="`{{ url('/admin/apbdes/delete') }}/${selectedApbdes.id_apbdes}`" method="POST"
-                        x-ref="deleteForm">
-                        @csrf
-                        @method('DELETE')
-
-                        <div class="flex justify-center gap-4">
-                            <x-button type="button" @click="showDeleteModal = false; showDetailModal = true"
-                                variant="secondary">Kembali</x-button>
-                            <x-button variant="danger" type="submit">Hapus</x-button>
-                        </div>
-                    </form>
+        {{-- body --}}
+        @if ($tahunDipilih)
+            {{-- jika data kosong --}}
+            @if ($data->isEmpty())
+                <div class="text-center bg-white rounded-xl p-12 text-gray-500 text-sm">
+                    Belum ada data untuk tahun {{ $tahunDipilih }}.
                 </div>
-            </div>
-    </section>
+            @else
+                {{-- jika data ada --}}
+                <x-table class="w-full">
+                    <x-slot name="head">
+                        <tr>
+                            <th class="p-2">Nama</th>
+                            <th class="p-2">Anggaran</th>
+                            <th class="p-2">Realisasi</th>
+                            <th class="p-2">Selisih</th>
+                            <th class="p-2">Aksi</th>
+                        </tr>
+                    </x-slot>
+                    <x-slot name="body">
+                        @foreach ($data as $pendapatan)
+                            <tr>
+                                <td class="p-2">{{ $pendapatan->nama }}</td>
+                                <td class="p-2">Rp {{ number_format($pendapatan->anggaran, 2, ',', '.') }}</td>
+                                <td class="p-2">Rp {{ number_format($pendapatan->realisasi, 2, ',', '.') }}</td>
+                                <td class="p-2">Rp {{ number_format($pendapatan->selisih, 2, ',', '.') }}</td>
+                                <td class="p-2 text-center cursor-pointer">
+                                    <button @click="selectedKeluarga = {...item}; showEditModal = true"
+                                        class="text-yellow-600 hover:text-yellow-800"><svg class="hover:scale-125 transition w-[20px] h-[20px]"
+                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                                            height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="1"
+                                                d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                                        </svg>
+                                    </button>
+                                    <button @click="selectedKeluarga = item; showDeleteModal = true"
+                                        class="text-red-600 hover:text-red-800 rounded-full">
+                                        <svg class="w-[20px] h-[20px] hover:scale-125 transition" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                                stroke-width="1"
+                                                d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </x-slot>
+                </x-table>
+            @endif
+
+            {{-- jika tahun belum di pilih --}}
+        @else
+            <p class="text-sm text-gray-500 bg-white text-center rounded-xl p-12">
+                Silakan pilih tahun terlebih dahulu.
+            </p>
+        @endif
+
+        {{-- Modal Tambah --}}
+        <x-modal show="showAddModal">
+            <h2 class="text-xl font-semibold mb-4">Tambah Pendapatan</h2>
+            <form method="POST" action="{{ route('adminapbdes.pendapatan.store') }}">
+                @csrf
+                <input type="hidden" name="tahun" value="{{ $tahunDipilih }}">
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Nama</label>
+                    <input type="text" name="nama" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Anggaran</label>
+                    <input type="number" name="anggaran" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Realisasi</label>
+                    <input type="number" name="realisasi" class="w-full border rounded px-3 py-2" required>
+                </div>
+                <div class="flex justify-end space-x-2 mt-6">
+                    <x-button type="button" variant="secondary" @click="showAddModal = false">Batal</x-button>
+                    <x-button type="submit" variant="primary">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- Modal Edit --}}
+        <x-modal show="showEditModal">
+            <h2 class="text-xl font-semibold mb-4">Edit Pendapatan</h2>
+            <form method="POST" :action="'/admin/apbdes/pendapatan/' + selectedItem.id">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="tahun" value="{{ $tahunDipilih }}">
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Nama</label>
+                    <input type="text" name="nama" class="w-full border rounded px-3 py-2"
+                        x-model="selectedItem.nama" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Anggaran</label>
+                    <input type="number" name="anggaran" class="w-full border rounded px-3 py-2"
+                        x-model="selectedItem.anggaran" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm">Realisasi</label>
+                    <input type="number" name="realisasi" class="w-full border rounded px-3 py-2"
+                        x-model="selectedItem.realisasi" required>
+                </div>
+                <div class="flex justify-end space-x-2 mt-6">
+                    <x-button type="button" variant="secondary" @click="showEditModal = false">Batal</x-button>
+                    <x-button type="submit" variant="primary">Update</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        {{-- Modal Hapus --}}
+        <x-modal show="showDeleteModal">
+            <h2 class="text-xl font-semibold mb-4">Hapus Pendapatan</h2>
+            <p>Yakin ingin menghapus <strong x-text="selectedItem.nama"></strong>?</p>
+            <form method="POST" :action="'/admin/apbdes/pendapatan/' + selectedItem.id" class="mt-6">
+                @csrf
+                @method('DELETE')
+                <div class="flex justify-center space-x-2">
+                    <x-button type="button" variant="secondary" @click="showDeleteModal = false">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
+                </div>
+            </form>
+        </x-modal>
+    </div>
 </x-admin-layout>
