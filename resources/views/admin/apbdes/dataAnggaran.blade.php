@@ -182,7 +182,7 @@
 
                 <div class="grid grid-cols-1 gap-4">
                     {{-- Pendapatan --}}
-                    <a :href="`/admin/apbdes/pendapatan/${selectedApbdes.id_tahun_anggaran}`"
+                    <a :href="`/admin/apbdes/pendapatan?tahun=${selectedApbdes.tahun}`"
                         class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-green-400">
                         <div class="text-[11px] font-medium text-gray-500 mb-0.5">Pendapatan</div>
                         <div class="text-base font-semibold text-green-500 tracking-tight"
@@ -191,7 +191,7 @@
                     </a>
 
                     {{-- Belanja --}}
-                    <a :href="`/admin/apbdes/belanja/${selectedApbdes.id_tahun_anggaran}`"
+                    <a :href="`/admin/apbdes/belanja?tahun=${selectedApbdes.tahun}`"
                         class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-red-400">
                         <div class="text-[11px] font-medium text-gray-500 mb-0.5">Belanja</div>
                         <div class="text-base font-semibold text-red-500 tracking-tight"
@@ -200,7 +200,7 @@
                     </a>
 
                     {{-- Pembiayaan --}}
-                    <a :href="`/admin/apbdes/pembiayaan/${selectedApbdes.id_tahun_anggaran}`"
+                    <a :href="`/admin/apbdes/pembiayaan?tahun=${selectedApbdes.tahun}`"
                         class="block bg-white border border-gray-200 rounded-lg p-2 shadow-sm hover:shadow transition hover:ring-1 hover:ring-blue-400">
                         <div class="text-[11px] font-medium text-gray-500 mb-0.5">Pembiayaan</div>
                         <div class="text-base font-semibold text-blue-500 tracking-tight"
