@@ -152,11 +152,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/apbdes/pendapatan/{id_tahun_anggaran}', [AdminApbdesController::class, 'pendapatan'])
         ->name('admin.apbdes.pendapatan');
 
-    Route::get('/apbdes/belanja', [AdminApbdesController::class, 'belanjaTerbaru'])
-        ->name('admin.apbdes.belanja.latest');
-    Route::get('/apbdes/belanja/{id_tahun_anggaran}', [AdminApbdesController::class, 'belanja'])
-        ->name('admin.apbdes.belanja');
-
+    Route::get('/apbdes/belanja', [AdminApbdesController::class, 'belanja'])->name('adminapbdes.belanja');
     Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');
     Route::get('/apbdes/rekapitulasi', [AdminApbdesController::class, 'rekapitulasi'])->name('adminapbdes.rekapitulasi');
     Route::post('/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');

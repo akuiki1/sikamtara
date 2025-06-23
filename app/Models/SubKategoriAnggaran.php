@@ -15,12 +15,12 @@ class SubKategoriAnggaran extends Model
 
     protected $fillable = ['id_kategori_anggaran', 'nama'];
 
-    public function kategori()
+    public function kategoriAnggaran()
     {
         return $this->belongsTo(KategoriAnggaran::class, 'id_kategori_anggaran', 'id_kategori_anggaran');
     }
 
-    public function rincian()
+    public function rincianAnggaran()
     {
         return $this->hasMany(RincianAnggaran::class, 'id_sub_kategori_anggaran', 'id_sub_kategori_anggaran');
     }

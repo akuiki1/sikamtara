@@ -15,7 +15,7 @@ class KategoriAnggaran extends Model
 
     protected $fillable = ['nama'];
 
-    public function subKategori()
+    public function subKategoriAnggaran()
     {
         return $this->hasMany(SubKategoriAnggaran::class, 'id_kategori_anggaran', 'id_kategori_anggaran');
     }

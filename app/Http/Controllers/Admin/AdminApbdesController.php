@@ -124,63 +124,27 @@ class AdminApbdesController extends Controller
         return redirect()->route('admin.apbdes.pendapatan', $id_terbaru);
     }
 
-
-
-    public function belanja($id_tahun_anggaran)
+    public function belanja(Request $request)
     {
-        // Ambil tahun dari id_tahun_anggaran
-        $tahun = DB::table('tahun_anggaran')->where('id_tahun_anggaran', $id_tahun_anggaran)->value('tahun');
+        $tahunDipilih = $request->tahun;
+        $tahunList = TahunAnggaran::orderBy('tahun', 'desc')->get();
 
-        // Ambil rincian pendapatan berdasarkan id_tahun
-        $pendapatan = DB::table('rincian_anggaran')
-            ->join('sub_kategori_anggaran', 'rincian_anggaran.id_sub_kategori_anggaran', '=', 'sub_kategori_anggaran.id_sub_kategori_anggaran')
-            ->join('kategori_anggaran', 'sub_kategori_anggaran.id_kategori_anggaran', '=', 'kategori_anggaran.id_kategori_anggaran')
-            ->where('kategori_anggaran.nama', 'Pendapatan')
-            ->where('rincian_anggaran.id_tahun_anggaran', $id_tahun_anggaran)
-            ->select(
-                'rincian_anggaran.id_rincian_anggaran',
-                'rincian_anggaran.nama',
-                'rincian_anggaran.anggaran',
-                'rincian_anggaran.realisasi',
-                DB::raw('(rincian_anggaran.anggaran - rincian_anggaran.realisasi) as selisih')
-            )
-            ->get();
+        $data = [];
 
-        $pendapatanJs = $pendapatan->map(function ($item) use ($tahun) {
-            $id_tahun = DB::table('tahun_anggaran')->where('tahun', $item->tahun)->value('id_tahun_anggaran');
-            return [
-                'id' => $item->id_rincian,
-                'nama' => $item->nama,
-                'anggaran' => $item->anggaran,
-                'realisasi' => $item->realisasi,
-                'selisih' => $item->selisih,
-                'tahun' => $tahun,
-            ];
-        });
-
-        $tahunList = DB::table('tahun_anggaran')
-            ->orderByDesc('tahun')
-            ->select('id_tahun_anggaran as id', 'tahun')
-            ->get();
-
-        $tahunAktif = DB::table('tahun_anggaran')->where('id_tahun_anggaran', $id_tahun_anggaran)->value('tahun');
+        if ($tahunDipilih) {
+            $data = KategoriAnggaran::with(['subKategoriAnggaran.rincianAnggaran' => function ($query) use ($tahunDipilih) {
+                $query->whereHas('tahunAnggaran', function ($q) use ($tahunDipilih) {
+                    $q->where('tahun', $tahunDipilih);
+                });
+            }])->get();
+        }
 
         return view('admin.apbdes.belanja', [
-            'pendapatanJs' => $pendapatanJs,
-            'tahunListJs' => $tahunList,
-            'tahunAktif'        => $tahunAktif,
-            'tahun' => $tahun,
-            'title' => 'APBDes Tahun ' . now()->year
+            'title' => 'Halaman Belanja',
+            'tahunList' => $tahunList,
+            'tahunDipilih' => $tahunDipilih,
+            'data' => $data,
         ]);
-    }
-
-    public function belanjaTerbaru()
-    {
-        $id_terbaru = DB::table('tahun_anggaran')
-            ->orderByDesc('tahun')
-            ->value('id_tahun_anggaran');
-
-        return redirect()->route('admin.apbdes.belanja', $id_terbaru);
     }
 
     public function pembiayaan()
