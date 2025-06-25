@@ -134,11 +134,13 @@
             <input type="hidden" name="id_belanja" :value="selectedBelanja.id_belanja">
 
             <x-modal show="showEditBidangModal" title="Edit Bidang">
-                <div class="mb-4">
-                    <label class="block mb-1 font-medium text-sm text-gray-700">Nama Bidang</label>
-                    <input type="text" name="nama" x-model="selectedBelanja.nama"
-                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200" required>
+                <div class="">
+                    <label class="block text-xs text-gray-500 mb-1" for="nama">Nama Bidang</label>
+                    <input type="text" name="nama" id="nama" x-model="selectedBelanja.nama"
+                        class="w-full h-full py-1 px-2 rounded-xl border text-gray-800 focus:outline-none focus:ring focus:ring-indigo-200"
+                        required>
                 </div>
+
 
                 <div class="flex justify-end space-x-2 mt-4">
                     <x-button type="button" @click="showEditBidangModal = false; showDetailBidangModal = true"
