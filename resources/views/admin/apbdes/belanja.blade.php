@@ -26,7 +26,7 @@
 
     </section>
 
-    {{-- table --}}
+    {{-- container --}}
     <div class="p-4 bg-white rounded-xl" x-data="{
         showAddBidangModal: false,
         showEditBidangModal: false,
@@ -47,6 +47,7 @@
         }
     }">
 
+        {{-- header --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
             <div class="flex flex-wrap items-center gap-2">
                 <form method="GET" class="relative inline-block">
@@ -101,25 +102,40 @@
                                 $totalSelisih = 0;
                             @endphp
 
-                            @foreach ($belanja->rincianBelanja as $rincian)
-                                @php
-                                    $totalAnggaran += $rincian->anggaran ?? 0;
-                                    $totalRealisasi += $rincian->realisasi ?? 0;
-                                    $totalSelisih += $rincian->selisih ?? 0;
-                                @endphp
-                                <tr class="border-t">
-                                    <td class="px-4 py-2 cursor-pointer hover:underline"
-                                        @click="selectedItem = {{ json_encode($rincian) }}; showDetailRincianModal = true">
-                                        {{ $rincian->nama }}
-                                    </td>
-                                    <td class="px-4 py-2">Rp {{ number_format($rincian->anggaran ?? 0, 2, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-2">Rp {{ number_format($rincian->realisasi ?? 0, 2, ',', '.') }}
-                                    </td>
-                                    <td class="px-4 py-2">Rp {{ number_format($rincian->selisih ?? 0, 2, ',', '.') }}
+                            {{-- Tampilkan tombol tambah jika rincian kosong --}}
+                            @if ($belanja->rincianBelanja->isEmpty())
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-gray-500">
+                                        Belum ada rincian belanja.<br>
+                                        <button
+                                            @click="selectedBelanja = {{ json_encode($belanja) }}; showAddRincianModal = true"
+                                            class="mt-2 px-3 py-1 bg-indigo-500 text-white text-sm rounded hover:bg-indigo-600 transition">
+                                            + Tambah Rincian
+                                        </button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @else
+                                @foreach ($belanja->rincianBelanja as $rincian)
+                                    @php
+                                        $totalAnggaran += $rincian->anggaran ?? 0;
+                                        $totalRealisasi += $rincian->realisasi ?? 0;
+                                        $totalSelisih += $rincian->selisih ?? 0;
+                                    @endphp
+                                    <tr class="border-t">
+                                        <td class="px-4 py-2 cursor-pointer hover:underline"
+                                            @click="selectedItem = {{ json_encode($rincian) }}; showDetailRincianModal = true">
+                                            {{ $rincian->nama }}
+                                        </td>
+                                        <td class="px-4 py-2">Rp
+                                            {{ number_format($rincian->anggaran ?? 0, 2, ',', '.') }}</td>
+                                        <td class="px-4 py-2">Rp
+                                            {{ number_format($rincian->realisasi ?? 0, 2, ',', '.') }}</td>
+                                        <td class="px-4 py-2">Rp
+                                            {{ number_format($rincian->selisih ?? 0, 2, ',', '.') }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
+
 
                             <tr class="bg-gray-100 font-semibold border-t">
                                 <td class="px-4 py-2">TOTAL BELANJA</td>
@@ -131,6 +147,10 @@
                     </table>
                 </div>
             @endforeach
+        @else
+            <div class="text-center text-gray-500 p-8 border rounded-xl">
+                <p class="text-sm">Silahkan Pilih Tahun Terlebih Dahulu</p>
+            </div>
         @endif
 
         <!-- Modal Add Bidang -->
@@ -273,7 +293,7 @@
                 </div>
 
                 <div class="flex justify-end mt-6 space-x-2">
-                    <x-button type="button" @click="showAddRincianModal = false; showDetailBidangModal = true"
+                    <x-button type="button" @click="showAddRincianModal = false"
                         variant="secondary">Batal</x-button>
                     <x-button type="submit" variant="primary">Simpan</x-button>
                 </div>
