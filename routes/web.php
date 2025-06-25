@@ -156,6 +156,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/apbdes/belanja/bidang/store', [AdminApbdesController::class, 'bidangBelanjaStore'])->name('bidang.belanja.store');
     Route::put('/apbdes/belanja/bidang/update', [AdminApbdesController::class, 'bidangBelanjaUpdate'])->name('bidang.belanja.update');
     Route::delete('/apbdes/belanja/bidang/delete', [AdminApbdesController::class, 'bidangBelanjaDestroy'])->name('bidang.belanja.destroy');
+    Route::put('/apbdes/belanja/rincian/update', [AdminApbdesController::class, 'rincianBelanjaUpdate'])->name('rincian.belanja.update');
+
 
     Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');
     Route::get('/apbdes/rekapitulasi', [AdminApbdesController::class, 'rekapitulasi'])->name('adminapbdes.rekapitulasi');

@@ -39,7 +39,12 @@
         showDetailRincianModal: false,
     
         selectedItem: null,
-        selectedBelanja: null
+        selectedBelanja: null,
+    
+        formatRupiah(value) {
+            if (!value) return 'Rp 0';
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+        }
     }">
 
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
@@ -103,7 +108,10 @@
                                     $totalSelisih += $rincian->selisih ?? 0;
                                 @endphp
                                 <tr class="border-t">
-                                    <td class="px-4 py-2">{{ $rincian->nama }}</td>
+                                    <td class="px-4 py-2 cursor-pointer hover:underline"
+                                        @click="selectedItem = {{ json_encode($rincian) }}; showDetailRincianModal = true">
+                                        {{ $rincian->nama }}
+                                    </td>
                                     <td class="px-4 py-2">Rp {{ number_format($rincian->anggaran ?? 0, 2, ',', '.') }}
                                     </td>
                                     <td class="px-4 py-2">Rp {{ number_format($rincian->realisasi ?? 0, 2, ',', '.') }}
@@ -145,7 +153,6 @@
                 </div>
             </x-modal>
         </form>
-
 
         <!-- Modal Edit Bidang -->
         <form method="POST" action="{{ route('bidang.belanja.update') }}">
@@ -208,5 +215,33 @@
                     @click="showDetailBidangModal = false; showDeleteBidangModal = true">Hapus</x-button>
             </div>
         </x-modal>
+
+        {{-- Modal Detail Rincian --}}
+        <x-modal show="showDetailRincianModal" title="Detail Rincian Belanja">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Nama</label>
+                <p class="text-lg font-semibold text-gray-800" x-text="selectedItem?.nama"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Anggaran</label>
+                <p class="text-gray-800" x-text="formatRupiah(selectedItem?.anggaran)"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Realisasi</label>
+                <p class="text-gray-800" x-text="formatRupiah(selectedItem?.realisasi)"></p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-500 mb-1">Selisih</label>
+                <p class="text-gray-800" x-text="formatRupiah(selectedItem?.selisih)"></p>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                <x-button @click="showDetailRincianModal = false" variant="secondary">Tutup</x-button>
+            </div>
+        </x-modal>
+
     </div>
 </x-admin-layout>
