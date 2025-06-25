@@ -1,6 +1,69 @@
 <x-admin-layout>
     <x-slot:title>{{ $title }}</x-slot>
-    <div class="container" x-data="{
+
+    <section class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
+        {{-- card 1 --}}
+        <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Anggaran</p>
+                    <h2 class="text-xl font-bold text-gray-900 mt-1">1201</h2>
+                </div>
+
+                <div class="text-violet-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-file-text-icon lucide-file-text">
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                        <path d="M10 9H8" />
+                        <path d="M16 13H8" />
+                        <path d="M16 17H8" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- card 2 --}}
+        <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Realisasi</p>
+                    <h2 class="text-xl font-bold text-gray-900 mt-1">120</h2>
+                </div>
+                <div class="text-teal-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-file-input-icon lucide-file-input">
+                        <path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                        <path d="M2 15h10" />
+                        <path d="m9 18 3-3-3-3" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- card 3 --}}
+        <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Selisih</p>
+                    <h2 class="text-xl font-bold text-gray-900 mt-1">121</h2>
+                </div>
+                <div class="text-amber-400 scale-x-[-1]">
+                    <svg class="w-[36px] h-[36px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                        height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
+                            d="M18 5V4a1 1 0 0 0-1-1H8.914a1 1 0 0 0-.707.293L4.293 7.207A1 1 0 0 0 4 7.914V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-5M9 3v4a1 1 0 0 1-1 1H4m11.383.772 2.745 2.746m1.215-3.906a2.089 2.089 0 0 1 0 2.953l-6.65 6.646L9 17.95l.739-3.692 6.646-6.646a2.087 2.087 0 0 1 2.958 0Z" />
+                    </svg>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container p-6 bg-white rounded-xl" x-data="{
         showAddModal: false,
         showEditModal: false,
         showDeleteModal: false,
@@ -58,11 +121,11 @@
             </div>
         </div>
 
-        {{-- body --}}
+        {{-- table --}}
         @if ($tahunDipilih)
             {{-- jika data kosong --}}
             @if ($data->isEmpty())
-                <div class="text-center bg-white rounded-xl p-12 text-gray-500 text-sm">
+                <div class="text-center bg-white border rounded-xl p-12 text-gray-500 text-sm">
                     Belum ada data untuk tahun {{ $tahunDipilih }}.
                 </div>
             @else
@@ -86,11 +149,12 @@
                                 <td class="p-2">Rp {{ number_format($pendapatan->selisih, 2, ',', '.') }}</td>
                                 <td class="p-2 text-center cursor-pointer">
                                     <button @click="selectedKeluarga = {...item}; showEditModal = true"
-                                        class="text-yellow-600 hover:text-yellow-800"><svg class="hover:scale-125 transition w-[20px] h-[20px]"
-                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="1"
+                                        class="text-yellow-600 hover:text-yellow-800"><svg
+                                            class="hover:scale-125 transition w-[20px] h-[20px]" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="1"
                                                 d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                                         </svg>
                                     </button>
@@ -99,8 +163,8 @@
                                         <svg class="w-[20px] h-[20px] hover:scale-125 transition" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             fill="none" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="1"
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="1"
                                                 d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
                                         </svg>
                                     </button>
@@ -113,7 +177,7 @@
 
             {{-- jika tahun belum di pilih --}}
         @else
-            <p class="text-sm text-gray-500 bg-white text-center rounded-xl p-12">
+            <p class="text-sm border text-gray-500 bg-white text-center rounded-xl p-12">
                 Silakan pilih tahun terlebih dahulu.
             </p>
         @endif

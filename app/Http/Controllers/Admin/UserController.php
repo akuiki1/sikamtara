@@ -49,7 +49,7 @@ class UserController extends Controller
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
                 'nik'               => $item->nik,
-                'username'          => $item->username,
+                'username'          => $item->nama,
                 'password'          => $item->password,
             ];
         });
@@ -104,7 +104,7 @@ class UserController extends Controller
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
                 'nik'               => $item->nik,
-                'username'          => $item->username,
+                'username'          => $item->nama,
                 'password'          => $item->password,
             ];
         });
@@ -140,7 +140,7 @@ class UserController extends Controller
         try {
             $validated = $request->validate([
                 'nik' => 'required|exists:penduduk,nik|unique:users,nik',
-                'username' => 'required|string|max:50',
+                'nama' => 'required|string|max:50',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed', // pastikan ada 'password_confirmation' di form
                 'role' => 'required|in:user,admin,kepala desa',
