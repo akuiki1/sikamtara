@@ -227,6 +227,20 @@ class AdminApbdesController extends Controller
         ]);
     }
 
+    public function bidangBelanjaUpdate(Request $request)
+    {
+        $request->validate([
+            'id_belanja' => 'required|exists:belanja,id_belanja',
+            'nama' => 'required|string|max:255',
+        ]);
+
+        $bidang = Belanja::findOrFail($request->id_belanja);
+        $bidang->nama = $request->nama;
+        $bidang->save();
+
+        return redirect()->back()->with('success', 'Bidang berhasil diperbarui!');
+    }
+
     public function bidangBelanjaDestroy(Request $request)
     {
         try {

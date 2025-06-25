@@ -126,23 +126,29 @@
         @endif
 
         <!-- Modal Edit Bidang -->
-        <x-modal show="showEditBidangModal">
-            <h2 class="text-lg font-semibold mb-4">Edit Nama Bidang</h2>
-            <form method="POST" action="/update-bidang" @submit.prevent="submitEditBidang">
-                @csrf
-                <input type="hidden" name="id" :value="selectedBelanja?.id">
+        <form method="POST" action="{{ route('bidang.belanja.update') }}">
+            @csrf
+            @method('PUT')
 
-                <label class="block mb-2">Nama Baru</label>
-                <input type="text" name="nama" x-model="selectedBelanja.nama"
-                    class="w-full border p-2 rounded mb-4" required>
+            <!-- Kirim ID bidang sebagai hidden input -->
+            <input type="hidden" name="id_belanja" :value="selectedBelanja.id_belanja">
 
-                <div class="flex justify-end space-x-2">
+            <x-modal show="showEditBidangModal" title="Edit Bidang">
+                <div class="mb-4">
+                    <label class="block mb-1 font-medium text-sm text-gray-700">Nama Bidang</label>
+                    <input type="text" name="nama" x-model="selectedBelanja.nama"
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200" required>
+                </div>
+
+                <div class="flex justify-end space-x-2 mt-4">
                     <x-button type="button" @click="showEditBidangModal = false; showDetailBidangModal = true"
-                        variant="secondary">Batal</x-button>
+                        variant="secondary">
+                        Batal
+                    </x-button>
                     <x-button type="submit">Simpan</x-button>
                 </div>
-            </form>
-        </x-modal>
+            </x-modal>
+        </form>
 
         <!-- Modal Hapus Bidang -->
         <form method="POST" action="{{ route('bidang.belanja.destroy') }}">
@@ -164,17 +170,13 @@
         </form>
 
         <!-- Modal Detail Bidang -->
-        <x-modal show="showDetailBidangModal">
-            <h2 class="text-lg font-semibold mb-4" x-text="selectedBelanja.nama"></h2>
-            <template x-if="selectedBelanja">
-                <div>
-                    <p><span class="font-medium">Nama:</span> <span></span></p>
-                    <p><span class="font-medium">Tahun:</span> <span x-text="selectedBelanja.tahun ?? '-'"></span>
-                    </p>
-                </div>
-            </template>
+        <x-modal show="showDetailBidangModal" title="Detail Bidang">
+            <div class="border p-2 rounded-xl">
+                <h2 class="text-xs text-gray-400 ">Nama Bidang</h2>
+                <h2 class="text-lg font-semibold text-gray-800" x-text="selectedBelanja.nama"></h2>
+            </div>
 
-            <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+            <div class="flex justify-end gap-3 pt-6">
                 <x-button variant="secondary" @click="showDetailBidangModal = false">Tutup</x-button>
                 <x-button variant="warning"
                     @click="showDetailBidangModal = false; showEditBidangModal = true">Edit</x-button>
