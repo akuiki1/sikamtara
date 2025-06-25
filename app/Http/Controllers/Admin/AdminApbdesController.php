@@ -227,6 +227,19 @@ class AdminApbdesController extends Controller
         ]);
     }
 
+    public function bidangBelanjaStore(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+        ]);
+
+        Belanja::create([
+            'nama' => $request->nama,
+        ]);
+
+        return redirect()->back()->with('success', 'Bidang berhasil ditambahkan!');
+    }
+
     public function bidangBelanjaUpdate(Request $request)
     {
         $request->validate([

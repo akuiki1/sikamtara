@@ -125,6 +125,28 @@
             @endforeach
         @endif
 
+        <!-- Modal Add Bidang -->
+        <form method="POST" action="{{ route('bidang.belanja.store') }}">
+            @csrf
+
+            <x-modal show="showAddBidangModal" title="Tambah Bidang">
+                <!-- Input Nama Bidang -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-500 mb-1" for="nama">Nama Bidang</label>
+                    <input type="text" name="nama" id="nama"
+                        class="w-full px-4 py-3 text-xl font-semibold text-gray-800 border rounded-xl focus:outline-none focus:ring focus:ring-indigo-200"
+                        required>
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-end space-x-2 mt-6">
+                    <x-button type="button" @click="showAddBidangModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="primary">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
+
+
         <!-- Modal Edit Bidang -->
         <form method="POST" action="{{ route('bidang.belanja.update') }}">
             @csrf
