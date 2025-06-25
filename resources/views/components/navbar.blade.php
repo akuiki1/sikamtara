@@ -46,7 +46,7 @@
                     class="flex items-center space-x-2 px-3 py-2 rounded-lg shadow text-white focus:outline-none hover:shadow">
                     <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
                         class="w-8 h-8 rounded-full object-cover" alt="Foto Profil">
-                    <span class="font-medium">{{ Auth::user()->username }}</span>
+                    <span class="font-medium">{{ Auth::user()->nama }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-chevron-up transition-transform duration-300" :class="{ '-rotate-180': open }">
@@ -62,7 +62,7 @@
                     <div class="flex flex-col items-center border-b border-gray-200 pb-4 mb-4">
                         <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
                             class="w-20 h-20 rounded-full object-cover mb-3" alt="Foto Profil Besar">
-                        <h3 class="text-lg font-semibold">{{ Auth::user()->username }}</h3>
+                        <h3 class="text-lg font-semibold">{{ Auth::user()->nama }}</h3>
                         <p class="text-sm text-gray-600 truncate max-w-full">{{ Auth::user()->email }}</p>
                     </div>
 
