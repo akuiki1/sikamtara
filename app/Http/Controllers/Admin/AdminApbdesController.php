@@ -227,6 +227,22 @@ class AdminApbdesController extends Controller
         ]);
     }
 
+    public function bidangBelanjaDestroy(Request $request)
+    {
+        try {
+            $request->validate([
+                'id_belanja' => 'required|exists:belanja,id_belanja',
+            ]);
+
+            $bidang = Belanja::where('id_belanja', $request->id_belanja)->firstOrFail();
+            $bidang->delete();
+
+            return redirect()->back()->with('success', 'Bidang berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus bidang: ' . $e->getMessage());
+        }
+    }
+
     /**
      * Display a pembiayaan of the resource.
      */

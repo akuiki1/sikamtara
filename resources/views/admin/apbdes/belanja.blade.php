@@ -1,96 +1,186 @@
 <x-admin-layout>
     <x-slot:title>{{ $title }}</x-slot>
 
-    <div class="p-4 bg-white rounded-xl" x-data="{ showEditModal: false, showDeleteModal: false, selectedItem: null }">
+    {{-- stat-card --}}
+    <section>
+        @php
+            $totalAnggaran = 0;
+            $totalRealisasi = 0;
+            $totalSelisih = 0;
 
-        <!-- Pilih Tahun -->
-        <form method="GET" class="mb-4">
-            <label for="tahun" class="block font-medium">Pilih Tahun:</label>
-            <select name="tahun" id="tahun" onchange="this.form.submit()" class="mt-1 p-2 border rounded">
-                <option value="">-- Pilih Tahun --</option>
-                @foreach ($tahunList as $tahun)
-                    <option value="{{ $tahun->tahun }}" {{ request('tahun') == $tahun->tahun ? 'selected' : '' }}>
-                        {{ $tahun->tahun }}
-                    </option>
-                @endforeach
-            </select>
-        </form>
+            foreach ($data as $item) {
+                foreach ($item->rincianBelanja as $rincian) {
+                    $totalAnggaran += $rincian->anggaran;
+                    $totalRealisasi += $rincian->realisasi;
+                    $totalSelisih += $rincian->selisih;
+                }
+            }
+        @endphp
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+            <x-stat-card label="Anggaran Belanja" :value="'Rp ' . number_format($totalAnggaran, 2, ',', '.')" color="text-green-600" />
+            <x-stat-card label="Total Realisasi Belanja" :value="'Rp ' . number_format($totalRealisasi, 2, ',', '.')" color="text-red-500" />
+            <x-stat-card label="Selisih" :value="'Rp ' . number_format($totalSelisih, 2, ',', '.')" />
+        </div>
+
+
+    </section>
+
+    {{-- table --}}
+    <div class="p-4 bg-white rounded-xl" x-data="{
+        showAddBidangModal: false,
+        showEditBidangModal: false,
+        showDeleteBidangModal: false,
+        showDetailBidangModal: false,
+    
+        showAddRincianModal: false,
+        showEditRincianModal: false,
+        showDeleteRincianModal: false,
+        showDetailRincianModal: false,
+    
+        selectedItem: null,
+        selectedBelanja: null
+    }">
+
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+            <div class="flex flex-wrap items-center gap-2">
+                <form method="GET" class="relative inline-block">
+                    <label for="tahun" class="sr-only">Pilih Tahun</label>
+                    <div
+                        class="flex items-center border border-gray-300 rounded-xl px-3 py-2 bg-white cursor-pointer w-48">
+                        <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 019 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
+                        </svg>
+                        <select name="tahun" id="tahun" onchange="this.form.submit()"
+                            class="w-full bg-transparent text-sm focus:outline-none">
+                            <option value="">Pilih Tahun</option>
+                            @foreach ($tahunList as $tahun)
+                                <option value="{{ $tahun->tahun }}"
+                                    {{ request('tahun') == $tahun->tahun ? 'selected' : '' }}>
+                                    {{ $tahun->tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div>
+                <x-button @click="showAddBidangModal = true">Tambah Bidang</x-button>
+                <x-button @click="showAddRincianModal = true">Tambah Rincian Belanja</x-button>
+            </div>
+        </div>
+
+        {{-- Tabel Data Belanja --}}
         @if ($tahunDipilih)
             @foreach ($data as $belanja)
-                <div class="border rounded mb-4">
-                    <div class="bg-gray-100 px-4 py-2 font-semibold">{{ $belanja->nama }}</div>
+                <div class="border rounded-xl overflow-hidden shadow mb-4">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-indigo-400 text-white">
+                            <tr>
+                                <th class="flex font-semibold px-4 py-2 cursor-pointer transition hover:underline w-96"
+                                    @click="selectedBelanja = {{ json_encode($belanja) }}; showDetailBidangModal = true">
+                                    {{ strtoupper($belanja->nama) }}
+                                </th>
+                                <th class="font-semibold px-4 py-2">Anggaran</th>
+                                <th class="font-semibold px-4 py-2">Realisasi</th>
+                                <th class="font-semibold px-4 py-2">Selisih</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $totalAnggaran = 0;
+                                $totalRealisasi = 0;
+                                $totalSelisih = 0;
+                            @endphp
 
-                    @foreach ($belanja->rincianBelanja as $rincian)
-                        <div x-data="{ open: false }" class="border-t">
-                            <button @click="open = !open"
-                                class="w-full text-left px-4 py-2 bg-gray-50 hover:bg-gray-100 flex justify-between">
-                                <span>{{ $rincian->nama }}</span>
-                                <span x-text="open ? '-' : '+'"></span>
-                            </button>
+                            @foreach ($belanja->rincianBelanja as $rincian)
+                                @php
+                                    $totalAnggaran += $rincian->anggaran ?? 0;
+                                    $totalRealisasi += $rincian->realisasi ?? 0;
+                                    $totalSelisih += $rincian->selisih ?? 0;
+                                @endphp
+                                <tr class="border-t">
+                                    <td class="px-4 py-2">{{ $rincian->nama }}</td>
+                                    <td class="px-4 py-2">Rp {{ number_format($rincian->anggaran ?? 0, 2, ',', '.') }}
+                                    </td>
+                                    <td class="px-4 py-2">Rp {{ number_format($rincian->realisasi ?? 0, 2, ',', '.') }}
+                                    </td>
+                                    <td class="px-4 py-2">Rp {{ number_format($rincian->selisih ?? 0, 2, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @endforeach
 
-                            <div x-show="open" class="p-4 space-y-2">
-                                <div class="border p-3 rounded bg-white shadow">
-                                    <div class="font-semibold">{{ $rincian->nama }}</div>
-                                    <div class="text-sm">Realisasi:
-                                        Rp{{ number_format($rincian->realisasi, 2, ',', '.') }}</div>
-                                    <div class="text-sm">Selisih: Rp{{ number_format($rincian->selisih, 2, ',', '.') }}
-                                    </div>
-
-                                    <div class="mt-2 space-x-2">
-                                        <button
-                                            @click="selectedItem = {{ json_encode($rincian) }}; showEditModal = true"
-                                            class="text-blue-600 hover:underline">Edit</button>
-                                        <button
-                                            @click="selectedItem = {{ json_encode($rincian) }}; showDeleteModal = true"
-                                            class="text-red-600 hover:underline">Hapus</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                            <tr class="bg-gray-100 font-semibold border-t">
+                                <td class="px-4 py-2">TOTAL BELANJA</td>
+                                <td class="px-4 py-2">Rp {{ number_format($totalAnggaran, 2, ',', '.') }}</td>
+                                <td class="px-4 py-2">Rp {{ number_format($totalRealisasi, 2, ',', '.') }}</td>
+                                <td class="px-4 py-2">Rp {{ number_format($totalSelisih, 2, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             @endforeach
         @endif
 
-        <!-- Modal Edit -->
-        <div x-show="showEditModal" x-cloak
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded w-full max-w-md" @click.away="showEditModal = false">
-                <h2 class="text-lg font-semibold mb-4">Edit Rincian</h2>
+        <!-- Modal Edit Bidang -->
+        <x-modal show="showEditBidangModal">
+            <h2 class="text-lg font-semibold mb-4">Edit Nama Bidang</h2>
+            <form method="POST" action="/update-bidang" @submit.prevent="submitEditBidang">
+                @csrf
+                <input type="hidden" name="id" :value="selectedBelanja?.id">
 
-                <form @submit.prevent="console.log('Edit:', selectedItem)">
-                    <label class="block mb-2">Nama</label>
-                    <input type="text" x-model="selectedItem.nama" class="w-full border p-2 rounded mb-4" />
+                <label class="block mb-2">Nama Baru</label>
+                <input type="text" name="nama" x-model="selectedBelanja.nama"
+                    class="w-full border p-2 rounded mb-4" required>
 
-                    <label class="block mb-2">Realisasi</label>
-                    <input type="number" x-model="selectedItem.realisasi" class="w-full border p-2 rounded mb-4" />
+                <div class="flex justify-end space-x-2">
+                    <x-button type="button" @click="showEditBidangModal = false; showDetailBidangModal = true"
+                        variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
 
-                    <label class="block mb-2">Selisih</label>
-                    <input type="number" x-model="selectedItem.selisih" class="w-full border p-2 rounded mb-4" />
+        <!-- Modal Hapus Bidang -->
+        <form method="POST" action="{{ route('bidang.belanja.destroy') }}">
+            @csrf
+            @method('DELETE')
 
-                    <div class="flex justify-end space-x-2">
-                        <button type="button" @click="showEditModal = false"
-                            class="px-4 py-2 bg-gray-300 rounded">Batal</button>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            <input type="hidden" name="id_belanja" :value="selectedBelanja.id_belanja">
 
-        <!-- Modal Hapus -->
-        <div x-show="showDeleteModal" x-cloak
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white p-6 rounded w-full max-w-md" @click.away="showDeleteModal = false">
-                <h2 class="text-lg font-semibold mb-4">Hapus Rincian</h2>
-                <p>Apakah Anda yakin ingin menghapus rincian "<span x-text="selectedItem.nama"></span>"?</p>
+            <x-modal show="showDeleteBidangModal">
+                <h2 class="text-lg font-semibold mb-4">Hapus Bidang</h2>
+                <p>Apakah Anda yakin ingin menghapus bidang "<span x-text="selectedBelanja.nama"></span>"?</p>
 
                 <div class="flex justify-end mt-4 space-x-2">
-                    <button @click="showDeleteModal = false" class="px-4 py-2 bg-gray-300 rounded">Batal</button>
-                    <button @click="console.log('Delete:', selectedItem)"
-                        class="px-4 py-2 bg-red-600 text-white rounded">Hapus</button>
+                    <x-button type="button" @click="showDeleteBidangModal = false; showDetailBidangModal = true"
+                        variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
                 </div>
-            </div>
-        </div>
+            </x-modal>
+        </form>
 
+        <!-- Modal Detail Bidang -->
+        <x-modal show="showDetailBidangModal">
+            <h2 class="text-lg font-semibold mb-4" x-text="selectedBelanja.nama"></h2>
+            <template x-if="selectedBelanja">
+                <div>
+                    <p><span class="font-medium">Nama:</span> <span></span></p>
+                    <p><span class="font-medium">Tahun:</span> <span x-text="selectedBelanja.tahun ?? '-'"></span>
+                    </p>
+                </div>
+            </template>
+
+            <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                <x-button variant="secondary" @click="showDetailBidangModal = false">Tutup</x-button>
+                <x-button variant="warning"
+                    @click="showDetailBidangModal = false; showEditBidangModal = true">Edit</x-button>
+                <x-button variant="danger"
+                    @click="showDetailBidangModal = false; showDeleteBidangModal = true">Hapus</x-button>
+            </div>
+        </x-modal>
     </div>
 </x-admin-layout>

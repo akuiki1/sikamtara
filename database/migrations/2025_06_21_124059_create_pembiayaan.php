@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_pembiayaan');
 
             $table->unsignedBigInteger('id_tahun_anggaran');
-            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran');
+            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran')->onDelete('cascade');
            
             $table->string('nama');
             $table->enum('jenis', ['penerimaan', 'pengeluaran']);

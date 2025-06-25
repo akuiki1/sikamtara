@@ -34,6 +34,8 @@
             {{-- Main content --}}
             <main class="flex-1 p-6">
                 {{ $slot }}
+
+                <x-modalstatus></x-modalstatus>
             </main>
 
             {{-- Footer --}}
