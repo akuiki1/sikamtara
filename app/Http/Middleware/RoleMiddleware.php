@@ -28,8 +28,6 @@ class RoleMiddleware
             switch ($userRole) {
                 case 'user':
                     return redirect('/')->with('error', 'Akun Anda adalah user biasa. Anda tidak memiliki izin untuk mengakses halaman ini.');
-                case 'kepala_desa':
-                    return redirect('/kepala-desa')->with('error', 'Akun Anda adalah kepala desa. Halaman ini hanya untuk ' . $requiredRole . '.');
                 case 'admin':
                     return redirect('/dashboard')->with('error', 'Anda adalah admin, tapi tidak diizinkan mengakses halaman ini.');
                 default:

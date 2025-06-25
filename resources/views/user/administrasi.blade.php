@@ -572,9 +572,6 @@
                                         <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>
                                             Admin
                                         </option>
-                                        <option value="kepala desa"
-                                            {{ request('role') == 'kepala desa' ? 'selected' : '' }}>
-                                            Kepala Desa</option>
                                     </select>
                                 </div>
 

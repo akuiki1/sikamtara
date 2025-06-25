@@ -38,10 +38,10 @@
             </div>
 
             <div>
-                <label class="block font-medium">Username <span class="text-red-500">*</span> </label>
-                <input type="text" name="username" value="{{ old('username', $user->username) }}"
+                <label class="block font-medium">nama <span class="text-red-500">*</span> </label>
+                <input type="text" name="nama" value="{{ old('nama', $user->nama) }}"
                     class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring focus:ring-blue-200">
-                @error('username')
+                @error('nama')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
                 @enderror
             </div>

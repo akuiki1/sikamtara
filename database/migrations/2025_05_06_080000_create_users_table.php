@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             
-            $table->enum('role', ['admin', 'user', 'kepala desa'])->default('user');
+            $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('google_id')->nullable();
             $table->string('foto')->nullable();
             $table->enum('status_verifikasi', ['Belum Terverifikasi', 'Terverifikasi'])->default('Belum Terverifikasi');

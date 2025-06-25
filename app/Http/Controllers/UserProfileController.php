@@ -21,7 +21,7 @@ class UserProfileController extends Controller
 
         // Validasi input
         $request->validate([
-            'username' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
@@ -31,7 +31,7 @@ class UserProfileController extends Controller
         ]);
 
         // Update data user
-        $user->username = $request->username;
+        $user->nama = $request->nama;
         $user->email = $request->email;
 
         // Update foto jika ada

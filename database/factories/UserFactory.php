@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'nik' => $this->faker->unique()->numerify('###############'),
             'email' => $this->faker->unique()->safeEmail,
             'password' => static::$password ??= Hash::make('password'),
-            'role' => $this->faker->randomElement(['admin', 'user', 'kepala desa']),
+            'role' => $this->faker->randomElement(['admin', 'user']),
             'google_id' => $this->faker->uuid,
             'foto' => $this->faker->imageUrl(640, 480, 'people', true),
             'status_verifikasi' => $this->faker->randomElement(['Terverifikasi', 'Belum Terverifikasi']),

@@ -35,12 +35,6 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // Buat 1 user dengan role 'kepala desa'
-        User::factory()->create([
-            'nik' => $penduduks->random()->nik, // pilih nik secara acak dari penduduk
-            'role' => 'kepala desa',
-        ]);
-
         // Buat sisa 98 user dengan role 'user'
         $penduduksUser = $penduduks->random(98); // ambil 98 nik acak dan unik
 

@@ -101,9 +101,6 @@
                                     </option>
                                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin
                                     </option>
-                                    <option value="kepala desa"
-                                        {{ request('role') == 'kepala desa' ? 'selected' : '' }}>
-                                        Kepala Desa</option>
                                 </select>
                             </div>
 
@@ -367,7 +364,6 @@
                             <option value="">Pilih Role</option>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
-                            <option value="kepala desa">Kepala Desa</option>
                         </select>
                     </div>
 
@@ -526,7 +522,6 @@
                             <option value="">Pilih Role</option>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
-                            <option value="kepala desa">Kepala Desa</option>
                         </select>
                     </div>
                     <div>

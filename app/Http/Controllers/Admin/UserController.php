@@ -49,7 +49,7 @@ class UserController extends Controller
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
                 'nik'               => $item->nik,
-                'username'          => $item->nama,
+                'nama'          => $item->nama,
                 'password'          => $item->password,
             ];
         });
@@ -104,7 +104,7 @@ class UserController extends Controller
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
                 'nik'               => $item->nik,
-                'username'          => $item->nama,
+                'nama'          => $item->nama,
                 'password'          => $item->password,
             ];
         });
@@ -143,7 +143,7 @@ class UserController extends Controller
                 'nama' => 'required|string|max:50',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed', // pastikan ada 'password_confirmation' di form
-                'role' => 'required|in:user,admin,kepala desa',
+                'role' => 'required|in:user,admin',
                 'status_verifikasi' => 'required|in:Terverifikasi,Belum Terverifikasi',
             ]);
 
