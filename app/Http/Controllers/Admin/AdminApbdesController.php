@@ -271,6 +271,23 @@ class AdminApbdesController extends Controller
         }
     }
 
+    public function rincianBelanjaStore(Request $request)
+    {
+        $validated = $request->validate([
+            'id_belanja' => 'required|exists:belanja,id_belanja',
+            'id_tahun_anggaran' => 'required|exists:tahun_anggaran,id_tahun_anggaran',
+            'nama' => 'required|string|max:255',
+            'anggaran' => 'required|numeric|min:0',
+            'realisasi' => 'required|numeric|min:0',
+        ]);
+
+        $validated['selisih'] = $validated['anggaran'] - $validated['realisasi'];
+
+        RincianBelanja::create($validated);
+
+        return redirect()->back()->with('success', 'Rincian belanja berhasil ditambahkan!');
+    }
+
     public function rincianBelanjaUpdate(Request $request)
     {
         $request->validate([

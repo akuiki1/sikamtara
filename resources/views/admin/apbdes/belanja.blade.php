@@ -216,6 +216,70 @@
             </div>
         </x-modal>
 
+        {{-- Modal Add Rincian --}}
+        <form method="POST" action="{{ route('rincian.belanja.store') }}">
+            @csrf
+
+            <x-modal show="showAddRincianModal" title="Tambah Rincian Belanja">
+                <div class="space-y-4">
+                    {{-- PILIH BIDANG (id_belanja) --}}
+                    <div>
+                        <label for="id_belanja" class="block text-sm font-medium">Pilih Bidang</label>
+                        <select name="id_belanja" id="id_belanja" class="mt-1 block w-full p-2 border rounded"
+                            required>
+                            <option value="">-- Pilih Bidang --</option>
+                            @foreach ($data as $belanja)
+                                <option value="{{ $belanja->id_belanja }}">
+                                    {{ $belanja->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- PILIH TAHUN ANGGARAN --}}
+                    <div>
+                        <label for="id_tahun_anggaran" class="block text-sm font-medium">Pilih Tahun Anggaran</label>
+                        <select name="id_tahun_anggaran" id="id_tahun_anggaran"
+                            class="mt-1 block w-full p-2 border rounded" required>
+                            <option value="">-- Pilih Tahun --</option>
+                            @foreach ($tahunList as $tahun)
+                                <option value="{{ $tahun->id_tahun_anggaran }}">
+                                    {{ $tahun->tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- NAMA RINCIAN --}}
+                    <div>
+                        <label for="nama" class="block text-sm font-medium">Nama Rincian</label>
+                        <input type="text" name="nama" id="nama"
+                            class="mt-1 block w-full p-2 border rounded" required>
+                    </div>
+
+                    {{-- ANGGARAN --}}
+                    <div>
+                        <label for="anggaran" class="block text-sm font-medium">Anggaran</label>
+                        <input type="number" name="anggaran" step="0.01" min="0"
+                            class="mt-1 block w-full p-2 border rounded" required>
+                    </div>
+
+                    {{-- REALISASI --}}
+                    <div>
+                        <label for="realisasi" class="block text-sm font-medium">Realisasi</label>
+                        <input type="number" name="realisasi" step="0.01" min="0"
+                            class="mt-1 block w-full p-2 border rounded" required>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6 space-x-2">
+                    <x-button type="button" @click="showAddRincianModal = false; showDetailBidangModal = true"
+                        variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="primary">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
+
         {{-- Modal Detail Rincian --}}
         <x-modal show="showDetailRincianModal" title="Detail Rincian Belanja">
             <div class="mb-4">
