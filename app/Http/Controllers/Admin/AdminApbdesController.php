@@ -6,6 +6,7 @@ use App\Models\Belanja;
 use App\Models\Pendapatan;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
+use App\Models\RincianBelanja;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
@@ -269,6 +270,28 @@ class AdminApbdesController extends Controller
             return redirect()->back()->with('error', 'Gagal menghapus bidang: ' . $e->getMessage());
         }
     }
+
+    public function rincianBelanjaUpdate(Request $request)
+    {
+        $request->validate([
+            'id_rincian_belanja' => 'required|exists:rincian_belanja,id_rincian_belanja',
+            'nama' => 'required|string|max:255',
+            'anggaran' => 'nullable|numeric',
+            'realisasi' => 'nullable|numeric',
+        ]);
+
+        $rincian = RincianBelanja::findOrFail($request->id_rincian_belanja);
+
+        $rincian->update([
+            'nama' => $request->nama,
+            'anggaran' => str_replace(',', '.', $request->anggaran),
+            'realisasi' => str_replace(',', '.', $request->realisasi),
+            'selisih' => ($request->anggaran ?? 0) - ($request->realisasi ?? 0),
+        ]);
+
+        return redirect()->back()->with('success', 'Rincian berhasil diperbarui!');
+    }
+
 
     /**
      * Display a pembiayaan of the resource.

@@ -240,8 +240,53 @@
 
             <div class="flex justify-end space-x-2">
                 <x-button @click="showDetailRincianModal = false" variant="secondary">Tutup</x-button>
+                <x-button @click="showDetailRincianModal = false; showEditRincianModal = true"
+                    variant="warning">Edit</x-button>
+                <x-button @click="showDetailRincianModal = false; showDeleteRincianModal = true"
+                    variant="danger">Hapus</x-button>
             </div>
         </x-modal>
 
+        {{-- Modal Edit Rincian --}}
+        <form method="POST" action="{{ route('rincian.belanja.update') }}">
+            @csrf
+            @method('PUT')
+
+            <input type="hidden" name="id_rincian_belanja" :value="selectedItem?.id_rincian_belanja">
+
+            <x-modal show="showEditRincianModal" title="Edit Rincian Belanja">
+                <!-- Nama -->
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-1" for="nama">Nama Rincian</label>
+                    <input type="text" id="nama" name="nama"
+                        class="w-full px-4 py-3 text-xl font-semibold text-gray-800 border rounded-xl focus:ring-indigo-300"
+                        x-model="selectedItem?.nama" required>
+                </div>
+
+                <!-- Anggaran -->
+                <!-- Anggaran -->
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-1" for="anggaran">Anggaran</label>
+                    <input type="text" id="anggaran" name="anggaran" class="w-full px-4 py-2 border rounded-xl"
+                        x-model="selectedItem.anggaran"
+                        @input="selectedItem.anggaran = $event.target.value.replace(',', '.')">
+                </div>
+
+
+                <!-- Realisasi -->
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-500 mb-1" for="realisasi">Realisasi</label>
+                    <input type="number" id="realisasi" name="realisasi" class="w-full px-4 py-2 border rounded-xl"
+                        x-model="selectedItem?.realisasi">
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-end space-x-2 mt-6">
+                    <x-button type="button" @click="showEditRincianModal = false; showDetailRincianModal = true"
+                        variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
     </div>
 </x-admin-layout>
