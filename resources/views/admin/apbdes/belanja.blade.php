@@ -15,15 +15,52 @@
                     $totalSelisih += $rincian->selisih;
                 }
             }
+
+            if ($totalSelisih > 0) {
+                $badge =
+                    '<span class="px-2 py-0.5 text-xs font-semibold text-green-600 bg-green-100 rounded-full">Surplus</span>';
+                $bgClass = 'bg-white';
+                $textClass = 'text-green-600';
+            } elseif ($totalSelisih < 0) {
+                $badge =
+                    '<span class="px-2 py-0.5 text-xs font-semibold text-red-600 bg-red-100 rounded-full">Defisit</span>';
+                $bgClass = 'bg-white';
+                $textClass = 'text-red-600';
+            } else {
+                $badge = '';
+                $bgClass = 'bg-gray-50';
+                $textClass = 'text-gray-800';
+            }
         @endphp
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
-            <x-stat-card label="Anggaran Belanja" :value="'Rp ' . number_format($totalAnggaran, 2, ',', '.')" color="text-green-600" />
-            <x-stat-card label="Total Realisasi Belanja" :value="'Rp ' . number_format($totalRealisasi, 2, ',', '.')" color="text-red-500" />
-            <x-stat-card label="Selisih" :value="'Rp ' . number_format($totalSelisih, 2, ',', '.')" />
+            {{-- Anggaran Belanja --}}
+            <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+                <p class="text-gray-500 text-sm">Anggaran Belanja</p>
+                <h2 class="text-xl font-bold text-green-600 mt-1">
+                    Rp {{ number_format($totalAnggaran, 2, ',', '.') }}
+                </h2>
+            </div>
+
+            {{-- Realisasi --}}
+            <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+                <p class="text-gray-500 text-sm">Total Realisasi Belanja</p>
+                <h2 class="text-xl font-bold text-red-500 mt-1">
+                    Rp {{ number_format($totalRealisasi, 2, ',', '.') }}
+                </h2>
+            </div>
+
+            {{-- Selisih --}}
+            <div class="rounded-2xl shadow-sm p-5 border border-gray-100 {{ $bgClass }}">
+                <div class="flex justify-between items-center">
+                    <p class="text-gray-500 text-sm">Selisih</p>
+                    {!! $badge !!}
+                </div>
+                <h2 class="text-xl font-bold mt-1 {{ $textClass }}">
+                    Rp {{ number_format($totalSelisih, 2, ',', '.') }}
+                </h2>
+            </div>
         </div>
-
-
     </section>
 
     {{-- container --}}
