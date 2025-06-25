@@ -264,7 +264,6 @@
                 </div>
 
                 <!-- Anggaran -->
-                <!-- Anggaran -->
                 <div class="mb-4">
                     <label class="block text-sm text-gray-500 mb-1" for="anggaran">Anggaran</label>
                     <input type="text" id="anggaran" name="anggaran" class="w-full px-4 py-2 border rounded-xl"
@@ -285,6 +284,26 @@
                     <x-button type="button" @click="showEditRincianModal = false; showDetailRincianModal = true"
                         variant="secondary">Batal</x-button>
                     <x-button type="submit">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
+
+        {{-- Modal Hapus Rincian --}}
+        <form method="POST" action="{{ route('rincian.belanja.destroy') }}">
+            @csrf
+            @method('DELETE')
+
+            <input type="hidden" name="id_rincian_belanja" :value="selectedItem.id_rincian_belanja">
+
+            <x-modal show="showDeleteRincianModal" title="Hapus Rincian Belanja">
+                <p class="text-sm text-gray-600 mb-4">
+                    Apakah Anda yakin ingin menghapus rincian "<span x-text="selectedItem.nama"></span>"?
+                </p>
+
+                <div class="flex justify-end space-x-2">
+                    <x-button type="button" @click="showDeleteRincianModal = false; showDetailRincianModal = true"
+                        variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
                 </div>
             </x-modal>
         </form>

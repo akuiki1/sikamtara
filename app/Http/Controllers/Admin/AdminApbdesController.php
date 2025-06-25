@@ -292,6 +292,23 @@ class AdminApbdesController extends Controller
         return redirect()->back()->with('success', 'Rincian berhasil diperbarui!');
     }
 
+    public function rincianBelanjaDestroy(Request $request)
+    {
+        try {
+            $request->validate([
+                'id_rincian_belanja' => 'required|exists:rincian_belanja,id_rincian_belanja',
+            ]);
+
+            $rincian = RincianBelanja::findOrFail($request->id_rincian_belanja);
+            $rincian->delete();
+
+            return redirect()->back()->with('success', 'Rincian belanja berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus rincian belanja: ' . $e->getMessage());
+        }
+    }
+
+
 
     /**
      * Display a pembiayaan of the resource.
