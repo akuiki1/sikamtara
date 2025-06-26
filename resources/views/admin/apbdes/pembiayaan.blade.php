@@ -2,7 +2,8 @@
     <x-slot:title>{{ $title }}</x-slot>
 
     {{-- Stat Cards --}}
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    {{-- Stat Cards --}}
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         @php
             $cards = [
                 ['title' => 'Penerimaan', 'data' => $totalPenerimaan, 'color' => 'green'],
@@ -12,39 +13,87 @@
 
         @foreach ($cards as $card)
             @php
+                $anggaran = $card['data']['anggaran'];
+                $realisasi = $card['data']['realisasi'];
                 $selisih = $card['data']['selisih'];
-                $selisihColor = $selisih > 0 ? 'text-green-600' : ($selisih < 0 ? 'text-red-600' : 'text-blue-600');
-                $badgeText = $selisih > 0 ? 'Surplus' : ($selisih < 0 ? 'Defisit' : null);
-                $badgeColor =
-                    $selisih > 0 ? 'bg-green-100 text-green-700' : ($selisih < 0 ? 'bg-red-100 text-red-700' : '');
+
+                $isSurplus = $selisih > 0;
+                $isDefisit = $selisih < 0;
+
+                $badgeText = $isSurplus ? 'Surplus' : ($isDefisit ? 'Defisit' : 'Balance');
+                $badgeColor = $isSurplus
+                    ? 'bg-green-100 text-green-700'
+                    : ($isDefisit
+                        ? 'bg-red-100 text-red-700'
+                        : 'bg-gray-100 text-gray-600');
+
+                $textColor = "text-{$card['color']}-600";
+                $selisihColor = $isSurplus ? 'text-green-600' : ($isDefisit ? 'text-red-600' : 'text-blue-600');
+
+                $percentRealisasi = $anggaran > 0 ? round(($realisasi / $anggaran) * 100, 2) : 0;
+                $percentSelisih = $anggaran > 0 ? round((abs($selisih) / $anggaran) * 100, 2) : 0;
+
+                $barClass = fn($percent) => $percent >= 90
+                    ? 'bg-green-500'
+                    : ($percent >= 70
+                        ? 'bg-yellow-500'
+                        : 'bg-red-500');
             @endphp
 
-            <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
-                <div class="mb-2 flex items-center justify-between">
-                    <p class="text-gray-500 text-sm font-medium">Total {{ $card['title'] }}</p>
-                    @if ($badgeText)
-                        <span
-                            class="px-2 py-0.5 rounded-full text-xs font-semibold {{ $badgeColor }}">{{ $badgeText }}</span>
-                    @endif
+            <div class="bg-white border border-gray-100 rounded-2xl shadow p-5 hover:shadow-md transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-700">{{ $card['title'] }}</h3>
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full {{ $badgeColor }}">
+                        {{ $badgeText }}
+                    </span>
                 </div>
-                <div class="space-y-1">
-                    <div class="text-sm text-gray-600">Anggaran:
-                        <span class="font-semibold text-{{ $card['color'] }}-600">Rp
-                            {{ number_format($card['data']['anggaran'], 2, ',', '.') }}</span>
+
+                <div class="space-y-4 text-sm text-gray-600">
+                    {{-- Anggaran (tanpa progress bar) --}}
+                    <div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Anggaran</span>
+                            <span class="font-semibold {{ $textColor }}">
+                                Rp {{ number_format($anggaran, 2, ',', '.') }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="text-sm text-gray-600">Realisasi:
-                        <span class="font-semibold text-{{ $card['color'] }}-600">Rp
-                            {{ number_format($card['data']['realisasi'], 2, ',', '.') }}</span>
+
+                    {{-- Realisasi --}}
+                    <div>
+                        <div class="flex justify-between mb-0.5">
+                            <span class="text-gray-500">Realisasi</span>
+                            <span class="font-semibold {{ $textColor }}">
+                                Rp {{ number_format($realisasi, 2, ',', '.') }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-2 rounded-full">
+                            <div class="{{ $barClass($percentRealisasi) }} h-2 rounded-full transition-all duration-300"
+                                style="width: {{ min($percentRealisasi, 100) }}%">
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-sm text-gray-600">Selisih:
-                        <span class="font-semibold {{ $selisihColor }}">Rp
-                            {{ number_format($selisih, 2, ',', '.') }}</span>
+
+                    {{-- Selisih --}}
+                    <div>
+                        <div class="flex justify-between mb-0.5">
+                            <span class="text-gray-500">Selisih</span>
+                            <span class="font-semibold {{ $selisihColor }}">
+                                Rp {{ number_format($selisih, 2, ',', '.') }}
+                            </span>
+                        </div>
+                        <div class="w-full bg-gray-100 h-2 rounded-full">
+                            <div class="{{ $selisih > 0 ? 'bg-green-500' : ($selisih < 0 ? 'bg-red-500' : 'bg-blue-400') }} h-2 rounded-full transition-all duration-300"
+                                style="width: {{ min($percentSelisih, 100) }}%">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         @endforeach
     </section>
 
+    {{-- halaman inti --}}
     <section x-data="{
         showAddModal: false,
         showEditModal: false,
@@ -52,16 +101,16 @@
         showDetailModal: false,
         selectedItem: null,
     }">
-
-
         {{-- Data Table --}}
         <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
+
+            {{-- header --}}
             <div class="mb-3 flex justify-between items-center">
                 <form method="GET" action="{{ route('adminapbdes.pembiayaan') }}" class="py-1">
                     <div x-data="{ open: false }" class="relative w-48">
                         <!-- Trigger Button -->
                         <button type="button" @click="open = !open"
-                            class="w-full flex items-center justify-between px-4 py-2 border border-gray-300 rounded-full bg-white shadow-sm hover:bg-gray-50 focus:outline-none focus:ring focus:ring-blue-200 transition">
+                            class="w-full flex items-center justify-between px-4 py-2 border border-gray-300 rounded-xl bg-white shadow-sm hover:bg-gray-50 focus:outline-none focus:ring focus:ring-blue-200 transition">
                             <div class="flex items-center space-x-2">
                                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -97,49 +146,58 @@
                 @endif
             </div>
 
-            <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead>
-                        <tr class="bg-indigo-400 text-gray-50 uppercase text-xs font-semibold tracking-wider">
-                            <th class="py-2 px-3 w-52 text-left">Nama</th>
-                            <th class="py-2 px-3 text-left">Anggaran</th>
-                            <th class="py-2 px-3 text-left">Realisasi</th>
-                            <th class="py-2 px-3 text-left">Selisih</th>
-                            <th class="py-2 px-3 text-center w-24">Jenis</th>
-                            <th class="py-2 px-3 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($pembiayaan as $item)
-                            <tr class="divide-y divide-gray-50">
-                                <td class="py-2 px-3 w-52">{{ $item->nama }}</td>
-                                <td class="py-2 px-3 text-left">Rp {{ number_format($item->anggaran, 2, ',', '.') }}
-                                </td>
-                                <td class="py-2 px-3 text-left">Rp {{ number_format($item->realisasi, 2, ',', '.') }}
-                                </td>
-                                <td
-                                    class="py-2 px-3 {{ $item->selisih > 0 ? 'text-green-600' : ($item->selisih < 0 ? 'text-red-600' : 'text-blue-600') }}">
-                                    Rp {{ number_format($item->selisih, 2, ',', '.') }}
-                                </td>
-                                <td class="py-2 px-3 capitalize w-24 text-center">{{ $item->jenis }}</td>
-                                <td class="py-2 px-3 text-center">
-                                    <button @click="selectedItem = {{ Js::from($item) }}; showEditModal = true;"
-                                        class="text-blue-500 hover:underline text-sm">
-                                        Edit
-                                    </button>
-                                    <button @click="selectedItem = {{ Js::from($item) }}; showDeleteModal = true;"
-                                        class="text-red-500 hover:underline text-sm ml-3">Hapus</button>
-                                </td>
+            {{-- table --}}
+            @if ($tahunDipilih)
+                <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead>
+                            <tr class="bg-indigo-400 text-gray-50 uppercase text-xs font-semibold tracking-wider">
+                                <th class="py-2 px-3 w-52 text-left">Nama</th>
+                                <th class="py-2 px-3 text-left">Anggaran</th>
+                                <th class="py-2 px-3 text-left">Realisasi</th>
+                                <th class="py-2 px-3 text-left">Selisih</th>
+                                <th class="py-2 px-3 text-center w-24">Jenis</th>
+                                <th class="py-2 px-3 text-center">Aksi</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-gray-400">Belum ada data pembiayaan.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @forelse ($pembiayaan as $item)
+                                <tr class="divide-y divide-gray-50">
+                                    <td class="py-2 px-3 w-52">{{ $item->nama }}</td>
+                                    <td class="py-2 px-3 text-left">Rp
+                                        {{ number_format($item->anggaran, 2, ',', '.') }}
+                                    </td>
+                                    <td class="py-2 px-3 text-left">Rp
+                                        {{ number_format($item->realisasi, 2, ',', '.') }}
+                                    </td>
+                                    <td
+                                        class="py-2 px-3 {{ $item->selisih > 0 ? 'text-green-600' : ($item->selisih < 0 ? 'text-red-600' : 'text-blue-600') }}">
+                                        Rp {{ number_format($item->selisih, 2, ',', '.') }}
+                                    </td>
+                                    <td class="py-2 px-3 capitalize w-24 text-center">{{ $item->jenis }}</td>
+                                    <td class="py-2 px-3 text-center">
+                                        <button @click="selectedItem = {{ Js::from($item) }}; showEditModal = true;"
+                                            class="text-blue-500 hover:underline text-sm">
+                                            Edit
+                                        </button>
+                                        <button @click="selectedItem = {{ Js::from($item) }}; showDeleteModal = true;"
+                                            class="text-red-500 hover:underline text-sm ml-3">Hapus</button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-gray-400">Belum ada data pembiayaan.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="text-center text-gray-500 p-8 border rounded-xl">
+                    <p class="text-sm">Silahkan Pilih Tahun Terlebih Dahulu</p>
+                </div>
+            @endif
         </div>
 
         {{-- add modal --}}
