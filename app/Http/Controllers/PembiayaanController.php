@@ -66,4 +66,30 @@ class PembiayaanController extends Controller
         return redirect()->route('adminapbdes.pembiayaan', ['tahun' => $tahun])
             ->with('success', 'Data pembiayaan berhasil ditambahkan.');
     }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'id_pembiayaan' => 'required|exists:pembiayaan,id_pembiayaan',
+            'nama' => 'required|string|max:255',
+            'jenis' => 'required|in:penerimaan,pengeluaran',
+            'anggaran' => 'required|numeric|min:0',
+            'realisasi' => 'required|numeric|min:0',
+            'id_tahun_anggaran' => 'required|exists:tahun_anggaran,id_tahun_anggaran',
+        ]);
+
+        $pembiayaan = Pembiayaan::findOrFail($request->id_pembiayaan);
+        $pembiayaan->update([
+            'nama' => $request->nama,
+            'jenis' => $request->jenis,
+            'anggaran' => $request->anggaran,
+            'realisasi' => $request->realisasi,
+            'id_tahun_anggaran' => $request->id_tahun_anggaran,
+        ]);
+
+        $tahun = TahunAnggaran::find($request->id_tahun_anggaran)?->tahun;
+
+        return redirect()->route('adminapbdes.pembiayaan', ['tahun' => $tahun])
+            ->with('success', 'Data pembiayaan berhasil diperbarui.');
+    }
 }

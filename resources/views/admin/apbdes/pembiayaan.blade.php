@@ -50,7 +50,9 @@
         showEditModal: false,
         showDeleteModal: false,
         showDetailModal: false,
+        selectedItem: null,
     }">
+
 
         {{-- Data Table --}}
         <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
@@ -121,8 +123,10 @@
                                 </td>
                                 <td class="py-2 px-3 capitalize w-24 text-center">{{ $item->jenis }}</td>
                                 <td class="py-2 px-3 text-center">
-                                    <button @click="showEditModal({{ $item }})"
-                                        class="text-blue-500 hover:underline text-sm">Edit</button>
+                                    <button @click="selectedItem = {{ Js::from($item) }}; showEditModal = true;"
+                                        class="text-blue-500 hover:underline text-sm">
+                                        Edit
+                                    </button>
                                     <button @click="showDeleteModal({{ $item->id_pembiayaan }})"
                                         class="text-red-500 hover:underline text-sm ml-3">Hapus</button>
                                 </td>
@@ -187,5 +191,58 @@
             </form>
         </x-modal>
 
+        {{-- edit modal --}}
+        <form method="POST" action="{{ route('adminapbdes.pembiayaan.update') }}">
+            @csrf
+            @method('PUT')
+
+            <input type="hidden" name="id_pembiayaan" :value="selectedItem?.id_pembiayaan">
+
+            <x-modal show="showEditModal" title="Edit Pembiayaan">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Nama -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Nama</label>
+                        <input type="text" name="nama" required
+                            class="w-full px-3 py-2 text-sm border rounded-lg focus:ring focus:ring-indigo-200"
+                            x-model="selectedItem.nama">
+                    </div>
+
+                    <!-- Jenis -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Jenis</label>
+                        <select name="jenis" required class="w-full px-3 py-2 text-sm border rounded-lg"
+                            x-model="selectedItem.jenis">
+                            <option value="penerimaan">Penerimaan</option>
+                            <option value="pengeluaran">Pengeluaran</option>
+                        </select>
+                    </div>
+
+                    <!-- Anggaran -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Anggaran</label>
+                        <input type="number" name="anggaran" step="0.01" min="0"
+                            class="w-full px-3 py-2 text-sm border rounded-lg" x-model="selectedItem.anggaran">
+                    </div>
+
+                    <!-- Realisasi -->
+                    <div>
+                        <label class="block text-xs text-gray-600 mb-1">Realisasi</label>
+                        <input type="number" name="realisasi" step="0.01" min="0"
+                            class="w-full px-3 py-2 text-sm border rounded-lg" x-model="selectedItem.realisasi">
+                    </div>
+                </div>
+
+                <!-- Tahun Anggaran -->
+                <input type="hidden" name="id_tahun_anggaran" :value="selectedItem.id_tahun_anggaran">
+                <input type="hidden" name="id_pembiayaan" :value="selectedItem.id_pembiayaan">
+
+                <!-- Tombol -->
+                <div class="flex justify-end space-x-2 mt-5">
+                    <x-button type="button" variant="secondary" @click="showEditModal = false">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
     </section>
 </x-admin-layout>
