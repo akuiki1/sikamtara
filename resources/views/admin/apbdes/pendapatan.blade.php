@@ -68,6 +68,7 @@
         showEditModal: false,
         showDeleteModal: false,
         showDetailModal: false,
+        selectedPendapatan: {},
     }">
         {{-- header --}}
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
@@ -148,7 +149,7 @@
                                 <td class="p-2">Rp {{ number_format($pendapatan->realisasi, 2, ',', '.') }}</td>
                                 <td class="p-2">Rp {{ number_format($pendapatan->selisih, 2, ',', '.') }}</td>
                                 <td class="p-2 text-center cursor-pointer">
-                                    <button @click="selectedKeluarga = {...item}; showEditModal = true"
+                                    <button  @click="selectedPendapatan = {{ $pendapatan }}; showEditModal = true"
                                         class="text-yellow-600 hover:text-yellow-800"><svg
                                             class="hover:scale-125 transition w-[20px] h-[20px]" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -215,31 +216,37 @@
         {{-- Modal Edit --}}
         <x-modal show="showEditModal">
             <h2 class="text-xl font-semibold mb-4">Edit Pendapatan</h2>
-            <form method="POST" :action="'/admin/apbdes/pendapatan/' + selectedItem.id">
+            <form method="POST"
+                :action="'{{ route('adminapbdes.pendapatan.update', '') }}/' + selectedPendapatan.id_pendapatan">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="tahun" value="{{ $tahunDipilih }}">
+
                 <div class="mb-4">
                     <label class="block mb-1 text-sm">Nama</label>
                     <input type="text" name="nama" class="w-full border rounded px-3 py-2"
-                        x-model="selectedItem.nama" required>
+                        x-model="selectedPendapatan.nama" required>
                 </div>
+
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm">Anggaran</label>
-                    <input type="number" name="anggaran" class="w-full border rounded px-3 py-2"
-                        x-model="selectedItem.anggaran" required>
+                    <label class="block text-sm font-medium">Anggaran</label>
+                    <input type="number" name="anggaran" step="0.01" min="0"
+                        class="mt-1 block w-full p-2 border rounded" x-model="selectedPendapatan.anggaran" required>
                 </div>
+
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm">Realisasi</label>
-                    <input type="number" name="realisasi" class="w-full border rounded px-3 py-2"
-                        x-model="selectedItem.realisasi" required>
+                    <label class="block text-sm font-medium">Realisasi</label>
+                    <input type="number" name="realisasi" step="0.01" min="0"
+                        class="mt-1 block w-full p-2 border rounded" x-model="selectedPendapatan.realisasi" required>
                 </div>
+
                 <div class="flex justify-end space-x-2 mt-6">
                     <x-button type="button" variant="secondary" @click="showEditModal = false">Batal</x-button>
-                    <x-button type="submit" variant="primary">Update</x-button>
+                    <x-button type="submit" variant="primary">Simpan</x-button>
                 </div>
             </form>
         </x-modal>
+
 
         {{-- Modal Hapus --}}
         <x-modal show="showDeleteModal">

@@ -149,7 +149,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatan'])->name('adminapbdes.pendapatan');
     Route::post('/apbdes/pendapatan/store', [AdminApbdesController::class, 'pendapatanStore'])->name('adminapbdes.pendapatan.store');
-    Route::put('/apbdes/pendapatan/{id}', [AdminApbdesController::class, 'pendapatanUpdate'])->name('adminapbdes.pendapatan.update');
+    Route::put('/admin/apbdes/pendapatan/{id}', [AdminApbdesController::class, 'pendapatanUpdate'])->name('adminapbdes.pendapatan.update');
     Route::delete('/apbdes/pendapatan/{id}', [AdminApbdesController::class, 'pendapatanDestroy'])->name('adminapbdes.pendapatan.destroy');
 
     Route::get('/apbdes/belanja', [AdminApbdesController::class, 'belanja'])->name('adminapbdes.belanja');
@@ -159,7 +159,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/apbdes/belanja/rincian/store', [AdminApbdesController::class, 'rincianBelanjaStore'])->name('rincian.belanja.store');
     Route::put('/apbdes/belanja/rincian/update', [AdminApbdesController::class, 'rincianBelanjaUpdate'])->name('rincian.belanja.update');
     Route::delete('/apbdes/belanja/rincian/delete', [AdminApbdesController::class, 'rincianBelanjaDestroy'])->name('rincian.belanja.destroy');
-
 
     Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');
     Route::get('/apbdes/rekapitulasi', [AdminApbdesController::class, 'rekapitulasi'])->name('adminapbdes.rekapitulasi');

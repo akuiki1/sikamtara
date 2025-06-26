@@ -195,12 +195,12 @@ class AdminApbdesController extends Controller
             'anggaran' => $request->anggaran,
             'realisasi' => $request->realisasi,
             'selisih' => $request->anggaran - $request->realisasi,
-            'tahun' => $request->tahun,
         ]);
 
         return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
             ->with('success', 'Pendapatan berhasil diperbarui.');
     }
+
 
     public function pendapatanDestroy($id)
     {
