@@ -192,13 +192,18 @@
                     <label class="block mb-1 text-sm">Nama</label>
                     <input type="text" name="nama" class="w-full border rounded px-3 py-2" required>
                 </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm">Anggaran</label>
-                    <input type="number" name="anggaran" class="w-full border rounded px-3 py-2" required>
+                {{-- ANGGARAN --}}
+                <div>
+                    <label for="anggaran" class="block text-sm font-medium">Anggaran</label>
+                    <input type="number" name="anggaran" step="0.01" min="0"
+                        class="mt-1 block w-full p-2 border rounded" required>
                 </div>
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm">Realisasi</label>
-                    <input type="number" name="realisasi" class="w-full border rounded px-3 py-2" required>
+
+                {{-- REALISASI --}}
+                <div>
+                    <label for="realisasi" class="block text-sm font-medium">Realisasi</label>
+                    <input type="number" name="realisasi" step="0.01" min="0"
+                        class="mt-1 block w-full p-2 border rounded" required>
                 </div>
                 <div class="flex justify-end space-x-2 mt-6">
                     <x-button type="button" variant="secondary" @click="showAddModal = false">Batal</x-button>

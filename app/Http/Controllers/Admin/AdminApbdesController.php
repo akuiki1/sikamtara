@@ -158,12 +158,22 @@ class AdminApbdesController extends Controller
             'tahun' => 'required|integer'
         ]);
 
+        $idTahun = TahunAnggaran::where('tahun', $request->tahun)->value('id_tahun_anggaran');
+
+        if (!$idTahun) {
+            return back()->withErrors(['tahun' => 'Tahun anggaran tidak valid']);
+        }
+
+        $anggaran = $request->anggaran;
+        $realisasi = $request->realisasi;
+        $selisih = $anggaran - $realisasi;
+
         Pendapatan::create([
             'nama' => $request->nama,
-            'anggaran' => $request->anggaran,
-            'realisasi' => $request->realisasi,
-            'selisih' => $request->anggaran - $request->realisasi,
-            'tahun' => $request->tahun,
+            'anggaran' => $anggaran,
+            'realisasi' => $realisasi,
+            'selisih' => $selisih,
+            'id_tahun_anggaran' => $idTahun,
         ]);
 
         return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
