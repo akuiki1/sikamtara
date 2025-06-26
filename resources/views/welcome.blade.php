@@ -368,7 +368,7 @@
 
                 {{-- Button --}}
                 <div class="text-center">
-                    <a href="{{ route('apbdes') }}"
+                    <a href="{{ route('user.keuangan') }}"
                         class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
                         Lihat Semua Laporan
                     </a>

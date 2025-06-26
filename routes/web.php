@@ -64,14 +64,7 @@ Route::get('/informasi/kependudukan', function () {
     return view('user.penduduk', ['title' => 'Informasi Penduduk']);
 });
 
-// Route::get('/informasi/apbdes', function () {
-//     $tahunTerbaru = Apbdes::orderByDesc('tahun')->value('tahun') ?? date('Y');
-//     return redirect("/informasi/apbdes/{$tahunTerbaru}");
-// });
-
-Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('apbdes');
-Route::get('/apbdes/export', [KeuanganController::class, 'export'])->name('apbdes.export');
-
+Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('user.keuangan');
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
@@ -82,10 +75,6 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
 
     Route::get('profile/edit', [UserProfileController::class, 'edit'])->name('profil.edit');
     Route::post('profile/update', [UserProfileController::class, 'update'])->name('profil.update');
-});
-
-Route::get('/keuangan', function () {
-    return view('user.keuangan', ['title' => 'Informasi Keuangan']);
 });
 
 
