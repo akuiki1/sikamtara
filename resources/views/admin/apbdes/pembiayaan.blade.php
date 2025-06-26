@@ -127,7 +127,7 @@
                                         class="text-blue-500 hover:underline text-sm">
                                         Edit
                                     </button>
-                                    <button @click="showDeleteModal({{ $item->id_pembiayaan }})"
+                                    <button @click="selectedItem = {{ Js::from($item) }}; showDeleteModal = true;"
                                         class="text-red-500 hover:underline text-sm ml-3">Hapus</button>
                                 </td>
                             </tr>
@@ -241,6 +241,29 @@
                 <div class="flex justify-end space-x-2 mt-5">
                     <x-button type="button" variant="secondary" @click="showEditModal = false">Batal</x-button>
                     <x-button type="submit">Simpan</x-button>
+                </div>
+            </x-modal>
+        </form>
+
+        {{-- hapus modal --}}
+        <form method="POST" action="{{ route('adminapbdes.pembiayaan.delete') }}">
+            @csrf
+            @method('DELETE')
+
+            <!-- Hidden ID -->
+            <input type="hidden" name="id_pembiayaan" :value="selectedItem?.id_pembiayaan">
+
+            <x-modal show="showDeleteModal" title="Hapus Pembiayaan">
+                <div class="text-sm text-gray-700 mb-6">
+                    Yakin ingin menghapus pembiayaan:
+                    <span class="font-semibold text-red-600" x-text="selectedItem?.nama"></span>?
+                    <br>
+                    Tindakan ini tidak dapat dibatalkan.
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <x-button type="button" variant="secondary" @click="showDeleteModal = false">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
                 </div>
             </x-modal>
         </form>

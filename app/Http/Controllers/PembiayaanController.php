@@ -92,4 +92,19 @@ class PembiayaanController extends Controller
         return redirect()->route('adminapbdes.pembiayaan', ['tahun' => $tahun])
             ->with('success', 'Data pembiayaan berhasil diperbarui.');
     }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'id_pembiayaan' => 'required|exists:pembiayaan,id_pembiayaan',
+        ]);
+
+        $pembiayaan = Pembiayaan::findOrFail($request->id_pembiayaan);
+        $tahun = $pembiayaan->tahunAnggaran?->tahun;
+
+        $pembiayaan->delete();
+
+        return redirect()->route('adminapbdes.pembiayaan', ['tahun' => $tahun])
+            ->with('success', 'Data pembiayaan berhasil dihapus.');
+    }
 }
