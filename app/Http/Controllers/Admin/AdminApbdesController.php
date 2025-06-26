@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Belanja;
+use App\Models\Pembiayaan;
 use App\Models\Pendapatan;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
@@ -340,18 +341,6 @@ class AdminApbdesController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus rincian belanja: ' . $e->getMessage());
         }
-    }
-
-
-
-    /**
-     * Display a pembiayaan of the resource.
-     */
-    public function pembiayaan()
-    {
-        return view('admin.apbdes.pembiayaan', [
-            'title' => 'APBDes Tahun ' . now()->year,
-        ]);
     }
 
     /**

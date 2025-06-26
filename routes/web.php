@@ -22,6 +22,7 @@ use App\Http\Controllers\admin\AdminProfileController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\PembiayaanController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 
@@ -144,7 +145,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 
     //halaman admin - apbdes
-    // Route::get('/apbdes', [AdminApbdesController::class, 'index'])->name('adminapbdes.index');
     Route::get('/apbdes/dataAnggaran', [AdminApbdesController::class, 'dataAnggaran'])->name('adminapbdes.dataAnggaran');
 
     Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatan'])->name('adminapbdes.pendapatan');
@@ -160,7 +160,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::put('/apbdes/belanja/rincian/update', [AdminApbdesController::class, 'rincianBelanjaUpdate'])->name('rincian.belanja.update');
     Route::delete('/apbdes/belanja/rincian/delete', [AdminApbdesController::class, 'rincianBelanjaDestroy'])->name('rincian.belanja.destroy');
 
-    Route::get('/apbdes/pembiayaan', [AdminApbdesController::class, 'pembiayaan'])->name('adminapbdes.pembiayaan');
+    Route::get('/apbdes/pembiayaan', [PembiayaanController::class, 'index'])->name('adminapbdes.pembiayaan');
+    Route::post('/apbdes/pembiayaan', [PembiayaanController::class, 'store'])->name('adminapbdes.pembiayaan.store');
+
     Route::get('/apbdes/rekapitulasi', [AdminApbdesController::class, 'rekapitulasi'])->name('adminapbdes.rekapitulasi');
     Route::post('/apbdes', [AdminApbdesController::class, 'store'])->name('adminapbdes.store');
     Route::put('/apbdes/update/{id}', [AdminApbdesController::class, 'update'])->name('adminapbdes.update');
