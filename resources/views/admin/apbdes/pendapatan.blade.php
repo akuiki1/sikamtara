@@ -133,17 +133,17 @@
                 <x-table class="w-full">
                     <x-slot name="head">
                         <tr>
-                            <th class="p-2">Nama</th>
-                            <th class="p-2">Anggaran</th>
-                            <th class="p-2">Realisasi</th>
-                            <th class="p-2">Selisih</th>
-                            <th class="p-2">Aksi</th>
+                            <th class="p-2 w-80">Nama</th>
+                            <th class="p-2 text-left">Anggaran</th>
+                            <th class="p-2 text-left">Realisasi</th>
+                            <th class="p-2 text-left">Selisih</th>
+                            <th class="p-2 text-center">Aksi</th>
                         </tr>
                     </x-slot>
                     <x-slot name="body">
                         @foreach ($data as $pendapatan)
                             <tr>
-                                <td class="p-2">{{ $pendapatan->nama }}</td>
+                                <td class="p-2 w-80">{{ $pendapatan->nama }}</td>
                                 <td class="p-2">Rp {{ number_format($pendapatan->anggaran, 2, ',', '.') }}</td>
                                 <td class="p-2">Rp {{ number_format($pendapatan->realisasi, 2, ',', '.') }}</td>
                                 <td class="p-2">Rp {{ number_format($pendapatan->selisih, 2, ',', '.') }}</td>
