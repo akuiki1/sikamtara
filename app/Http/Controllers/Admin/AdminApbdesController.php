@@ -141,11 +141,19 @@ class AdminApbdesController extends Controller
                 })->get();
         }
 
+        $totalAnggaran = Pendapatan::whereHas('tahunAnggaran', fn($q) => $q->where('tahun', $tahunDipilih))->sum('anggaran');
+        $totalRealisasi = Pendapatan::whereHas('tahunAnggaran', fn($q) => $q->where('tahun', $tahunDipilih))->sum('realisasi');
+        $totalSelisih = $totalAnggaran - $totalRealisasi;
+
+
         return view('admin.apbdes.pendapatan', [
             'title' => 'Halaman Pendapatan',
             'tahunList' => $tahunList,
             'tahunDipilih' => $tahunDipilih,
             'data' => $data,
+            'totalAnggaran' => $totalAnggaran,
+            'totalRealisasi' => $totalRealisasi,
+            'totalSelisih' => $totalSelisih,
         ]);
     }
 
@@ -200,7 +208,6 @@ class AdminApbdesController extends Controller
         return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
             ->with('success', 'Pendapatan berhasil diperbarui.');
     }
-
 
     public function pendapatanDestroy(Request $request, $id)
     {
