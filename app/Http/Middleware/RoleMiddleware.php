@@ -27,9 +27,9 @@ class RoleMiddleware
         if ($userRole !== $requiredRole) {
             switch ($userRole) {
                 case 'user':
-                    return redirect('/')->with('error', 'Akun Anda adalah user biasa. Anda tidak memiliki izin untuk mengakses halaman ini.');
+                    return redirect('/user/')->with('error', 'Akun Anda adalah user biasa. Anda tidak memiliki izin untuk mengakses halaman ini.');
                 case 'admin':
-                    return redirect('/dashboard')->with('error', 'Anda adalah admin, tapi tidak diizinkan mengakses halaman ini.');
+                    return redirect('/admin/dashboard')->with('error', 'Anda adalah admin, tapi tidak diizinkan mengakses halaman ini.');
                 default:
                     return redirect('/')->with('error', 'Role Anda tidak dikenali. Akses ditolak.');
             }

@@ -19,7 +19,7 @@ return new class extends Migration
 
 
             $table->unsignedBigInteger('id_tahun_anggaran');
-            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran');
+            $table->foreign('id_tahun_anggaran')->references('id_tahun_anggaran')->on('tahun_anggaran')->onDelete('cascade');
 
             $table->string('nama');
             $table->decimal('anggaran', 20, 2)->default(0);

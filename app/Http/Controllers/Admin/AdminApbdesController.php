@@ -3,18 +3,32 @@
 namespace App\Http\Controllers\admin;
 
 use App\Models\Belanja;
-use App\Models\Pembiayaan;
 use App\Models\Pendapatan;
 use Illuminate\Http\Request;
+use App\Imports\APBDesImport;
 use App\Models\TahunAnggaran;
 use App\Models\RincianBelanja;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
 
 
 class AdminApbdesController extends Controller
 {
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+            'tahun' => 'required|numeric|digits:4'
+        ]);
+
+        Excel::import(new APBDesImport($request->tahun), $request->file('file'));
+
+        return back()->with('success', 'Data berhasil diimpor.');
+    }
+
     /**
      * Display a listing of the resource.
      */

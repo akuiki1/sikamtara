@@ -145,6 +145,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/keluarga/{kode_keluarga}', [KeluargaController::class, 'destroy'])->name('keluarga.destroy');
 
     //halaman admin - apbdes
+    Route::post('/apbdes/import-apbdes', [AdminApbdesController::class, 'import'])->name('import.apbdes');
     Route::get('/apbdes/dataAnggaran', [AdminApbdesController::class, 'dataAnggaran'])->name('adminapbdes.dataAnggaran');
 
     Route::get('/apbdes/pendapatan', [AdminApbdesController::class, 'pendapatan'])->name('adminapbdes.pendapatan');

@@ -8,6 +8,7 @@
         showEditModal: false,
         showDeleteModal: false,
         showDetailModal: false,
+        importAPBDes: false,
         selectedApbdes: null,
         apbdes: @js($apbdesJs),
         get filteredApbdes() {
@@ -59,6 +60,8 @@
 
             {{-- RIGHT SECTION: Tambah tahun --}}
             <div>
+                <x-button type="button" @click="importAPBDes = true" variant="primary">Import Excel</x-button>
+                
                 <x-button @click="selectedApbdes = null; showAddModal = true">
                     {{-- Plus Icon --}}
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -260,6 +263,29 @@
                 <x-button type="button" @click="showDetailModal = false; showDeleteModal = true"
                     variant="danger">Hapus</x-button>
             </div>
+        </x-modal>
+
+        {{-- modal import --}}
+        <x-modal show="importAPBDes">
+            <form method="POST" action="{{ route('import.apbdes') }}" enctype="multipart/form-data"
+                class="space-y-4">
+                @csrf
+                <div>
+                    <label class="block mb-1 font-medium">Tahun Anggaran</label>
+                    <input type="number" name="tahun" required class="border p-2 rounded w-full"
+                        placeholder="Contoh: 2024">
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-medium">File Excel</label>
+                    <input type="file" name="file" accept=".xlsx,.xls,.csv" required
+                        class="border p-2 rounded w-full">
+                </div>
+
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Import APBDes
+                </button>
+            </form>
         </x-modal>
 
         {{-- modal tambah --}}
