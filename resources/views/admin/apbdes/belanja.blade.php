@@ -110,10 +110,12 @@
                 </form>
             </div>
 
-            <div>
-                <x-button @click="showAddBidangModal = true">Tambah Bidang</x-button>
-                <x-button @click="showAddRincianModal = true">Tambah Rincian Belanja</x-button>
-            </div>
+            @if ($tahunDipilih)
+                <div>
+                    <x-button @click="showAddBidangModal = true">Tambah Bidang</x-button>
+                    <x-button @click="showAddRincianModal = true">Tambah Rincian Belanja</x-button>
+                </div>
+            @endif
         </div>
 
         {{-- Tabel Data Belanja --}}
