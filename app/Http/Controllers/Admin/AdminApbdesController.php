@@ -202,15 +202,15 @@ class AdminApbdesController extends Controller
     }
 
 
-    public function pendapatanDestroy($id)
+    public function pendapatanDestroy(Request $request, $id)
     {
         $pendapatan = Pendapatan::findOrFail($id);
-        $tahun = $pendapatan->tahun;
         $pendapatan->delete();
 
-        return redirect()->route('adminapbdes.pendapatan', ['tahun' => $tahun])
+        return redirect()->route('adminapbdes.pendapatan', ['tahun' => $request->tahun])
             ->with('success', 'Pendapatan berhasil dihapus.');
     }
+
 
     /**
      * Display a belanja of the resource.

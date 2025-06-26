@@ -149,7 +149,7 @@
                                 <td class="p-2">Rp {{ number_format($pendapatan->realisasi, 2, ',', '.') }}</td>
                                 <td class="p-2">Rp {{ number_format($pendapatan->selisih, 2, ',', '.') }}</td>
                                 <td class="p-2 text-center cursor-pointer">
-                                    <button  @click="selectedPendapatan = {{ $pendapatan }}; showEditModal = true"
+                                    <button @click="selectedPendapatan = {{ $pendapatan }}; showEditModal = true"
                                         class="text-yellow-600 hover:text-yellow-800"><svg
                                             class="hover:scale-125 transition w-[20px] h-[20px]" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -159,7 +159,7 @@
                                                 d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                                         </svg>
                                     </button>
-                                    <button @click="selectedKeluarga = item; showDeleteModal = true"
+                                    <button @click="selectedPendapatan = {{ $pendapatan }}; showDeleteModal = true"
                                         class="text-red-600 hover:text-red-800 rounded-full">
                                         <svg class="w-[20px] h-[20px] hover:scale-125 transition" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -223,19 +223,19 @@
                 <input type="hidden" name="tahun" value="{{ $tahunDipilih }}">
 
                 <div class="mb-4">
-                    <label class="block mb-1 text-sm">Nama</label>
+                    <label class="block mb-1 text-sm">Nama <span class="text-red-600">*</span></label>
                     <input type="text" name="nama" class="w-full border rounded px-3 py-2"
                         x-model="selectedPendapatan.nama" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium">Anggaran</label>
+                    <label class="block text-sm font-medium">Anggaran <span class="text-red-600">*</span></label>
                     <input type="number" name="anggaran" step="0.01" min="0"
                         class="mt-1 block w-full p-2 border rounded" x-model="selectedPendapatan.anggaran" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium">Realisasi</label>
+                    <label class="block text-sm font-medium">Realisasi <span class="text-red-600">*</span></label>
                     <input type="number" name="realisasi" step="0.01" min="0"
                         class="mt-1 block w-full p-2 border rounded" x-model="selectedPendapatan.realisasi" required>
                 </div>
@@ -247,19 +247,24 @@
             </form>
         </x-modal>
 
-
         {{-- Modal Hapus --}}
         <x-modal show="showDeleteModal">
-            <h2 class="text-xl font-semibold mb-4">Hapus Pendapatan</h2>
-            <p>Yakin ingin menghapus <strong x-text="selectedItem.nama"></strong>?</p>
-            <form method="POST" :action="'/admin/apbdes/pendapatan/' + selectedItem.id" class="mt-6">
+            <h2 class="text-xl font-semibold mb-4 text-red-600">Hapus Pendapatan</h2>
+            <p class="text-sm text-gray-700 mb-6">
+                Apakah kamu yakin ingin menghapus pendapatan <strong x-text="selectedPendapatan.nama"></strong>?
+                Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <form method="POST"
+                :action="'{{ route('adminapbdes.pendapatan.destroy', '') }}/' + selectedPendapatan.id_pendapatan">
                 @csrf
                 @method('DELETE')
-                <div class="flex justify-center space-x-2">
+                <input type="hidden" name="tahun" value="{{ $tahunDipilih }}">
+                <div class="flex justify-end space-x-2">
                     <x-button type="button" variant="secondary" @click="showDeleteModal = false">Batal</x-button>
                     <x-button type="submit" variant="danger">Hapus</x-button>
                 </div>
             </form>
         </x-modal>
+
     </div>
 </x-admin-layout>
