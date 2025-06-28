@@ -23,20 +23,24 @@
         <!-- Desktop Menu -->
         <div class="hidden md:flex items-center space-x-6 font-semibold text-sm">
             <x-nav-link href="/" :active="request()->is('/')">BERANDA</x-nav-link>
+
             <x-nav-link href="/profil-desa" :active="request()->is('profil-desa')">PROFIL DESA</x-nav-link>
 
-            <x-nav-link :dropdown="true" :active="request()->is('user/layanan/*')" label="LAYANAN ONLINE" :items="[
+            <x-nav-link :dropdown="true" :active="request()->is('user/layanan/*') ||
+                request()->routeIs('administrasi') ||
+                request()->routeIs('pengaduan')" label="LAYANAN ONLINE" :items="[
                 ['label' => 'Administrasi', 'href' => route('administrasi')],
                 ['label' => 'Pengaduan', 'href' => route('pengaduan')],
             ]" />
 
-            <x-nav-link :dropdown="true" :active="request()->is('informasi/*')" label="INFORMASI" :items="[
+            <x-nav-link :dropdown="true" :active="request()->is('informasi/*') || request()->routeIs('user.keuangan')" label="INFORMASI" :items="[
                 ['label' => 'Pengumuman', 'href' => '/informasi/pengumuman'],
                 ['label' => 'Berita Desa', 'href' => '/informasi/berita'],
                 ['label' => 'APBDes', 'href' => route('user.keuangan')],
                 ['label' => 'Kependudukan', 'href' => '/informasi/kependudukan'],
             ]" />
         </div>
+
 
         <!-- Auth Button -->
         @auth
