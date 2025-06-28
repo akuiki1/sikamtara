@@ -33,7 +33,7 @@
             <x-nav-link :dropdown="true" :active="request()->is('informasi/*')" label="INFORMASI" :items="[
                 ['label' => 'Pengumuman', 'href' => '/informasi/pengumuman'],
                 ['label' => 'Berita Desa', 'href' => '/informasi/berita'],
-                ['label' => 'APBDes', 'href' => route ('user.keuangan')],
+                ['label' => 'APBDes', 'href' => route('user.keuangan')],
                 ['label' => 'Kependudukan', 'href' => '/informasi/kependudukan'],
             ]" />
         </div>
@@ -44,7 +44,7 @@
                 <!-- Tombol Avatar/Profile -->
                 <button @click="open = !open" @click.away="open = false"
                     class="flex items-center space-x-2 px-3 py-2 rounded-lg shadow text-white focus:outline-none hover:shadow">
-                    <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                    <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
                         class="w-8 h-8 rounded-full object-cover" alt="Foto Profil">
                     <span class="font-medium">{{ Auth::user()->nama }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -60,7 +60,7 @@
 
                     <!-- Profil Detail -->
                     <div class="flex flex-col items-center border-b border-gray-200 pb-4 mb-4">
-                        <img src="{{ Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                        <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
                             class="w-20 h-20 rounded-full object-cover mb-3" alt="Foto Profil Besar">
                         <h3 class="text-lg font-semibold">{{ Auth::user()->nama }}</h3>
                         <p class="text-sm text-gray-600 truncate max-w-full">{{ Auth::user()->email }}</p>
@@ -91,6 +91,7 @@
                 </x-button>
             </form>
         @endauth
+
 
 
 

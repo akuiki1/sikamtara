@@ -6,23 +6,24 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\KeuanganController;
+use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\socialiteController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\PembiayaanController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\AdministrasiController;
 use App\Http\Controllers\admin\KeluargaController;
-use App\Http\Controllers\admin\PendudukController;
 use App\Http\Controllers\admin\AdminApbdesController;
 use App\Http\Controllers\admin\AdminBeritaController;
 use App\Http\Controllers\admin\AdminDApbdesController;
 use App\Http\Controllers\admin\AdminProfileController;
+use App\Http\Controllers\admin\AdminPendudukController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
-use App\Http\Controllers\PembiayaanController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 
@@ -60,10 +61,7 @@ Route::get('informasi/berita/detail', function () {
     return view('user.detailberita', ['title' => 'Detail Berita']);
 });
 
-Route::get('/informasi/kependudukan', function () {
-    return view('user.penduduk', ['title' => 'Informasi Penduduk']);
-});
-
+Route::get('/informasi/kependudukan', [PendudukController::class, 'index'])->name('user.kependudukan');
 Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('user.keuangan');
 
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
@@ -123,10 +121,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/akun-warga/update/{id}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/akun-warga/delete/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
-    Route::get('/penduduk', [PendudukController::class, 'index'])->name('penduduk.index');
-    Route::post('/penduduk', [PendudukController::class, 'store'])->name('penduduk.store');
-    Route::put('/penduduk/{nik}', [PendudukController::class, 'update'])->name('penduduk.update');
-    Route::delete('/penduduk/{nik}', [PendudukController::class, 'destroy'])->name('penduduk.destroy');
+    Route::get('/penduduk', [AdminPendudukController::class, 'index'])->name('penduduk.index');
+    Route::post('/penduduk', [AdminPendudukController::class, 'store'])->name('penduduk.store');
+    Route::put('/penduduk/{nik}', [AdminPendudukController::class, 'update'])->name('penduduk.update');
+    Route::delete('/penduduk/{nik}', [AdminPendudukController::class, 'destroy'])->name('penduduk.destroy');
 
     Route::get('/keluarga', [KeluargaController::class, 'index'])->name('keluarga.index');
     Route::post('/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store');

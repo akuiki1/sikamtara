@@ -7,7 +7,7 @@ use App\Models\Penduduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class PendudukController extends Controller
+class AdminPendudukController extends Controller
 {
     /**
      * Display a listing of the resource.
