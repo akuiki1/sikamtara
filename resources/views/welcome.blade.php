@@ -197,7 +197,7 @@
 
                     {{-- Card 1 - LAYANAN ONLINE --}}
                     <div
-                        class="bg-gradient-to-tr from-blue-400 to-blue-600 rounded-3xl shadow-xl p-8 flex flex-col hover:scale-105 transform transition duration-300 ease-in-out">
+                        class="bg-gradient-to-tr from-blue-400 to-blue-600 rounded-3xl shadow-lg hover:shadow-xl p-8 flex flex-col transform transition duration-300 ease-in-out">
                         <div class="flex flex-col items-center text-center">
                             {{-- Icon --}}
                             <div class="bg-white p-4 rounded-full shadow-md mb-6">
@@ -217,7 +217,7 @@
                             </p>
                             {{-- CTA --}}
                             <a href="{{ route('administrasi') }}"
-                                class="inline-block bg-white text-blue-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-blue-100 transition-all duration-300">
+                                class="inline-block bg-white text-blue-600 font-bold py-2 px-4 text-sm sm:py-3 hover:scale-105 sm:px-6 sm:text-base rounded-full shadow transition-all duration-300">
                                 Ajukan Sekarang
                             </a>
 
@@ -226,7 +226,7 @@
 
                     {{-- Card 2 - PENGADUAN ONLINE --}}
                     <div
-                        class="bg-gradient-to-tr from-yellow-300 to-yellow-500 rounded-3xl shadow-xl p-8 flex flex-col hover:scale-105 transform transition duration-300 ease-in-out">
+                        class="bg-gradient-to-tr from-yellow-300 to-yellow-500 rounded-3xl shadow-lg p-8 flex flex-col hover:shadow-xl transform transition duration-300 ease-in-out">
                         <div class="flex flex-col items-center text-center">
                             {{-- Icon --}}
                             <div class="bg-white p-4 rounded-full shadow-md mb-6">
@@ -246,7 +246,7 @@
                             </p>
                             {{-- CTA --}}
                             <a href="{{ route('pengaduan') }}"
-                                class="inline-block bg-white text-yellow-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-yellow-100 transition-all duration-300">
+                                class="inline-block hover:scale-105 bg-white text-yellow-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow transition-all duration-300">
                                 Kirim Pengaduan
                             </a>
 
@@ -283,12 +283,9 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
                         <div class="flex items-center justify-between">
                             <div class="rounded-xl bg-emerald-100 p-3 text-emerald-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 3v2m0 14v2m7-7h2M3 12H5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 26 26">
+                                    <path fill="currentColor"
+                                        d="M19.531 1.531L14.25 4.406L5.5 9.188L.219 12.094L2.5 16.219V13A1.5 1.5 0 0 1 4 11.5h.813l.03-.125l11.595-6.344l.875.25c.024.08.05.173.093.25c.344.63 1.12.876 1.75.532c.076-.042.125-.133.188-.188l.906.281l2 3.657l-.25.906c-.079.024-.173.02-.25.062c-.293.16-.49.428-.594.719H25l-2.594-4.719l-2.875-5.25zm-1.093 6.563a1.305 1.305 0 0 0-1.032 1.281c0 .716.565 1.313 1.282 1.313c.716 0 1.312-.597 1.312-1.313s-.596-1.281-1.313-1.281c-.089 0-.165-.018-.25 0zm-4.875.875a4.256 4.256 0 0 0-2.188.531c-.871.476-1.523 1.204-1.875 2h7.25a2.94 2.94 0 0 0-.313-.875c-.566-1.034-1.664-1.62-2.875-1.656zM4 13v13h22V13H4zm4.406 1.594h13.188l.656.656c-.017.083-.063.162-.063.25c0 .717.596 1.313 1.313 1.313c.088 0 .167-.047.25-.063l.656.656v4.188l-.656.656c-.083-.017-.162-.063-.25-.063c-.717 0-1.313.596-1.313 1.313c0 .088.046.167.063.25l-.656.656H8.406l-.656-.656c.017-.083.063-.162.063-.25c0-.717-.596-1.313-1.313-1.313c-.088 0-.167.047-.25.063l-.656-.656v-4.188l.656-.656c.083.017.162.063.25.063c.717 0 1.313-.596 1.313-1.313c0-.088-.046-.167-.063-.25l.656-.656zm6.594 1.5c-2.168 0-3.938 1.52-3.938 3.406c0 1.886 1.77 3.406 3.938 3.406s3.938-1.52 3.938-3.406c0-1.886-1.77-3.406-3.938-3.406zm-6.5 2.093c-.716 0-1.313.597-1.313 1.313s.597 1.313 1.313 1.313s1.313-.597 1.313-1.313s-.597-1.313-1.313-1.313zm13 0c-.717 0-1.313.596-1.313 1.313s.596 1.313 1.313 1.313s1.313-.596 1.313-1.313s-.596-1.313-1.313-1.313z" />
                                 </svg>
                             </div>
                         </div>
@@ -305,10 +302,10 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
                         <div class="flex items-center justify-between">
                             <div class="rounded-xl bg-rose-100 p-3 text-rose-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 14l2-2 4 4M7 10h10M5 6h14M7 18h10" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="1.5"
+                                        d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
                                 </svg>
                             </div>
                         </div>
@@ -325,10 +322,9 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
                         <div class="flex items-center justify-between">
                             <div class="rounded-xl bg-indigo-100 p-3 text-indigo-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 10h11M9 21V3m7 8h5M17 3v18" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 16 16">
+                                    <path fill="currentColor"
+                                        d="m15.81 10l-2.5-5H14a.5.5 0 0 0 0-1h-.79a6.04 6.04 0 0 0-4.198-1.95L9 2a1 1 0 0 0-2 0v.05a6.168 6.168 0 0 0-4.247 1.947L2 4a.5.5 0 0 0 0 1h.69l-2.5 5H0c0 1.1 1.34 2 3 2s3-.9 3-2h-.19L3.26 4.91a.525.525 0 0 0 .159-.148A4.842 4.842 0 0 1 6.994 3.06L7 14H6v1H4v1h8v-1h-2v-1H9V3.06a4.71 4.71 0 0 1 3.524 1.693a.519.519 0 0 0 .193.186L10.19 10H10c0 1.1 1.34 2 3 2s3-.9 3-2h-.19zM5 10H1l2-3.94zm6 0l2-3.94L15 10h-4z" />
                                 </svg>
                             </div>
                         </div>
@@ -345,10 +341,10 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
                         <div class="flex items-center justify-between">
                             <div class="rounded-xl bg-violet-100 p-3 text-violet-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="1.5"
+                                        d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7a48.678 48.678 0 0 0-7.324 0a4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7a48.656 48.656 0 0 0 7.324 0a4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                                 </svg>
                             </div>
                         </div>
@@ -365,12 +361,9 @@
                     <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
                         <div class="flex items-center justify-between">
                             <div class="rounded-xl bg-amber-100 p-3 text-amber-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 3v2m0 14v2m7-7h2M3 12H5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M19.5 7H18V6a3.003 3.003 0 0 0-3-3H4.5A2.502 2.502 0 0 0 2 5.5V18a3.003 3.003 0 0 0 3 3h14.5a2.502 2.502 0 0 0 2.5-2.5v-9A2.502 2.502 0 0 0 19.5 7zm-15-3H15a2.003 2.003 0 0 1 2 2v1H4.5a1.5 1.5 0 1 1 0-3zM21 16h-2a2 2 0 0 1 0-4h2v4zm0-5h-2a3 3 0 1 0 0 6h2v1.5a1.5 1.5 0 0 1-1.5 1.5H5a2.003 2.003 0 0 1-2-2V7.499c.432.326.959.502 1.5.501h15A1.5 1.5 0 0 1 21 9.5V11z" />
                                 </svg>
                             </div>
                         </div>
