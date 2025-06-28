@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PendudukController extends Controller
 {
@@ -27,6 +28,75 @@ class PendudukController extends Controller
 
         $totalAgama = array_sum($agamaCounts);
 
+        $golonganDarah = Penduduk::selectRaw('golongan_darah, COUNT(*) as jumlah')
+            ->whereNotNull('golongan_darah')
+            ->groupBy('golongan_darah')
+            ->pluck('jumlah', 'golongan_darah');
+
+        $totalDarah = $golonganDarah->sum();
+
+        $pendidikanOrder = [
+            'Tidak Sekolah',
+            'SD',
+            'SMP',
+            'SMA',
+            'S1',
+            'S2',
+            'S3',
+        ];
+
+        // Ambil semua data dari DB
+        $pendidikanRaw = Penduduk::select('pendidikan', DB::raw('COUNT(*) as jumlah'))
+            ->whereNotNull('pendidikan')
+            ->groupBy('pendidikan')
+            ->pluck('jumlah', 'pendidikan');
+
+        // Buat array terurut berdasarkan mapping
+        $pendidikanData = collect($pendidikanOrder)
+            ->filter(fn($item) => isset($pendidikanRaw[$item]))
+            ->mapWithKeys(fn($item) => [$item => $pendidikanRaw[$item]]);
+
+        $pekerjaanRaw = Penduduk::select('pekerjaan', DB::raw('COUNT(*) as jumlah'))
+            ->whereNotNull('pekerjaan')
+            ->groupBy('pekerjaan')
+            ->orderByDesc('jumlah')
+            ->get();
+
+        $pekerjaanTop = $pekerjaanRaw->take(5);
+        $totalTop = $pekerjaanTop->sum('jumlah');
+        $totalKeseluruhan = $pekerjaanRaw->sum('jumlah');
+        $jumlahLainnya = $totalKeseluruhan - $totalTop;
+        $pekerjaanSemua = $pekerjaanRaw;
+
+        $pekerjaanData = $pekerjaanTop->pluck('jumlah', 'pekerjaan');
+
+        $statusPerkawinan = Penduduk::select('status_perkawinan', DB::raw('count(*) as jumlah'))
+            ->whereNotNull('status_perkawinan')
+            ->groupBy('status_perkawinan')
+            ->orderByDesc('jumlah')
+            ->get();
+
+        // Buat mapping tetap untuk urutan yang diinginkan
+        $statusList = [
+            'Belum Kawin',
+            'Kawin',
+            'Cerai Mati',
+            'Cerai Hidup',
+            'Kawin Tercatat',
+            'Kawin Tidak Tercatat',
+        ];
+
+        $statusData = Penduduk::select('status_perkawinan', DB::raw('count(*) as jumlah'))
+            ->whereNotNull('status_perkawinan')
+            ->groupBy('status_perkawinan')
+            ->pluck('jumlah', 'status_perkawinan');
+
+        // Susun array lengkap dan pastikan urutannya tetap
+        $perkawinan = [];
+        foreach ($statusList as $status) {
+            $perkawinan[$status] = $statusData[$status] ?? 0;
+        }
+
         return view('user.penduduk', array_merge([
             'total' => $total,
             'laki' => $laki,
@@ -36,6 +106,15 @@ class PendudukController extends Controller
             'usiaData' => $usiaData,
             'agamaData' => $agamaCounts,
             'totalAgama' => $totalAgama,
+            'golonganDarah' => $golonganDarah,
+            'totalDarah' => $totalDarah,
+            'pendidikanData' => $pendidikanData,
+            'pekerjaanData' => $pekerjaanData,
+            'pekerjaanTop' => $pekerjaanTop,
+            'jumlahLainnya' => $jumlahLainnya,
+            'totalPekerjaan' => $totalKeseluruhan,
+            'pekerjaanSemua' => $pekerjaanSemua,
+            'perkawinan' => $perkawinan,
         ], $dataUmur));
     }
 
