@@ -117,7 +117,7 @@
         </section>
 
         <!-- Section: Jelajahi Sistem Desa -->
-        <section id="jelajahi" class="bg-gray-100 py-20 hidden sm:block">
+        <section id="jelajahi" class="bg-gray-50 py-20 hidden sm:block">
             <div class="max-w-7xl mx-auto px-6 text-center">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">JELAJAHI SISTEM DESA</h2>
                 <p class="text-base md:text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
@@ -180,7 +180,7 @@
         </section>
 
         <!-- Section: Layanan Administrasi -->
-        <section id="layanan" class="bg-gray-50 py-20">
+        <section id="layanan" class="bg-gray-100 py-20">
             <div class="max-w-7xl mx-auto px-6">
                 {{-- Section Title --}}
                 <div class="text-center mb-14">
@@ -257,134 +257,192 @@
         </section>
 
         <!-- Section: Keuangan Desa -->
-        <section id="apbdes" class="bg-gray-100 py-20">
-            @php
-                $anggaran = 120000000; // Rp 120.000.000
-                $realisasi = 95000000; // Rp 95.000.000
-                $selisih = $anggaran - $realisasi;
-            @endphp
+        <section id="apbdes" class="bg-gray-50 py-20">
+            <div class="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between mb-10">
+                    <h2 class="text-2xl sm:text-4xl font-bold text-center text-gray-800">Ringkasan Dana Desa</h2>
 
-            <div class="max-w-7xl mx-auto px-6">
-                {{-- Section Title --}}
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl font-extrabold text-gray-800">RINGKASAN KEUANGAN DESA</h2>
-                    <p class="mt-4 text-gray-500 text-lg max-w-2xl mx-auto">
-                        Update keuangan desa secara real-time, transparan, dan terpercaya.
-                    </p>
+                    {{-- Tahun Selector --}}
+                    <form id="tahunForm" class="flex items-center justify-center space-x-4">
+                        <label for="tahun" class="text-base font-semibold text-gray-800">Tahun</label>
+                        <select name="tahun" id="tahun"
+                            class="px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition">
+                            @foreach ($daftarTahun as $item)
+                                <option value="{{ $item->id_tahun_anggaran }}"
+                                    {{ $item->id_tahun_anggaran == $tahun->id_tahun_anggaran ? 'selected' : '' }}>
+                                    {{ $item->tahun }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                </div>
+                {{-- Kartu Ringkasan --}}
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    {{-- Pendapatan --}}
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-xl bg-emerald-100 p-3 text-emerald-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v2m0 14v2m7-7h2M3 12H5" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs sm:text-sm text-gray-600 text-left">Pendapatan</p>
+                            <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mt-1 text-left"
+                                id="text-pendapatan">
+                                Rp {{ number_format($pendapatan, 2, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Belanja --}}
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-xl bg-rose-100 p-3 text-rose-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 14l2-2 4 4M7 10h10M5 6h14M7 18h10" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs sm:text-sm text-gray-600 text-left">Belanja</p>
+                            <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mt-1 text-left"
+                                id="text-belanja">
+                                Rp {{ number_format($totalBelanja, 2, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Surplus / Defisit --}}
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-xl bg-indigo-100 p-3 text-indigo-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h11M9 21V3m7 8h5M17 3v18" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs sm:text-sm text-gray-600 text-left">Surplus / Defisit</p>
+                            <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mt-1 text-left"
+                                id="text-surplus">
+                                Rp {{ number_format($surplusDefisit, 2, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Pembiayaan Netto --}}
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-xl bg-violet-100 p-3 text-violet-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs sm:text-sm text-gray-600 text-left">Pembiayaan Netto</p>
+                            <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mt-1 text-left"
+                                id="text-pembiayaan">
+                                Rp {{ number_format($pembiayaanNetto, 2, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- SILPA --}}
+                    <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div class="rounded-xl bg-amber-100 p-3 text-amber-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v2m0 14v2m7-7h2M3 12H5" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-xs sm:text-sm text-gray-600 text-left">SILPA {{ $tahun->tahun }}</p>
+                            <p class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mt-1 text-left"
+                                id="text-silpa">
+                                Rp {{ number_format($silpa_akhir, 2, ',', '.') }}
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
 
-                {{-- Cards --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                    {{-- Card 1 - Anggaran --}}
-                    <div x-data="{ angka: 0 }" x-init="let interval = setInterval(() => {
-                        if (angka < {{ $anggaran }}) angka += Math.ceil({{ $anggaran }} / 100);
-                        else {
-                            angka = {{ $anggaran }};
-                            clearInterval(interval);
-                        }
-                    }, 20)"
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition duration-500 relative overflow-hidden">
-                        {{-- Badge --}}
-                        <div
-                            class="w-32 text-center mb-4 top-6 right-6 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                            Anggaran
-                        </div>
-                        {{-- Number --}}
-                        <h3 class="text-4xl font-extrabold text-gray-800 mb-4"
-                            x-text="'Rp ' + angka.toLocaleString('id-ID')"></h3>
-                        {{-- Description --}}
-                        <p class="text-gray-500 text-sm mb-6">
-                            Total anggaran desa untuk pembangunan dan pemberdayaan.
-                        </p>
-                        {{-- Mini Chart --}}
-                        <div class="h-16">
-                            <svg viewBox="0 0 100 30" class="w-full h-full text-blue-400">
-                                <polyline fill="none" stroke="currentColor" stroke-width="4"
-                                    points="0,20 20,10 40,15 60,5 80,10 100,0" />
-                            </svg>
-                        </div>
-                    </div>
 
-                    {{-- Card 2 - Realisasi --}}
-                    <div x-data="{ angka: 0 }" x-init="let interval = setInterval(() => {
-                        if (angka < {{ $realisasi }}) angka += Math.ceil({{ $realisasi }} / 100);
-                        else {
-                            angka = {{ $realisasi }};
-                            clearInterval(interval);
-                        }
-                    }, 20)"
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition duration-500 relative overflow-hidden">
-                        {{-- Badge --}}
-                        <div
-                            class="w-32 text-center mb-4 top-6 right-6 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                            Realisasi
-                        </div>
-                        {{-- Number --}}
-                        <h3 class="text-4xl font-extrabold text-gray-800 mb-4"
-                            x-text="'Rp ' + angka.toLocaleString('id-ID')"></h3>
-                        {{-- Description --}}
-                        <p class="text-gray-500 text-sm mb-6">
-                            Dana yang telah terealisasi untuk kegiatan desa.
-                        </p>
-                        {{-- Mini Chart --}}
-                        <div class="h-16">
-                            <svg viewBox="0 0 100 30" class="w-full h-full text-green-400">
-                                <polyline fill="none" stroke="currentColor" stroke-width="4"
-                                    points="0,25 20,15 40,20 60,10 80,5 100,8" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    {{-- Card 3 - Selisih --}}
-                    <div x-data="{ angka: 0 }" x-init="let interval = setInterval(() => {
-                        if (angka < {{ $selisih }}) angka += Math.ceil({{ $selisih }} / 100);
-                        else {
-                            angka = {{ $selisih }};
-                            clearInterval(interval);
-                        }
-                    }, 20)"
-                        class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition duration-500 relative overflow-hidden">
-                        {{-- Badge --}}
-                        <div
-                            class="w-32 top-6 right-6 bg-rose-500 text-white text-xs text-center font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-4">
-                            Selisih
-                        </div>
-                        {{-- Number --}}
-                        <h3 class="text-4xl font-extrabold text-gray-800 mb-4"
-                            x-text="'Rp ' + angka.toLocaleString('id-ID')"></h3>
-                        {{-- Description --}}
-                        <p class="text-gray-500 text-sm mb-6">
-                            Selisih antara anggaran dengan realisasi.
-                        </p>
-                        {{-- Mini Chart --}}
-                        <div class="h-16">
-                            <svg viewBox="0 0 100 30" class="w-full h-full text-rose-400">
-                                <polyline fill="none" stroke="currentColor" stroke-width="4"
-                                    points="0,10 20,20 40,10 60,15 80,20 100,25" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Button --}}
-                <div class="text-center">
+                {{-- Tombol Keuangan --}}
+                <div class="mt-8">
                     <a href="{{ route('user.keuangan') }}"
-                        class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
-                        Lihat Semua Laporan
+                        class="inline-flex justify-center items-center px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold rounded-xl shadow transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                        Lihat Detail Keuangan
+                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
                     </a>
                 </div>
             </div>
         </section>
 
+        {{-- Scripts APBDes --}}
+        <script>
+            const tahunSelect = document.getElementById('tahun');
+            const chartCanvas = document.getElementById('chartRingkasan');
+            let chartInstance = null;
+
+            async function fetchRingkasan(idTahun) {
+                const response = await fetch(`/ringkasan-tahun?tahun=${idTahun}`);
+                return await response.json();
+            }
+
+            function formatRupiah(value) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(value);
+            }
+
+            function updateText(data) {
+                document.getElementById('text-pendapatan').textContent = formatRupiah(data.pendapatan);
+                document.getElementById('text-belanja').textContent = formatRupiah(data.belanja);
+                document.getElementById('text-surplus').textContent = formatRupiah(data.surplusDefisit);
+                document.getElementById('text-pembiayaan').textContent = formatRupiah(data.pembiayaanNetto);
+                document.getElementById('text-silpa').textContent = formatRupiah(data.silpa_akhir);
+            }
+
+            tahunSelect.addEventListener('change', async () => {
+                const data = await fetchRingkasan(tahunSelect.value);
+                updateText(data);
+                renderChart(data);
+            });
+        </script>
+
         <!-- Section: Berita & Pengumuman -->
-        <section id="berita" class="py-16 bg-gray-50">
+        <section id="berita" class="py-16 bg-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-10">
                     <h2 class="text-3xl font-bold text-gray-800 mb-2">BERITA TERBARU DESA</h2>
                     <p class="text-gray-500">Stay tuned sama kabar-kabar gokil dari desa kita!</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {{-- Card Berita --}}
                     @if ($berita->count())
                         @foreach ($berita as $item)
@@ -427,13 +485,15 @@
                 </div>
 
                 {{-- Tombol Lihat Semua Berita --}}
-                <div class="mt-10 text-center">
-                    <div class="text-center">
-                        <a href="{{ route('berita.index') }}"
-                            class="inline-flex items-center gap-3 px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-semibold rounded-full hover:scale-105 transform transition duration-300">
-                            Lihat Berita Lainnya
-                        </a>
-                    </div>
+                <div class="text-center mt-8">
+                    <a href="{{ route('berita.index') }}"
+                        class="inline-flex justify-center items-center px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold rounded-xl shadow transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                        Lihat Berita Lainnya
+                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
                 </div>
             </div>
         </section>

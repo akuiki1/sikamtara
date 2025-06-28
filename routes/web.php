@@ -26,6 +26,7 @@ use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
+Route::get('/ringkasan-tahun', [BerandaController::class, 'ringkasanTahun']);
 
 Route::get('/auth/google', [socialiteController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [socialiteController::class, 'callback'])->name('google.callback');
