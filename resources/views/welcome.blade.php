@@ -184,7 +184,7 @@
             <div class="max-w-7xl mx-auto px-6">
                 {{-- Section Title --}}
                 <div class="text-center mb-14">
-                    <h2 class="text-4xl font-bold text-gray-900">LAYANAN ADMINISTRASI DESA</h2>
+                    <h2 class="text-4xl font-bold text-gray-800">LAYANAN ADMINISTRASI DESA</h2>
                     <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
                         Nikmati kemudahan layanan administrasi dan pengaduan desa langsung dari rumahmu, cepat dan
                         terpercaya.

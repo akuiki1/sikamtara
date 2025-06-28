@@ -112,7 +112,7 @@
         </section>
 
         {{-- section table layanan administrasi --}}
-        <section>
+        <section id="administrasi">
             {{-- container table --}}
             <div class="md:col-span-4 bg-white p-5 rounded-2xl shadow mt-4">
 
@@ -499,7 +499,7 @@
         </section>
 
         {{-- section layanan masuk & riwayat layanan --}}
-        <section>
+        <section id="riwayatLayanan">
             {{-- container tabel belah 2 --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
 

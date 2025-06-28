@@ -470,7 +470,7 @@
     </section>
 
     {{-- riwayat --}}
-    <section class="px-10 pt-4 pb-10 bg-gray-50" x-data="{
+    <section id="riwayatLayanan" class="px-10 pt-4 pb-10 bg-gray-50" x-data="{
         search: '{{ request('search.riwayat') }}',
         filterRole: '',
         filterStatus: '',
