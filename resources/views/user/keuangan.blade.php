@@ -31,32 +31,38 @@
         </div>
 
         {{-- container Card --}}
-        <div
-            class="rounded-xl shadow-lg bg-white px-6 py-6 flex flex-col md:flex-row md:items-center md:justify-between">
-            
-                <div class="bg-blue-100 p-4 rounded-xl shadow">
-                    <p class="text-sm text-blue-800 font-medium">Pendapatan</p>
-                    <p class="text-2xl font-bold text-blue-900">Rp
-                        {{ number_format($pendapatan->sum('realisasi'), 2, ',', '.') }}</p>
-                </div>
+        <div class="rounded-xl shadow bg-white p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
 
-                <div class="bg-red-100 p-4 rounded-xl shadow">
-                    <p class="text-sm text-red-800 font-medium">Belanja</p>
-                    <p class="text-2xl font-bold text-red-900">Rp {{ number_format($totalBelanja, 2, ',', '.') }}</p>
-                </div>
+            <div class="flex-1 bg-green-100 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-xs text-green-800 font-semibold">Pendapatan</p>
+                <p class="text-xl font-bold text-green-900 mt-1">Rp
+                    {{ number_format($pendapatan->sum('realisasi'), 2, ',', '.') }}</p>
+            </div>
 
-                <div class="bg-yellow-100 p-4 rounded-xl shadow">
-                    <p class="text-sm text-yellow-800 font-medium">Pembiayaan Netto</p>
-                    <p class="text-2xl font-bold text-yellow-900">Rp {{ number_format($netto, 2, ',', '.') }}</p>
-                </div>
+            <div class="flex-1 bg-red-100 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-xs text-red-800 font-semibold">Belanja</p>
+                <p class="text-xl font-bold text-red-900 mt-1">Rp {{ number_format($totalBelanja, 2, ',', '.') }}</p>
+            </div>
 
-                <div class="bg-green-100 p-4 rounded-xl shadow">
-                    <p class="text-sm text-green-800 font-medium">SILPA {{ $tahun->tahun }}</p>
-                    <p class="text-2xl font-bold text-green-900">Rp {{ number_format($silpa_akhir, 2, ',', '.') }}</p>
-                </div>
-            
+            <div class="flex-1 bg-indigo-100 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-xs text-indigo-800 font-semibold">Surplus/Defisit</p>
+                <p class="text-xl font-bold text-indigo-900 mt-1">Rp {{ number_format($surplusDefisit, 2, ',', '.') }}
+                </p>
+            </div>
+
+            <div class="flex-1 bg-purple-100 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-xs text-purple-800 font-semibold">Pembiayaan Netto</p>
+                <p class="text-xl font-bold text-purple-900 mt-1">Rp {{ number_format($pembiayaanNetto, 2, ',', '.') }}
+                </p>
+            </div>
+
+            <div class="flex-1 bg-yellow-100 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                <p class="text-xs text-yellow-800 font-semibold">SILPA {{ $tahun->tahun }}</p>
+                <p class="text-xl font-bold text-yellow-900 mt-1">Rp {{ number_format($silpa_akhir, 2, ',', '.') }}</p>
+            </div>
 
         </div>
+
 
         {{-- tabel content --}}
         <div>
@@ -227,9 +233,9 @@
                         <x-slot name="footer">
                             <tr>
                                 <th class="p-2 text-left w-1/2">SILPA TAHUN {{ $tahun->tahun }}</th>
-                                <th class="p-2 text-right w-1/6">Rp {{ number_format($netto, 0, ',', '.') }}
-                                <th class="p-2 text-right w-1/6">Rp {{ number_format($netto, 0, ',', '.') }}
-                                <th class="p-2 text-right w-1/6">Rp {{ number_format($netto, 0, ',', '.') }}
+                                <th class="p-2 text-right w-1/6">Rp {{ number_format($silpa_akhir, 0, ',', '.') }}
+                                <th class="p-2 text-right w-1/6">Rp {{ number_format($silpa_akhir, 0, ',', '.') }}
+                                <th class="p-2 text-right w-1/6">Rp {{ number_format($silpa_akhir, 0, ',', '.') }}
                                 </th>
                             </tr>
                         </x-slot>
