@@ -48,7 +48,12 @@
 
                 <a href="{{ url()->current() }}"
                     class="bg-gray-200 hover:bg-gray-300 text-indigo-500 w-auto p-2 rounded-full text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
                 </a>
             </div>
             {{-- Button tambah penduduk --}}
@@ -66,55 +71,78 @@
         </div>
 
         {{-- Tabel penduduk --}}
-        <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
-                <thead class="bg-indigo-400 text-gray-50 uppercase text-xs font-semibold tracking-wider">
+        <div>
+            <x-table>
+                <x-slot name="head">
                     <tr>
-                        <th class="px-4 py-3 text-center">Nama</th>
+                        <th class="px-4 py-3 text-left">Nama</th>
                         <th class="px-4 py-3 text-center">Tanggal Lahir</th>
                         <th class="px-4 py-3 text-center">Alamat</th>
-                        <th class="px-4 py-3 text-left">Jenis Kelamin</th>
-                        <th class="px-4 py-3 text-left">Status</th>
+                        <th class="px-4 py-3 text-center">Jenis Kelamin</th>
+                        <th class="px-4 py-3 text-center">Status</th>
                         <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50" x-show="filteredPenduduk.length > 0">
+                </x-slot>
+                <x-slot name="body">
                     <template x-for="item in filteredPenduduk" :key="item.nik">
                         <tr class="even:bg-gray-50 hover:bg-gray-100">
-                            <td class="px-4 py-3 text-gray-800 font-medium" x-text="item.nama"></td>
+                            <td class="px-4 py-3 text-gray-800 font-medium text-left" x-text="item.nama"></td>
                             <td class="px-4 py-3 text-gray-600 text-center" x-text="item.tanggal_lahir"></td>
-                            <td class="px-4 py-3 text-gray-600"
+                            <td class="px-4 py-3 text-gray-600 text-left align-middle truncate max-w-xs"
+                                x-bind:title="item.alamat"
                                 x-text="item.alamat.length > 50 ? item.alamat.slice(0, 50) + '...' : item.alamat">
                             </td>
-                            <td class="px-4 py-3 text-center space-x-1 text-gray-600" x-text="item.jenis_kelamin"></td>
-                            <td class="px-4 py-3 text-gray-600" x-text="item.status_tinggal"></td>
-                            <td class="px-4 py-3 text-center space-x-1">
-                                <!-- Detail -->
-                                <button @click="selectedPenduduk = item; showDetailModal = true"
-                                    class="text-blue-500 hover:text-blue-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-                                </button>
-                                <!-- Edit -->
-                                <button @click="selectedPenduduk = {...item}; showEditModal = true"
-                                    class="text-yellow-500 hover:text-yellow-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                </button>
-                                <!-- Delete -->
-                                <button @click="selectedPenduduk = item; showDeleteModal = true"
-                                    class="text-red-500 hover:text-red-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
+                            <td class="px-4 py-3 text-gray-600 text-center" x-text="item.jenis_kelamin"></td>
+                            <td class="px-4 py-3 text-gray-600 text-center" x-text="item.status_tinggal"></td>
+                            <td class="px-4 py-3 text-center">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <!-- Detail -->
+                                    <button @click="selectedPenduduk = item; showDetailModal = true"
+                                        class="text-blue-500 hover:text-blue-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path
+                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Edit -->
+                                    <button @click="selectedPenduduk = {...item}; showEditModal = true"
+                                        class="text-yellow-500 hover:text-yellow-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path
+                                                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                                            <path d="m15 5 4 4" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- Delete -->
+                                    <button @click="selectedPenduduk = item; showDeleteModal = true"
+                                        class="text-red-500 hover:text-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                            <path d="M3 6h18" />
+                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                            <line x1="10" x2="10" y1="11" y2="17" />
+                                            <line x1="14" x2="14" y1="11" y2="17" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </template>
-                </tbody>
-            </table>
+                </x-slot>
+            </x-table>
 
             <!-- Notif -->
             <div x-show="filteredPenduduk.length === 0" class="text-center text-gray-500 py-6">
                 Data penduduk tidak ditemukan.
             </div>
         </div>
+
 
         <!-- Pagination -->
         <div class="mt-4">
@@ -511,83 +539,55 @@
         </div>
 
         {{-- modal detail --}}
-        <div x-show="showDetailModal" @click.away="showDetailModal = false" x-transition
-            class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
-            <div class="bg-white rounded-xl shadow-2xl h- p-4 sm:p-6 space-y-4">
-                <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Detail Penduduk</h2>
-                <div class="text-center">
-                    <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                        <p class="text-xs text-gray-500">Kode Keluarga</p>
-                        <p class="font-medium text-gray-800" x-text="selectedPenduduk.kode_keluarga"></p>
-                    </div>
-                    <div class="grid mt-4 grid-cols-2 sm:grid-cols-3 gap-3">
-                        <!-- Field Container -->
+        <x-modal show="showDetailModal" title="Detail Penduduk">
+            <div class="space-y-6 text-left">
 
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">NIK</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.nik"></p>
+                <!-- Kode Keluarga -->
+                <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                    <p class="text-xs text-gray-500 mb-1">Kode Keluarga</p>
+                    <p class="text-base text-gray-900 font-semibold break-words"
+                        x-text="selectedPenduduk.kode_keluarga"></p>
+                </div>
+
+                <!-- Grid Detail -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <template
+                        x-for="field in [
+                { label: 'NIK', value: selectedPenduduk.nik },
+                { label: 'Nama', value: selectedPenduduk.nama },
+                { label: 'Jenis Kelamin', value: selectedPenduduk.jenis_kelamin },
+                { label: 'Tempat, Tgl Lahir', value: `${selectedPenduduk.tempat_lahir}, ${selectedPenduduk.tanggal_lahir}` },
+                { label: 'Agama', value: selectedPenduduk.agama },
+                { label: 'Pendidikan', value: selectedPenduduk.pendidikan },
+                { label: 'Pekerjaan', value: selectedPenduduk.pekerjaan },
+                { label: 'Status Perkawinan', value: selectedPenduduk.status_perkawinan },
+                { label: 'Golongan Darah', value: selectedPenduduk.golongan_darah },
+                { label: 'Kewarganegaraan', value: selectedPenduduk.kewarganegaraan },
+                { label: 'RT / RW', value: `${selectedPenduduk.rt} / ${selectedPenduduk.rw}` },
+            ]"
+                        :key="field.label">
+                        <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                            <p class="text-xs text-gray-500 mb-1" x-text="field.label"></p>
+                            <p class="text-base text-gray-900 font-semibold break-words" x-text="field.value"></p>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Nama</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.nama"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Jenis Kelamin</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.jenis_kelamin"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Tempat, Tgl Lahir</p>
-                            <p class="font-medium text-gray-800">
-                                <span x-text="selectedPenduduk.tempat_lahir"></span>,
-                                <span x-text="selectedPenduduk.tanggal_lahir"></span>
-                            </p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Agama</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.agama"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Pendidikan</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.pendidikan"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Pekerjaan</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.pekerjaan"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Status Perkawinan</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.status_perkawinan"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Golongan Darah</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.golongan_darah"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">Kewarganegaraan</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.kewarganegaraan"></p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-                            <p class="text-xs text-gray-500">RT / RW</p>
-                            <p class="font-medium text-gray-800">
-                                <span x-text="selectedPenduduk.rt"></span> /
-                                <span x-text="selectedPenduduk.rw"></span>
-                            </p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg shadow-sm col-span-full">
-                            <p class="text-xs text-gray-500">Status Tinggal</p>
-                            <p class="font-medium text-gray-800" x-text="selectedPenduduk.status_tinggal"></p>
-                        </div>
+                    </template>
+
+                    <!-- Status Tinggal -->
+                    <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm col-span-full">
+                        <p class="text-xs text-gray-500 mb-1">Status Tinggal</p>
+                        <p class="text-base text-gray-900 font-semibold break-words"
+                            x-text="selectedPenduduk.status_tinggal"></p>
                     </div>
                 </div>
 
-
+                <!-- Tombol Tutup -->
                 <div class="text-center pt-4">
-                    <button @click="showDetailModal = false"
-                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow">
+                    <x-button @click="showDetailModal = false">
                         Tutup
-                    </button>
+                    </x-button>
                 </div>
             </div>
-        </div>
+        </x-modal>
+
     </div>
 </x-admin-layout>

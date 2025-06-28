@@ -31,6 +31,38 @@ class KeuanganController extends Controller
 
         $pembiayaan = Pembiayaan::where('id_tahun_anggaran', $tahun->id_tahun_anggaran)->get();
 
-        return view('user.keuangan', compact('tahun', 'pendapatan', 'belanja', 'pembiayaan'));
+        // Hitung total berdasarkan jenis
+        $penerimaan = $pembiayaan->where('jenis', 'penerimaan')->sum('realisasi');
+        $pengeluaran = $pembiayaan->where('jenis', 'pengeluaran')->sum('realisasi');
+        $netto = $penerimaan - $pengeluaran;
+
+        // Hitung total belanja (dari semua rincian)
+        $totalBelanja = $belanja->flatMap->rincianBelanja->sum('realisasi');
+
+        // Cari SILPA tahun sebelumnya
+        $tahunSebelumnya = TahunAnggaran::where('tahun', $tahun->tahun - 1)->first();
+        $silpa_awal = 0;
+
+        if ($tahunSebelumnya) {
+            $silpa_awal = Pembiayaan::where('id_tahun_anggaran', $tahunSebelumnya->id_tahun_anggaran)
+                ->where('nama', 'like', 'SILPA%')
+                ->value('realisasi') ?? 0;
+        }
+
+        // Hitung SILPA akhir
+        $silpa_akhir = $silpa_awal + $netto;
+
+        return view('user.keuangan', compact(
+            'tahun',
+            'pendapatan',
+            'belanja',
+            'pembiayaan',
+            'penerimaan',
+            'pengeluaran',
+            'netto',
+            'totalBelanja',
+            'silpa_awal',
+            'silpa_akhir'
+        ));
     }
 }
