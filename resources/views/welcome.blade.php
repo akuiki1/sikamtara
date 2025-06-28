@@ -216,7 +216,7 @@
                                 dengan praktis tanpa antri.
                             </p>
                             {{-- CTA --}}
-                            <a href="/layanan/administrasi"
+                            <a href="{{ route('administrasi') }}"
                                 class="inline-block bg-white text-blue-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-blue-100 transition-all duration-300">
                                 Ajukan Sekarang
                             </a>
@@ -245,7 +245,7 @@
                                 dan tuntas.
                             </p>
                             {{-- CTA --}}
-                            <a href="/layanan/pengaduan"
+                            <a href="{{ route('pengaduan') }}"
                                 class="inline-block bg-white text-yellow-600 font-bold py-2 px-4 text-sm sm:py-3 sm:px-6 sm:text-base rounded-full shadow hover:bg-yellow-100 transition-all duration-300">
                                 Kirim Pengaduan
                             </a>
@@ -386,32 +386,44 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {{-- Card Berita --}}
-                    @foreach ($berita as $item)
-                        <div
-                            class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                            <img class="h-36 w-full object-cover" src="{{ asset('storage/' . $item->gambar_cover) }}"
-                                alt="Foto Berita">
-                            <div class="p-4 flex flex-col justify-between flex-grow">
-                                <div>
-                                    <p class="text-[11px] text-gray-400 mb-1">Diterbitkan pada
-                                        {{ \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d F Y') }}
+                    @if ($berita->count())
+                        @foreach ($berita as $item)
+                            <div
+                                class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-md transition border">
+                                <img src="{{ asset('storage/' . $item->gambar_cover) }}" alt="Gambar Berita"
+                                    class="w-full h-36 object-cover">
+                                <div class="p-4 space-y-2">
+                                    <h2 class="font-semibold text-sm text-gray-800 leading-tight line-clamp-2">
+                                        <a href="/informasi/berita/detail/{{ $item->id_berita }}"
+                                            class="hover:underline">
+                                            {{ $item->judul_berita }}
+                                        </a>
+                                    </h2>
+                                    <p class="text-xs text-gray-600 line-clamp-3">
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($item->isi_berita), 70) }}
                                     </p>
-                                    <h3 class="text-base font-semibold text-gray-800 mb-1 line-clamp-2">
-                                        {{ $item->judul_berita }}</h3>
-                                    <p class="text-sm text-gray-600 mb-3 line-clamp-3">
-                                        {{ Str::limit(strip_tags($item->isi_berita), 100) }}
-                                    </p>
-                                </div>
-                                <div class="mt-auto flex flex-col space-y-2">
-                                    <a href="{{ route('berita.index', $item->id_berita) }}"
-                                        class="text-primary-600 text-sm font-medium hover:underline">Baca Selengkapnya
-                                        →</a>
-                                    <p class="text-[11px] text-gray-400 text-right">Oleh
-                                        {{ $item->user->name ?? 'Admin Desa' }}</p>
+                                    <div class="flex justify-between items-center text-[11px] text-gray-400 pt-2">
+                                        <div>
+                                            <p>{{ \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d M Y H:i') }}
+                                            </p>
+                                            <p>Oleh {{ $item->user->nama }}</p>
+                                        </div>
+                                        <a href="/informasi/berita/detail/{{ $item->id_berita }}"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-3 py-0.5 rounded-full text-[11px] transition">Detail</a>
+                                    </div>
                                 </div>
                             </div>
+                        @endforeach
+                    @else
+                        <div class="text-center text-gray-500 text-sm py-12">
+                            Belum ada berita yang tersedia.
                         </div>
-                    @endforeach
+                    @endif
+
+                    {{-- Pagination --}}
+                    <div class="mt-6 flex">
+                        {{ $berita->links() }}
+                    </div>
                 </div>
 
                 {{-- Tombol Lihat Semua Berita --}}
