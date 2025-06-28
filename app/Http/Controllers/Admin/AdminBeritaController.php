@@ -76,7 +76,6 @@ class AdminBeritaController extends Controller
                 'judul_berita' => 'required|string|max:255',
                 'isi_berita' => 'required|string',
                 'gambar_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                // 'tanggal_publish' => 'required|date',
                 'penulis' => 'required|exists:users,id_user',
                 'status' => 'required|in:draft,published,archived',
                 'tags' => 'nullable|string|max:255',
