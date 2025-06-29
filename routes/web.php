@@ -24,6 +24,7 @@ use App\Http\Controllers\admin\AdminPendudukController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\admin\AdminProfilDesaController;
 use App\Http\Controllers\admin\AdminAdministrasiController;
+use App\Http\Controllers\admin\AdminPengaduanController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 Route::get('/ringkasan-tahun', [BerandaController::class, 'ringkasanTahun']);
@@ -97,10 +98,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::delete('/layanan/hapus/{id}', [AdminAdministrasiController::class, 'hapusLayanan'])->name('layanan.hapus');
     Route::post('/upload-surat-final/{id}', [AdminAdministrasiController::class, 'uploadSuratFinal']);
 
-
-    Route::get('/layanan/pengaduan', function () {
-        return view('admin.layanan.pengaduan', ['title' => 'Kelola Pengaduan Masyarakat']);
-    });
+    Route::get('/layanan/pengaduan', [AdminPengaduanController::class, 'index'])->name('admin.pengaduan.index');
 
     Route::get('/berita', [AdminBeritaController::class, 'index'])->name('adminberita.index');
     Route::post('/berita', [AdminBeritaController::class, 'store'])->name('adminberita.store');

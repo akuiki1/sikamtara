@@ -4,7 +4,7 @@
     {{-- stat card --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        <x-stat-card label="Jumlah Penduduk" value="2.341" color="text-indigo-600">
+        <x-stat-card label="Jumlah Penduduk" :value="$jumlahPenduduk" color="text-indigo-600">
             <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'
                 stroke='currentColor' stroke-width='1.714' stroke-linecap='round' stroke-linejoin='round'
                 class='lucide lucide-users'>
@@ -15,7 +15,7 @@
             </svg>
         </x-stat-card>
 
-        <x-stat-card label="Akun Warga Terverifikasi" value="642" color="text-green-600">
+        <x-stat-card label="Akun Terverifikasi" :value="$akunTerverifikasi" color="text-green-600">
             <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'
                 stroke='currentColor' stroke-width='1.714' stroke-linecap='round' stroke-linejoin='round'
                 class='lucide lucide-badge-check'>
@@ -25,7 +25,7 @@
             </svg>
         </x-stat-card>
 
-        <x-stat-card label="Layanan Menunggu Konfirmasi" value="128" color="text-yellow-600">
+        <x-stat-card label="Layanan Masuk" :value="$layananMenunggu" color="text-yellow-600">
             <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'
                 stroke='currentColor' stroke-width='1.714' stroke-linecap='round' stroke-linejoin='round'
                 class='lucide lucide-file-clock'>
@@ -36,7 +36,7 @@
             </svg>
         </x-stat-card>
 
-        <x-stat-card label="Pengaduan Masuk" value="5 Pengaduan" color="text-orange-600">
+        <x-stat-card label="Pengaduan Masuk" :value="$pengaduanMasuk" color="text-orange-600">
             <svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24' fill='none'
                 stroke='currentColor' stroke-width='1.714' stroke-linecap='round' stroke-linejoin='round'
                 class='lucide lucide-message-circle-warning'>
@@ -48,10 +48,10 @@
 
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6 items-start">
 
-        <!-- Card 1: Statistik Penduduk -->
-        <div class="md:col-span-1 bg-white p-5 rounded-2xl shadow" x-data="{
+        {{-- Statistik Penduduk --}}
+        <div class="bg-white p-5 rounded-2xl shadow md:col-span-1" x-data="{
             chart: null,
             data: {{ json_encode($statistik_penduduk) }},
             renderChart() {
@@ -70,121 +70,60 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
-                            legend: false,
+                            legend: { display: false }
                         }
                     }
                 });
             }
         }" x-init="renderChart">
-            <h2 class="text-lg font-semibold mb-4">Statistik Penduduk</h2>
+            <h2 class="text-lg font-semibold mb-4 text-center">Statistik Penduduk</h2>
 
-            <div class="w-full max-w-xs mx-auto">
-                <canvas id="pieChart" class="!w-full !h-auto aspect-square"></canvas>
+            <div class="mx-auto w-40 aspect-square">
+                <canvas id="pieChart" class="w-full h-full"></canvas>
             </div>
 
-            <div class="text-sm text-gray-600 space-y-1 mt-4 text-center">
+            <div class="mt-4 text-sm text-gray-600 space-y-2 text-center">
                 <div class="flex items-center justify-center gap-2">
-                    <span class="inline-block w-3 h-3 rounded-sm bg-blue-500"></span>
-                    <span>Laki-laki: <span
-                            class="font-semibold text-gray-800">{{ $statistik_penduduk['laki'] }}</span></span>
+                    <span class="w-3 h-3 bg-blue-500 rounded-sm"></span>
+                    <span>Laki-laki: <strong class="text-gray-800">{{ $statistik_penduduk['laki'] }}</strong></span>
                 </div>
                 <div class="flex items-center justify-center gap-2">
-                    <span class="inline-block w-3 h-3 rounded-sm bg-pink-400"></span>
-                    <span>Perempuan: <span
-                            class="font-semibold text-gray-800">{{ $statistik_penduduk['perempuan'] }}</span></span>
+                    <span class="w-3 h-3 bg-pink-400 rounded-sm"></span>
+                    <span>Perempuan: <strong
+                            class="text-gray-800">{{ $statistik_penduduk['perempuan'] }}</strong></span>
                 </div>
             </div>
-
         </div>
 
-
-
-        {{-- Card 2: keuangan dari tahun ke tahun --}}
-        <div class="md:col-span-3 bg-white p-5 rounded-2xl shadow">
+        {{-- Aktivitas --}}
+        <div class="bg-white p-5 rounded-2xl shadow md:col-span-3">
             <h2 class="text-lg font-semibold mb-4">Aktivitas</h2>
-            <div class="w-full h-80 relative">
-                {{-- segala macam bentuk notifikasi --}}
+            <div class="space-y-3 text-sm text-gray-700 max-h-[350px] overflow-y-auto pr-1">
+                @forelse($aktivitas as $item)
+                    <div class="border-b pb-2 last:border-0 last:pb-0">
+                        @if ($item instanceof \App\Models\PengajuanAdministrasi)
+                            Pengajuan administrasi oleh {{ $item->user->penduduk->nama ?? 'Warga' }}
+                            <span class="text-gray-500">[{{ ucfirst($item->status_pengajuan) }}]</span>
+                            · <a href="{{ route('adminadministrasi.index') . '#pengajuanMasuk' }}"
+                                class="text-indigo-600 hover:underline">Lihat detail</a>
+                        @elseif ($item instanceof \App\Models\Pengaduan)
+                            Pengaduan dari {{ $item->user->penduduk->nama ?? 'Warga' }}
+                            <span class="text-gray-500">[{{ ucfirst($item->status) }}]</span>
+                            · <a href="{{ route('admin.pengaduan.index') . '#pengajuanMasuk' }}"
+                                class="text-indigo-600 hover:underline">Lihat detail</a>
+                        @endif
+                        <div class="text-xs text-gray-400">
+                            {{ $item->created_at->diffForHumans() }}
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-gray-500">Belum ada aktivitas terbaru.</p>
+                @endforelse
+                <div class="pt-4">
+                    {{ $aktivitas->links() }}
+                </div>
             </div>
-        </div>
-
-        <!-- Card 1: full width -->
-        <div class="md:col-span-4 bg-white p-5 rounded-2xl shadow">
-            <h2 class="text-lg font-semibold">Statistik Penduduk</h2>
-            <div class="w-full h-80 relative">
-                <canvas id="keuanganChart" class="absolute inset-0 w-full h-full"></canvas>
-            </div>
-        </div>
-
-
-        <!-- Card 2 & 3: 1/2 lebar -->
-        <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow">
-            <h2 class="text-sm font-medium text-gray-600">Permohonan Terbaru</h2>
-            <p class="text-xl font-bold text-gray-800">128</p>
-        </div>
-
-        <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow">
-            <h2 class="text-sm font-medium text-gray-600">Akun Warga Aktif</h2>
-            <p class="text-xl font-bold text-green-600">642</p>
-        </div>
-
-        <!-- Card 4: 1 kolom -->
-        <div class="md:col-span-1 bg-white p-5 rounded-2xl shadow">
-            <h2 class="text-sm font-medium text-gray-600">Pengaduan Masuk</h2>
-            <p class="text-xl font-bold text-orange-600">5</p>
-        </div>
-
-        <!-- Card 5: 3 kolom -->
-        <div class="md:col-span-3 bg-white p-5 rounded-2xl shadow">
-            <h2 class="text-sm font-medium text-gray-600">Agenda Desa</h2>
-            <ul class="mt-2 space-y-1 text-sm text-gray-700">
-                <li>📌 Rapat RT - 10 Mei</li>
-                <li>📌 Gotong Royong - 12 Mei</li>
-            </ul>
         </div>
     </div>
 
-    {{-- script bar keuangan --}}
-    <script>
-        const ctx = document.getElementById('keuanganChart').getContext('2d');
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['2021', '2022', '2023', '2024'],
-                datasets: [{
-                        label: 'Anggaran',
-                        data: [800, 950, 1000, 1200],
-                        backgroundColor: '#60A5FA' // biru
-                    },
-                    {
-                        label: 'Realisasi',
-                        data: [750, 900, 980, 1100],
-                        backgroundColor: '#34D399' // hijau
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Jumlah (juta)'
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.y + ' juta';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
 </x-admin-layout>

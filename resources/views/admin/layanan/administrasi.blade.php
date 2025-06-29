@@ -504,7 +504,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
 
                 {{-- container tabel pengajuan Masuk --}}
-                <div x-data="{
+                <div id="pengajuanMasuk" x-data="{
                     layanan: {{ $layananMasuk }},
                     selected: null,
                     async submitForm(status) {

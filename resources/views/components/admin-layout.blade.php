@@ -44,6 +44,25 @@
             </footer>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Periksa apakah ada hash di URL
+            const hash = window.location.hash;
+            if (hash) {
+                const target = document.querySelector(hash);
+                if (target) {
+                    setTimeout(() => {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        // Optional: highlight target sebentar
+                        target.classList.add('ring', 'ring-indigo-300', 'transition');
+                        setTimeout(() => target.classList.remove('ring', 'ring-indigo-300'), 2000);
+                    }, 300); // Delay agar DOM siap
+                }
+            }
+        });
+    </script>
 </body>
 
 
