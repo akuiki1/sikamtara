@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\penduduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,7 @@ class AuthController extends Controller
             }
         }
 
-        return back()->with('loginError', 'Email atau password salah!');
+        return back()->with('error', 'Email atau password salah!');
     }
 
 
@@ -52,7 +53,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('success', 'Anda berhasil Logout');
     }
 
     public function showRegistrationForm()
@@ -68,6 +69,15 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // ✅ Cek apakah NIK ada di tabel penduduk
+        $nikTerdaftar = penduduk::where('nik', $request->nik)->exists();
+
+        if (! $nikTerdaftar) {
+            // Kirim pesan error ke halaman sebelumnya
+            return back()->withInput()->with('error', 'NIK anda belum terdaftar! Silahkan hubungi admin desa.');
+        }
+
+        // Jika NIK valid, lanjut registrasi
         User::create([
             'nik' => $request->nik,
             'email' => $request->email,
