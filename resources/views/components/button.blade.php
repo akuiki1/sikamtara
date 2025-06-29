@@ -10,6 +10,7 @@ $colors = [
     'secondary' => 'bg-gray-200 hover:bg-gray-300 text-gray-700',
     'warning' => 'bg-amber-200 hover:bg-amber-300 text-gray-700',
     'danger' => 'bg-red-400 hover:bg-red-500 text-white',
+    'success' => 'bg-green-400 hover:bg-green-500 text-white',
 ];
 $sizes = [
     'sm' => 'text-xs px-3 py-1',

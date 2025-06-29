@@ -45,7 +45,7 @@
         </a>
 
         <!-- Layanan -->
-        <div x-data="{ open: {{ request()->routeIs('adminadministrasi.*') || request()->is('admin/layanan/pengaduan') ? 'true' : 'false' }} }">
+        <div x-data="{ open: {{ request()->routeIs('adminadministrasi.*', 'admin.pengaduan.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -66,11 +66,9 @@
             </button>
 
             <div x-show="open" x-collapse x-cloak class="space-y-1 pl-10 mt-1">
+                {{-- administrasi --}}
                 <a href="{{ route('adminadministrasi.index') }}"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg transition-all
-          hover:bg-gray-100
-          {{ request()->routeIs('adminadministrasi.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg transition-all hover:bg-gray-100 {{ request()->routeIs('adminadministrasi.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-file-plus2-icon lucide-file-plus-2">
@@ -81,8 +79,9 @@
                     </svg>
                     <span>Layanan Administrasi</span>
                 </a>
-                <a href="/admin/layanan/pengaduan"
-                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all">
+                {{-- pengaduan --}}
+                <a href="{{ route('admin.pengaduan.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('admin.pengaduan.*') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round"
@@ -97,7 +96,7 @@
         </div>
 
         <!-- Berita & Pengumuman -->
-        <div x-data="{ open: {{ request()->routeIs('adminberita.*') || request()->routeIs('adminpengumuman.*') ? 'true' : 'false' }} }">
+        <div x-data="{ open: {{ request()->routeIs('adminberita.*', 'adminpengumuman.*') ? 'true' : 'false' }} }">
             <button @click="open = !open"
                 class="flex items-center justify-between w-full px-3 py-2 hover:bg-gray-100 rounded-lg transition-all">
                 <div class="flex items-center gap-3">
@@ -309,9 +308,8 @@
                 </a>
                 <a href="{{ route('adminapbdes.pembiayaan') }}"
                     class="flex items-center gap-3 px-3 py-2 text-xs rounded-lg hover:bg-gray-100 transition-all {{ request()->routeIs('adminapbdes.pembiayaan') ? 'text-blue-600 font-semibold' : 'text-gray-800' }}">
-                    <svg class="w-6 h-6 text-gray-800" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                        viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                             d="M3 10h18M6 14h2m3 0h5M3 7v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1Z" />
                     </svg>
@@ -319,25 +317,25 @@
                 </a>
             </div>
         </div>
-    </nav>
 
-    <!-- LogOut -->
-    <div class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium text-center border-t">
-        <div class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" x2="9" y1="12" y2="12" />
-                    </svg>
-                    <span x-show="!collapsed" class="transition-opacity duration-200">Logout</span>
-                </button>
-            </form>
+        <!-- LogOut -->
+        <div class="flex-1 px-3 py-4 space-y-2 text-gray-800 text-sm font-medium text-center border-t">
+            <div
+                class="flex items-center gap-3 px-3 py-2 rounded-lg hover:text-red-600 hover:bg-gray-100 transition-all">
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" x2="9" y1="12" y2="12" />
+                        </svg>
+                        <span x-show="!collapsed" class="transition-opacity duration-200">Logout</span>
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
-
+    </nav>
 </div>
