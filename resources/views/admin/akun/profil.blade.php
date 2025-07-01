@@ -1,241 +1,158 @@
 <x-admin-layout>
-    <x-slot:title>Edit Profil</x-slot>
+    <x-slot:title>{{ $title }}</x-slot>
 
-    <div class="max-w-5xl mx-auto mt-8 p-8 bg-white/80 backdrop-blur-md rounded-3xl shadow-xl" x-data="editProfile"
-        x-init="init()" x-cloak>
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Edit Profil</h2>
+    <div class="bg-white rounded-xl px-6 py-8 shadow-md space-y-8">
+        {{-- Header --}}
+        <div>
+            <h1 class="text-2xl font-semibold text-gray-800">Profil Saya</h1>
+        </div>
 
-        <div class="grid md:grid-cols-3 gap-10">
-            <!-- Form Fields -->
-            <div class="md:col-span-2 space-y-6">
-                <div class="space-y-3">
-                    <label class="block text-sm font-semibold text-gray-700">Username</label>
-                    <input type="text" x-model="form.username" @input="checkChanges"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div class="space-y-3">
-                    <label class="block text-sm font-semibold text-gray-700">NIK</label>
-                    <input type="text" x-model="form.nik" @input="checkChanges"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div class="space-y-3">
-                    <label class="block text-sm font-semibold text-gray-700">Email</label>
-                    <input type="email" x-model="form.email" @input="checkChanges"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500" />
-                </div>
-                <div class="space-y-3">
-                    <label class="block text-sm font-semibold text-gray-700">Password (kosongkan jika tidak
-                        diubah)</label>
-                    <input type="password" x-model="form.password" @input="checkChanges"
-                        class="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue-500" />
+        {{-- Form Profil --}}
+        <form x-data="{
+            editEmail: false,
+            editPassword: false,
+            preview: '{{ asset('storage/' . Auth::user()->foto) }}',
+            originalEmail: '{{ Auth::user()->email }}',
+            email: '{{ Auth::user()->email }}',
+            originalNama: '{{ Auth::user()->nama }}',
+            nama: '{{ Auth::user()->nama }}',
+            password: '',
+            fotoChanged: false,
+            isChanged() {
+                return (
+                    this.email !== this.originalEmail ||
+                    this.nama !== this.originalNama ||
+                    this.editPassword ||
+                    this.fotoChanged
+                );
+            },
+            resetChanges() {
+                this.email = this.originalEmail;
+                this.nama = this.originalNama;
+                this.password = '';
+                this.editEmail = false;
+                this.editPassword = false;
+                this.preview = '{{ asset('storage/' . Auth::user()->foto) }}';
+                this.fotoChanged = false;
+            }
+        }" action="{{ route('admin.profil.update') }}" method="POST"
+            enctype="multipart/form-data" class="space-y-8">
+            @csrf
+
+            {{-- Foto Profil --}}
+            <div class="flex items-center gap-6">
+                <div>
+                    <img :src="preview" alt="Foto Profil"
+                        class="w-20 h-20 rounded-full object-cover border shadow">
                 </div>
 
-                <!-- Akun Google -->
-                <div class="space-y-3">
-                    <label class="block text-sm font-semibold text-gray-700">Akun Google</label>
-                    <template x-if="form.google_id">
-                        <div class="flex items-center gap-3">
-                            <img :src="form.google_avatar" class="w-10 h-10 rounded-full" alt="Google Avatar">
-                            <span class="text-sm text-gray-700 font-medium" x-text="form.google_email"></span>
-                            <button @click="disconnectGoogle"
-                                class="ml-auto text-red-600 text-xs underline">Putuskan</button>
-                        </div>
-                    </template>
-                    <template x-if="!form.google_id">
-                        <button @click="connectGoogle"
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm">
-                            <svg class="w-4 h-4" viewBox="0 0 48 48">
-                                <path fill="#fff" d="M..." />
-                            </svg>
-                            Hubungkan Google
-                        </button>
-                    </template>
+                <div class="flex flex-col space-y-2">
+                    <label class="flex items-center space-x-2">
+                        <label
+                            class="inline-flex items-center px-4 py-2 bg-indigo-400 text-white text-sm font-medium rounded-lg shadow cursor-pointer hover:bg-indigo-600 transition">
+                            + Change Image
+                            <input type="file" name="foto" class="hidden" accept=".jpg,.jpeg,.png,.gif"
+                                @change="
+                                    preview = URL.createObjectURL($event.target.files[0]);
+                                    fotoChanged = true;
+                                ">
+                        </label>
+                    </label>
+                    <p class="text-xs text-gray-400">We support PNGs, JPEGs and GIFs under 2MB</p>
                 </div>
             </div>
 
-            <!-- Foto dan Status -->
-            <div class="space-y-6 flex flex-col items-center">
-                <!-- Foto Profil + Badge Verifikasi -->
-                <div class="space-y-6 flex flex-col items-center">
-                    <!-- Foto Profil + Badge Verifikasi -->
-                    <div class="relative w-36 h-36">
-                        <img :src="newPhoto || form.photo"
-                            class="w-full h-full rounded-full object-cover border-4 border-white shadow-xl transition-all duration-300"
-                            alt="Foto Profil">
+            {{-- Nama --}}
+            <div>
+                <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                <input type="text" name="nama" id="nama" x-model="nama"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                    placeholder="Masukkan nama lengkap" required>
+            </div>
 
-                        <!-- Overlay Ganti Foto -->
-                        <input type="file" class="hidden" id="upload" @change="previewPhoto">
-                        <label for="upload"
-                            class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-sm font-medium rounded-full opacity-0 hover:opacity-100 transition cursor-pointer">
-                            Ganti Foto
-                        </label>
+            {{-- Account Security --}}
+            <div class="space-y-6 pt-6 border-t">
+                <h2 class="text-lg font-semibold text-gray-800">Keamanan Akun</h2>
 
-                        <!-- Badge Verifikasi + Teks -->
-                        <div
-                            class="flex items-center space-x-1 bg-white rounded-full px-2 py-0.5 mt-4 shadow border border-gray-300">
-                            <svg :class="form.verified ? 'text-blue-600' : 'text-gray-400'" class="w-[20px] h-[20px]"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd"
-                                    d="M12 2c-.791 0-1.55.314-2.11.874l-.893.893a.985.985 0 0 1-.696.288H7.04A2.984 2.984 0 0 0 4.055 7.04v1.262a.986.986 0 0 1-.288.696l-.893.893a2.984 2.984 0 0 0 0 4.22l.893.893a.985.985 0 0 1 .288.696v1.262a2.984 2.984 0 0 0 2.984 2.984h1.262c.261 0 .512.104.696.288l.893.893a2.984 2.984 0 0 0 4.22 0l.893-.893a.985.985 0 0 1 .696-.288h1.262a2.984 2.984 0 0 0 2.984-2.984V15.7c0-.261.104-.512.288-.696l.893-.893a2.984 2.984 0 0 0 0-4.22l-.893-.893a.985.985 0 0 1-.288-.696V7.04a2.984 2.984 0 0 0-2.984-2.984h-1.262a.985.985 0 0 1-.696-.288l-.893-.893A2.984 2.984 0 0 0 12 2Zm3.683 7.73a1 1 0 1 0-1.414-1.413l-4.253 4.253-1.277-1.277a1 1 0 0 0-1.415 1.414l1.985 1.984a1 1 0 0 0 1.414 0l4.96-4.96Z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span class="text-xs font-semibold"
-                                :class="form.verified ? 'text-blue-600' : 'text-gray-400'">
-                                <template x-if="form.verified">
-                                    <span>Terverifikasi</span>
-                                </template>
-                                <template x-if="!form.verified">
-                                    <span>Belum Terverifikasi</span>
-                                </template>
-                            </span>
+                {{-- Email --}}
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <div class="relative">
+                        <input type="email" name="email" :readonly="!editEmail" x-model="email"
+                            :class="editEmail ? 'bg-white text-gray-900 ring-2 ring-indigo-400' : 'bg-gray-100 text-gray-500'"
+                            class="px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm focus:outline-none transition w-full">
+                        <div class="absolute top-1/2 right-3 transform -translate-y-1/2 flex gap-2">
+                            <template x-if="editEmail">
+                                <button @click.prevent="editEmail = false; email = originalEmail"
+                                    class="text-sm text-gray-600 hover:text-red-500">Batal</button>
+                            </template>
+                            <template x-if="!editEmail">
+                                <button @click.prevent="editEmail = true"
+                                    class="text-sm text-indigo-600 hover:underline">Edit email</button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Password --}}
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Password Baru</label>
+                    <div class="relative">
+                        <div class="space-y-2">
+                            <input type="password" name="password" x-model="password" :readonly="!editPassword"
+                                :class="editPassword ? 'bg-white text-gray-900 ring-2 ring-indigo-400' :
+                                    'bg-gray-100 text-gray-500'"
+                                placeholder="**************"
+                                class="px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm focus:outline-none transition w-full">
+
+                            <template x-if="editPassword">
+                                <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
+                                    class="px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none w-full">
+                            </template>
+                        </div>
+                        <div class="absolute top-2 right-3 flex gap-2">
+                            <template x-if="editPassword">
+                                <button @click.prevent="editPassword = false; password = ''"
+                                    class="text-sm text-gray-600 hover:text-red-500">Batal</button>
+                            </template>
+                            <template x-if="!editPassword">
+                                <button @click.prevent="editPassword = true"
+                                    class="text-sm text-indigo-600 hover:underline">Ganti password</button>
+                            </template>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tombol Aksi -->
-        <div class="flex justify-end mt-10 gap-4">
-            <button @click="resetForm"
-                class="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-semibold">Batal</button>
-            <button @click="saveChanges" :disabled="!hasChanged"
-                :class="hasChanged ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-blue-200 text-blue-500 cursor-not-allowed'"
-                class="px-6 py-2 rounded-lg text-sm font-semibold transition-all">Simpan</button>
+            {{-- Tombol Simpan dan Batal --}}
+            <div class="flex justify-end pt-4 gap-2" x-show="isChanged()">
+                <x-button variant="secondary" @click.prevent="resetChanges()">Batal</x-button>
+                <x-button type="submit" variant="primary">Simpan Perubahan</x-button>
+            </div>
+        </form>
+
+        {{-- Google Account --}}
+        <div class="pt-6 border-t">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Google Account</h2>
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+                @if (Auth::user()->google_id)
+                    <span class="text-green-600 text-sm">Akun Google telah terhubung.</span>
+                    <form action="#" method="POST">
+                    {{-- <form action="{{ route('admin.profil.google.disconnect') }}" method="POST"> --}}
+                        @csrf
+                        <button type="submit" class="text-red-600 hover:underline">Putuskan Akun Google</button>
+                    </form>
+                @else
+                    <a href="#"
+                    {{-- <a href="{{ route('admin.profil.google.connect') }}" --}}
+                        class="flex items-center bg-white border px-4 py-2 rounded-xl shadow hover:scale-105 transition">
+                        <img class="h-5 w-5 mr-2"
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
+                            alt="Google">
+                        <span>Hubungkan Akun Google</span>
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
-
-    <!-- Stylesheet Cropper -->
-    <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.min.css" />
-    <script src="https://unpkg.com/cropperjs"></script>
-
-    <!-- Alpine Logic -->
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('editProfile', () => ({
-                original: @js([
-    'username' => $user->username,
-    'nik' => $user->nik,
-    'email' => $user->email,
-    'password' => '',
-    'google_id' => $user->google_id,
-    'google_email' => $user->google_email,
-    'google_avatar' => $user->foto ? asset('storage/' . $user->foto) : 'https://i.pravatar.cc/150?u=' . $user->id_user,
-    'photo' => $user->foto ? asset('storage/' . $user->foto) : '/images/profil-default.jpg',
-    'verified' => $user->verified_is,
-]),
-                form: {},
-                newPhoto: null,
-                cropper: null,
-                hasChanged: false,
-
-                init() {
-                    this.form = JSON.parse(JSON.stringify(this.original));
-                },
-
-                checkChanges() {
-                    this.hasChanged = JSON.stringify(this.form) !== JSON.stringify(this.original) ||
-                        this.newPhoto !== null;
-                },
-
-                previewPhoto(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = () => {
-                        this.newPhoto = reader.result;
-                        this.checkChanges();
-                    };
-                    reader.readAsDataURL(file);
-                },
-
-                resetForm() {
-                    this.form = JSON.parse(JSON.stringify(this.original));
-                    this.newPhoto = null;
-                    this.hasChanged = false;
-                },
-
-                saveChanges() {
-                    const formData = new FormData();
-                    formData.append('username', this.form.username);
-                    formData.append('nik', this.form.nik);
-                    formData.append('email', this.form.email);
-                    if (this.form.password) {
-                        formData.append('password', this.form.password);
-                    }
-                    if (this.newPhoto) {
-                        const blob = this.dataURLtoBlob(this.newPhoto);
-                        formData.append('photo', blob, 'photo.jpg');
-                    }
-                    formData.append('google_id', this.form.google_id || '');
-                    formData.append('google_email', this.form.google_email || '');
-                    formData.append('google_avatar', this.form.google_avatar || '');
-
-                    fetch('{{ route('profile.update') }}', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            },
-                            body: formData
-                        })
-                        .then(async res => {
-                            const text = await res.text();
-                            if (!res.ok) {
-                                console.error('Gagal simpan. Status:', res.status);
-                                console.error('Isi respons:', text);
-                                alert('Gagal menyimpan. Cek validasi dan koneksi.');
-                                return;
-                            }
-                            const data = JSON.parse(text);
-                            alert(data.message);
-                            this.original = JSON.parse(JSON.stringify(this.form));
-                            this.newPhoto = null;
-                            this.hasChanged = false;
-                        })
-
-
-                        .then(data => {
-                            alert(data.message);
-                            this.original = JSON.parse(JSON.stringify(this.form));
-                            this.newPhoto = null;
-                            this.hasChanged = false;
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert("Terjadi kesalahan saat menyimpan data.");
-                        });
-                },
-
-                dataURLtoBlob(dataURL) {
-                    const arr = dataURL.split(',');
-                    const mime = arr[0].match(/:(.*?);/)[1];
-                    const bstr = atob(arr[1]);
-                    let n = bstr.length;
-                    const u8arr = new Uint8Array(n);
-                    while (n--) {
-                        u8arr[n] = bstr.charCodeAt(n);
-                    }
-                    return new Blob([u8arr], {
-                        type: mime
-                    });
-                },
-
-                connectGoogle() {
-                    // Simulasi auth Google
-                    this.form.google_id = '123456';
-                    this.form.google_email = 'iki@gmail.com';
-                    this.form.google_avatar = 'https://i.pravatar.cc/150?u=iki';
-                    this.checkChanges();
-                },
-
-                disconnectGoogle() {
-                    this.form.google_id = null;
-                    this.form.google_email = '';
-                    this.form.google_avatar = '';
-                    this.checkChanges();
-                }
-            }))
-        })
-    </script>
-
 </x-admin-layout>

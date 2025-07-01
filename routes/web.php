@@ -118,8 +118,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
 
     //halaman admin - akun
-    Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [AdminProfileController::class, 'index'])->name('profile.edit');
+    Route::post('/profile/update', [AdminProfileController::class, 'update'])->name('admin.profil.update');
+    Route::post('/profile/update/password', [AdminProfileController::class, 'updatePassword'])->name('admin.update.password');
 
     Route::get('/akun-warga', [AdminUserController::class, 'index'])->name('user.index');
     Route::post('/akun-warga', [AdminUserController::class, 'store'])->name('user.store');
