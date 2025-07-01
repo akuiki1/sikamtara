@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Berita;
 use App\Models\Pembiayaan;
 use App\Models\Pendapatan;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\TahunAnggaran;
 use App\Models\RincianBelanja;
@@ -13,10 +14,24 @@ class BerandaController extends Controller
 {
     public function index(Request $request)
     {
+        // Siapkan slides
         $gambarSlides = Berita::whereNotNull('gambar_cover')
+            ->where('gambar_cover', '!=', '')
             ->latest()
             ->take(5)
             ->pluck('gambar_cover');
+
+        $slides = collect($gambarSlides)
+            ->filter(fn($path) => !empty($path))
+            ->map(fn($path) => asset(Str::startsWith($path, 'img/') ? $path : 'storage/' . $path))
+            ->values(); // reset index agar mulai dari 0
+
+        // Jika kosong, hanya tampilkan gambar default
+        if ($slides->isEmpty()) {
+            $slides = collect([asset('img/kantordesa.jpg')]);
+        } else {
+            $slides->prepend(asset('img/kantordesa.jpg'));
+        }
 
         // Ambil semua tahun untuk dropdown
         $daftarTahun = TahunAnggaran::orderByDesc('tahun')->get();
@@ -28,7 +43,22 @@ class BerandaController extends Controller
             return $query->where('id_tahun_anggaran', $idTahun);
         }, function ($query) {
             return $query->orderByDesc('tahun');
-        })->firstOrFail();
+        })->first();
+
+        if (!$tahun) {
+            return view('welcome', [
+                'slides' => $slides,
+                'daftarTahun' => collect(),
+                'tahun' => null,
+                'pendapatan' => 0,
+                'totalBelanja' => 0,
+                'surplusDefisit' => 0,
+                'pembiayaanNetto' => 0,
+                'silpa_akhir' => 0,
+                'berita' => collect(),
+                'pesan' => 'Belum ada data tahun anggaran.'
+            ]);
+        }
 
         // Data Keuangan
         $pendapatan = Pendapatan::where('id_tahun_anggaran', $tahun->id_tahun_anggaran)->sum('realisasi');
@@ -58,7 +88,7 @@ class BerandaController extends Controller
         $berita = Berita::where('status', 'published')->orderByDesc('tanggal_publish')->paginate(6);
 
         return view('welcome', [
-            'gambarSlides' => $gambarSlides,
+            'slides' => $slides,
             'daftarTahun' => $daftarTahun,
             'tahun' => $tahun,
             'pendapatan' => $pendapatan,

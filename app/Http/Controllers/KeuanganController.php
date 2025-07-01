@@ -15,12 +15,32 @@ class KeuanganController extends Controller
     {
         $idTahun = $request->input('tahun');
 
+        // Ambil tahun, jika tidak ada -> null (tidak pakai firstOrFail)
         $tahun = TahunAnggaran::when($idTahun, function ($query) use ($idTahun) {
             return $query->where('id_tahun_anggaran', $idTahun);
         }, function ($query) {
             return $query->orderByDesc('tahun');
-        })->firstOrFail();
+        })->first();
 
+        // Jika tidak ada tahun sama sekali
+        if (!$tahun) {
+            return view('user.keuangan', [
+                'tahun' => null,
+                'pendapatan' => collect(),
+                'belanja' => collect(),
+                'pembiayaan' => collect(),
+                'totalPendapatan' => 0,
+                'totalBelanja' => 0,
+                'surplusDefisit' => 0,
+                'penerimaanPembiayaan' => 0,
+                'pengeluaranPembiayaan' => 0,
+                'pembiayaanNetto' => 0,
+                'silpa_awal' => 0,
+                'silpa_akhir' => 0,
+            ]);
+        }
+
+        // Data keuangan (boleh kosong)
         $pendapatan = Pendapatan::where('id_tahun_anggaran', $tahun->id_tahun_anggaran)->get();
 
         $belanja = Belanja::with(['rincianBelanja' => function ($q) use ($tahun) {
@@ -32,18 +52,18 @@ class KeuanganController extends Controller
         // Total Pendapatan
         $totalPendapatan = $pendapatan->sum('realisasi');
 
-        // Total Belanja (semua rincian)
+        // Total Belanja dari semua rincian
         $totalBelanja = $belanja->flatMap->rincianBelanja->sum('realisasi');
 
         // Hitung Surplus/Defisit
         $surplusDefisit = $totalPendapatan - $totalBelanja;
 
-        // Hitung Pembiayaan Netto (Penerimaan - Pengeluaran)
+        // Hitung Pembiayaan Netto
         $penerimaanPembiayaan = $pembiayaan->where('jenis', 'penerimaan')->sum('realisasi');
         $pengeluaranPembiayaan = $pembiayaan->where('jenis', 'pengeluaran')->sum('realisasi');
         $pembiayaanNetto = $penerimaanPembiayaan - $pengeluaranPembiayaan;
 
-        // SILPA Awal dari tahun sebelumnya
+        // SILPA awal
         $tahunSebelumnya = TahunAnggaran::where('tahun', $tahun->tahun - 1)->first();
         $silpa_awal = 0;
 
@@ -53,7 +73,6 @@ class KeuanganController extends Controller
                 ->value('realisasi') ?? 0;
         }
 
-        // Hitung SILPA Akhir = SILPA Awal + Surplus/Defisit + Pembiayaan Netto
         $silpa_akhir = $silpa_awal + $surplusDefisit + $pembiayaanNetto;
 
         return view('user.keuangan', compact(

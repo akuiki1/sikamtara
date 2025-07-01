@@ -10,7 +10,7 @@ use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\socialiteController;
+use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PembiayaanController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ProfilDesaController;
@@ -31,8 +31,8 @@ use App\Http\Controllers\Admin\AdminAdministrasiController;
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 Route::get('/ringkasan-tahun', [BerandaController::class, 'ringkasanTahun']);
 
-Route::get('/auth/google', [socialiteController::class, 'redirect'])->name('google.redirect');
-Route::get('/auth/google/callback', [socialiteController::class, 'callback'])->name('google.callback');
+Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
 
 
 Route::get('/auth/google', function () {

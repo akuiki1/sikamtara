@@ -24,12 +24,8 @@
         <section id="beranda" x-data="{
             currentSlide: 0,
             slides: [
-                @php $slides = collect($gambarSlides)
-                        ->prepend('img/kantordesa.jpg')
-                        ->map(fn($path) => asset(Str::startsWith($path, 'img/') ? $path : 'storage/' . $path)); @endphp
-        
                 @foreach ($slides as $url)
-                    { image: '{{ $url }}' }{{ !$loop->last ? ',' : '' }} @endforeach
+                { image: '{{ $url }}' }{{ !$loop->last ? ',' : '' }} @endforeach
             ],
             interval: null,
         
@@ -119,7 +115,6 @@
                 </template>
             </div>
         </section>
-
 
         <!-- Section: Jelajahi Sistem Desa -->
         <section id="jelajahi" class="bg-gray-50 py-16 sm:py-20">
