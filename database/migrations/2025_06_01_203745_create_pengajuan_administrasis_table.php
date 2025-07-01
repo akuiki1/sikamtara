@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreign('id_administrasi')->references('id_administrasi')->on('administrasis');
             
             $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id_user')->on('users');
+            $table->foreign('id_user')->references('id_user')->on('users')->cascadeOnDelete();
             
             $table->timestamp('tanggal_pengajuan');
             $table->string('form');
