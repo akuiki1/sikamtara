@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('struktur_pemerintahan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id_user')->on('users');
+            $table->foreign('id_user')->references('id_user')->on('users')->cascadeOnDelete();
             $table->string('jabatan');
             $table->text('deskripsi')->nullable();
             $table->timestamps();

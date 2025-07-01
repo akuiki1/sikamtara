@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StrukturPemerintahan extends Model
 {
-    protected $table = 'struktur_Pemerintahan';
+    protected $table = 'struktur_pemerintahan';
 
     protected $fillable = [
         'id',
