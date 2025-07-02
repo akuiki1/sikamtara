@@ -27,7 +27,7 @@
 
             <!-- Dropdown -->
             <div x-show="open" @click.away="open = false"
-                class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50"
+                class="absolute right-0 mt-2 w-fit bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50"
                 x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-100"
                 x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
@@ -42,15 +42,6 @@
                     </svg>
                     Profil
                 </a>
-
-                {{-- <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="1.5"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Pengaturan
-                </a> --}}
-
                 <div class="border-t my-1 "></div>
 
                 <form method="POST" action="{{ route('logout') }}">

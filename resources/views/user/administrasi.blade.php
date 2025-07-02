@@ -348,8 +348,7 @@
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Formulir yang sudah diisi
-                            <span class="text-xs text-gray-400 font-normal">(Lampirkan formulir yang sudah anda isi
-                                sebelumnya)</span>
+                            <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
                         </label>
 
                         <!-- Input File (Hidden) -->
@@ -407,8 +406,7 @@
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Lampirkan persyaratan
-                            <span class="text-xs text-gray-400 font-normal">(gabungkan seluruh persyaratan menjadi 1
-                                file pdf)</span>
+                            <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
                         </label>
 
                         <!-- Input File (Hidden) -->
