@@ -14,8 +14,8 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $laki = Penduduk::where('jenis_kelamin', 'L')->count();
-        $perempuan = Penduduk::where('jenis_kelamin', 'P')->count();
+        $laki = Penduduk::where('jenis_kelamin', 'Laki-laki')->count();
+        $perempuan = Penduduk::where('jenis_kelamin', 'Perempuan')->count();
         $jumlahPenduduk = $laki + $perempuan;
 
         $akunTerverifikasi = User::where('status_verifikasi', 'Terverifikasi')->count();

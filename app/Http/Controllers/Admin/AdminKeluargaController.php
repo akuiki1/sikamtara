@@ -14,7 +14,7 @@ class AdminKeluargaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Keluarga::with('penduduk');
+        $query = Keluarga::with(['penduduk', 'kepalaKeluarga']);
 
         if ($request->has('search')) {
             $search = $request->search;
@@ -31,7 +31,7 @@ class AdminKeluargaController extends Controller
         $transformed = collect($keluarga->items())->map(function ($item) {
             return [
                 'kode_keluarga'       => $item->kode_keluarga,
-                'kepala_keluarga'     => $item->kepalaKeluarga ? $item->kepalaKeluarga->nama : null,
+                'kepala_keluarga' => $item->kepalaKeluarga ? $item->kepalaKeluarga->nama : null,
                 'nik_kepala_keluarga' => $item->nik_kepala_keluarga,
                 'alamat'              => $item->alamat,
                 'rt'                  => $item->rt,
@@ -45,6 +45,7 @@ class AdminKeluargaController extends Controller
                 }),
             ];
         });
+        
 
         return view('admin.penduduk.keluarga', [
             'keluarga'      => $keluarga,

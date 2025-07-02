@@ -13,8 +13,8 @@ class PendudukController extends Controller
     public function index()
     {
         $total = Penduduk::count();
-        $laki = Penduduk::where('jenis_kelamin', 'L')->count();
-        $perempuan = Penduduk::where('jenis_kelamin', 'P')->count();
+        $laki = Penduduk::where('jenis_kelamin', 'Laki-laki')->count();
+        $perempuan = Penduduk::where('jenis_kelamin', 'Perempuan')->count();
         $keluarga = Keluarga::distinct('kode_keluarga')->count('kode_keluarga');
         $dataUmur = $this->berdasarkanUmur();
 
@@ -125,8 +125,8 @@ class PendudukController extends Controller
             ->get();
 
         $umurData = [
-            'L' => [],
-            'P' => [],
+            'Laki-laki' => [],
+            'Perempuan' => [],
         ];
 
         $kelompokUmur = [
@@ -147,8 +147,8 @@ class PendudukController extends Controller
 
         // Inisialisasi array kosong
         foreach ($kelompokUmur as $key => $range) {
-            $umurData['L'][$key] = 0;
-            $umurData['P'][$key] = 0;
+            $umurData['Laki-laki'][$key] = 0;
+            $umurData['Perempuan'][$key] = 0;
         }
 
         foreach ($penduduk as $p) {
@@ -163,24 +163,24 @@ class PendudukController extends Controller
         }
 
         // Temukan kelompok umur tertinggi per jenis kelamin
-        $tertinggiL = collect($umurData['L'])->sortDesc()->keys()->first();
-        $tertinggiP = collect($umurData['P'])->sortDesc()->keys()->first();
+        $tertinggiL = collect($umurData['Laki-laki'])->sortDesc()->keys()->first();
+        $tertinggiP = collect($umurData['Perempuan'])->sortDesc()->keys()->first();
 
-        $totalL = array_sum($umurData['L']);
-        $totalP = array_sum($umurData['P']);
+        $totalL = array_sum($umurData['Laki-laki']);
+        $totalP = array_sum($umurData['Perempuan']);
 
         return [
             'umurData' => $umurData,
             'tertinggi' => [
-                'L' => [
+                'Laki-laki' => [
                     'label' => $tertinggiL,
-                    'jumlah' => $umurData['L'][$tertinggiL],
-                    'persentase' => $totalL > 0 ? round(($umurData['L'][$tertinggiL] / $totalL) * 100, 2) : 0,
+                    'jumlah' => $umurData['Laki-laki'][$tertinggiL],
+                    'persentase' => $totalL > 0 ? round(($umurData['Laki-laki'][$tertinggiL] / $totalL) * 100, 2) : 0,
                 ],
-                'P' => [
+                'Perempuan' => [
                     'label' => $tertinggiP,
-                    'jumlah' => $umurData['P'][$tertinggiP],
-                    'persentase' => $totalP > 0 ? round(($umurData['P'][$tertinggiP] / $totalP) * 100, 2) : 0,
+                    'jumlah' => $umurData['Perempuan'][$tertinggiP],
+                    'persentase' => $totalP > 0 ? round(($umurData['Perempuan'][$tertinggiP] / $totalP) * 100, 2) : 0,
                 ],
             ],
         ];

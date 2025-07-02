@@ -20,7 +20,7 @@ class PendudukFactory extends Factory
         return [
             'nik' => $this->faker->unique()->numerify('################'), // 16 digit
             'nama' => $this->faker->name(),
-            'jenis_kelamin' => $this->faker->randomElement(['L', 'P']),
+            'jenis_kelamin' => $this->faker->randomElement(['Laki-laki', 'Perempuan']),
             'tempat_lahir' => $this->faker->city(),
             'tanggal_lahir' => $this->faker->date('Y-m-d', '-18 years'),
             'agama' => $this->faker->randomElement(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha']),

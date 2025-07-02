@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('penduduk', function (Blueprint $table) {
             $table->char('nik', 16)->primary();
             $table->string('nama', 100);
-            $table->enum('jenis_kelamin', ['L', 'P']);
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->string('tempat_lahir', 100)->nullable();
             $table->date('tanggal_lahir')->nullable();
             $table->string('agama', 20)->nullable();

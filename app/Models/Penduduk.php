@@ -39,4 +39,9 @@ class Penduduk extends Model
     {
         return $this->belongsTo(Keluarga::class, 'kode_keluarga', 'kode_keluarga');
     }
+
+    public function penduduk()
+    {
+        return $this->hasMany(Penduduk::class, 'kode_keluarga', 'kode_keluarga');
+    }
 }

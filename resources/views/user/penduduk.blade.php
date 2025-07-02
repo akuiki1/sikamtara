@@ -84,15 +84,15 @@
                     <div class="text-xs sm:text-sm text-gray-600 grid grid-cols-2 gap-2 text-center px-2">
                         <div>
                             <span class="font-medium text-blue-600">Laki-laki:</span>
-                            Umur <span class="font-semibold">{{ $tertinggi['L']['label'] }}</span>,
-                            <span class="font-semibold">{{ $tertinggi['L']['jumlah'] }} org</span>
-                            ({{ $tertinggi['L']['persentase'] }}%)
+                            Umur <span class="font-semibold">{{ $tertinggi['Laki-laki']['label'] }}</span>,
+                            <span class="font-semibold">{{ $tertinggi['Laki-laki']['jumlah'] }} org</span>
+                            ({{ $tertinggi['Laki-laki']['persentase'] }}%)
                         </div>
                         <div>
                             <span class="font-medium text-pink-600">Perempuan:</span>
-                            Umur <span class="font-semibold">{{ $tertinggi['P']['label'] }}</span>,
-                            <span class="font-semibold">{{ $tertinggi['P']['jumlah'] }} org</span>
-                            ({{ $tertinggi['P']['persentase'] }}%)
+                            Umur <span class="font-semibold">{{ $tertinggi['Perempuan']['label'] }}</span>,
+                            <span class="font-semibold">{{ $tertinggi['Perempuan']['jumlah'] }} org</span>
+                            ({{ $tertinggi['Perempuan']['persentase'] }}%)
                         </div>
                     </div>
                 </div>
@@ -336,9 +336,9 @@
     {{-- Script Chart.js & Alpine.js --}}
     <script>
         // PENDUDUK BERDASARKAN USIA
-        const umurLabels = {!! json_encode(array_keys($umurData['L'])) !!};
-        const dataL = {!! json_encode(array_values($umurData['L'])) !!};
-        const dataP = {!! json_encode(array_values($umurData['P'])) !!};
+        const umurLabels = {!! json_encode(array_keys($umurData['Laki-laki'])) !!};
+        const dataL = {!! json_encode(array_values($umurData['Laki-laki'])) !!};
+        const dataP = {!! json_encode(array_values($umurData['Perempuan'])) !!};
 
         //Pendidikan
         const pendidikanLabels = {!! json_encode($pendidikanData->keys()) !!};

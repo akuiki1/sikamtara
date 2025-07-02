@@ -189,12 +189,12 @@
                             <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
                             <div class="flex gap-4">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" name="jenis_kelamin" value="L"
+                                    <input type="radio" name="jenis_kelamin" value="Laki-laki"
                                         x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-blue-600">
                                     <span class="ml-2 text-sm">Laki-laki</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="radio" name="jenis_kelamin" value="P"
+                                    <input type="radio" name="jenis_kelamin" value="Perempuan"
                                         x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-pink-500">
                                     <span class="ml-2 text-sm">Perempuan</span>
                                 </label>
@@ -276,7 +276,7 @@
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
-                        <!-- Alamat -->
+                        <!-- Hubungan -->
                         <div>
                             <label for="hubungan" class="block text-sm font-medium">Hubungan</label>
                             <select x-model="selectedPenduduk?.hubungan" id="hubungan" name="hubungan"
@@ -358,12 +358,12 @@
                             <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
                             <div class="flex gap-4">
                                 <label class="inline-flex items-center">
-                                    <input type="radio" name="jenis_kelamin" value="L"
+                                    <input type="radio" name="jenis_kelamin" value="Laki-laki"
                                         x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-blue-600">
                                     <span class="ml-2 text-sm">Laki-laki</span>
                                 </label>
                                 <label class="inline-flex items-center">
-                                    <input type="radio" name="jenis_kelamin" value="P"
+                                    <input type="radio" name="jenis_kelamin" value="Perempuan"
                                         x-model="selectedPenduduk.jenis_kelamin" class="form-radio text-pink-500">
                                     <span class="ml-2 text-sm">Perempuan</span>
                                 </label>
@@ -441,16 +441,6 @@
                             <label class="block text-xs text-gray-500 mb-1">Kewarganegaraan</label>
                             <input type="text" id="kewarganegaraan" name="kewarganegaraan"
                                 x-model="selectedPenduduk.kewarganegaraan"
-                                class="w-full border rounded px-3 py-2 text-sm" />
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">RT</label>
-                            <input type="number" id="rt" name="rt" x-model="selectedPenduduk.rt"
-                                class="w-full border rounded px-3 py-2 text-sm" />
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">RW</label>
-                            <input type="number" id="rw" name="rw" x-model="selectedPenduduk.rw"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div class="col-span-full">

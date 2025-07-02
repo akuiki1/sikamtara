@@ -74,7 +74,7 @@ class AdminPendudukController extends Controller
             $validated = $request->validate([
                 'nik' => 'required|numeric|unique:penduduk,nik',
                 'nama' => 'nullable|string|max:255',
-                'jenis_kelamin' => 'nullable|in:L,P',
+                'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
                 'tempat_lahir' => 'nullable|string|max:100',
                 'tanggal_lahir' => 'nullable|date',
                 'agama' => 'nullable|string|max:50',

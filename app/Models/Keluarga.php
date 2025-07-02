@@ -35,7 +35,6 @@ class Keluarga extends Model
     // Kepala keluarga
     public function kepalaKeluarga()
     {
-        return $this->hasOne(Penduduk::class, 'kode_keluarga', 'kode_keluarga')
-            ->where('hubungan', 'Kepala Keluarga');
+        return $this->belongsTo(Penduduk::class, 'nik_kepala_keluarga', 'nik');
     }
 }
