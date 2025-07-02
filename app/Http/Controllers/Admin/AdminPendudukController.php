@@ -42,6 +42,9 @@ class AdminPendudukController extends Controller
                 'kewarganegaraan'   => $item->kewarganegaraan,
                 'kode_keluarga'     => $item->kode_keluarga,
                 'status_tinggal'    => $item->status_tinggal,
+                'alamat'            => optional($item->keluarga)->alamat,
+                'rt'                => optional($item->keluarga)->rt,
+                'rw'                => optional($item->keluarga)->rw,
             ];
         });
 

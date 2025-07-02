@@ -511,6 +511,7 @@
                 { label: 'Status Perkawinan', value: selectedPenduduk.status_perkawinan },
                 { label: 'Golongan Darah', value: selectedPenduduk.golongan_darah },
                 { label: 'Kewarganegaraan', value: selectedPenduduk.kewarganegaraan },
+                { label: 'Alamat', value: selectedPenduduk.alamat },
                 { label: 'RT / RW', value: `${selectedPenduduk.rt} / ${selectedPenduduk.rw}` },
             ]"
                         :key="field.label">
