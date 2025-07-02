@@ -139,10 +139,7 @@ class AdminAdministrasiController extends Controller
         $pengajuan->status_pengajuan = 'selesai';
         $pengajuan->save();
 
-        return response()->json([
-            'message' => 'Surat final berhasil diunggah.',
-            'path' => $path,
-        ]);
+        return back()->with('success', 'Surat final berhasil diunggah.');
     }
 
     public function layananRiwayat()
@@ -166,32 +163,22 @@ class AdminAdministrasiController extends Controller
 
     public function updateStatus(Request $request)
     {
+        $request->validate([
+            'id' => 'required|exists:pengajuan_administrasis,id_pengajuan_administrasi',
+            'status' => 'required|in:ditinjau,diproses,ditolak',
+        ]);
+
         try {
-            if ($request->isJson()) {
-                $request->merge(json_decode($request->getContent(), true));
-            }
-
-            $request->validate([
-                'id' => 'required|exists:pengajuan_administrasis,id_pengajuan_administrasi',
-                'status' => 'required|in:ditinjau,diproses,ditolak',
-            ]);
-
             $pengajuan = PengajuanAdministrasi::findOrFail($request->id);
             $pengajuan->status_pengajuan = $request->status;
             $pengajuan->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Status berhasil diperbarui.',
-            ]);
+            return redirect()->back()->with('success', 'Status berhasil diperbarui.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui status',
-                'error' => $e->getMessage(),
-            ], 500);
+            return redirect()->back()->with('error', 'Gagal memperbarui status: ' . $e->getMessage());
         }
     }
+
 
     public function hapusLayanan($id)
     {

@@ -507,47 +507,8 @@
                 <div id="pengajuanMasuk" x-data="{
                     layanan: {{ $layananMasuk }},
                     selected: null,
-                    async submitForm(status) {
-                        if (!this.selected) return;
-                
-                        const id = this.selected.id;
-                        const url = '{{ route('layanan.updateStatus') }}';
-                
-                        try {
-                            const res = await fetch(url, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({ id, status })
-                            });
-                
-                            if (!res.ok) throw new Error('Gagal mengirim data');
-                
-                            const result = await res.json();
-                
-                            const index = this.layanan.findIndex(i => i.id === id);
-                
-                            if (index !== -1) {
-                                const updated = { ...this.layanan[index], status };
-                                // Jika diproses → pindah ke list layananDiproses
-                                if (status === 'diproses') {
-                                    if (window.layananDiproses) {
-                                        window.layananDiproses.unshift(updated);
-                                    }
-                                }
-                                // Hapus dari layananMasuk (bagian ini)
-                                this.layanan.splice(index, 1);
-                            }
-                
-                            this.selected = null;
-                            alert(result.message ?? 'Status berhasil diperbarui');
-                        } catch (err) {
-                            alert('Terjadi kesalahan: ' + err.message);
-                        }
-                    }
-                }" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
+                }"
+                    class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4">
 
                     {{-- Header --}}
                     <h2 class="text-lg font-semibold">Layanan Masuk</h2>
@@ -680,91 +641,35 @@
 
                             <!-- Actions -->
                             <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                                <button @click="submitForm('diproses')"
-                                    class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
-                                    ACC
-                                </button>
+                                <!-- Form tersembunyi -->
+                                <form x-ref="statusForm" method="POST" action="{{ route('layanan.updateStatus') }}">
+                                    @csrf
+                                    <input type="hidden" name="id" :value="selected?.id">
+                                    <input type="hidden" name="status" x-ref="statusInput">
 
-                                <button @click="submitForm('ditolak')"
-                                    class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2">
-                                    Tolak
-                                </button>
+                                    <!-- Tombol ACC -->
+                                    <button
+                                        @click.prevent="$refs.statusInput.value = 'diproses'; $refs.statusForm.submit()"
+                                        class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
+                                        ACC
+                                    </button>
+
+                                    <!-- Tombol Tolak -->
+                                    <button
+                                        @click.prevent="$refs.statusInput.value = 'ditolak'; $refs.statusForm.submit()"
+                                        class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2">
+                                        Tolak
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </x-modal>
                 </div>
 
                 {{-- container tabel pengajuan di proses --}}
-                <div id="pengajuanDiproses" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4" x-data="{
-                    layanan: @js($layananDiproses),
-                    selected: null,
-                
-                    async submitForm(status) {
-                        if (!this.selected) return;
-                
-                        const id = this.selected.id;
-                        const url = '{{ route('layanan.updateStatus') }}';
-                
-                        try {
-                            const res = await fetch(url, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({ id, status })
-                            });
-                
-                            if (!res.ok) throw new Error('Gagal mengirim data');
-                
-                            const result = await res.json();
-                
-                            const index = this.layanan.findIndex(i => i.id === id);
-                
-                            if (index !== -1) {
-                                if (status === 'diproses') {
-                                    this.layanan[index].status = status;
-                                } else {
-                                    this.layanan.splice(index, 1);
-                                }
-                            }
-                
-                            this.selected = null;
-                            alert(result.message ?? 'Status berhasil diperbarui');
-                        } catch (err) {
-                            alert('Terjadi kesalahan: ' + err.message);
-                        }
-                    },
-                
-                    async uploadSuratFinal(event) {
-                        const formData = new FormData(event.target);
-                        try {
-                            const response = await fetch(event.target.action, {
-                                method: 'POST',
-                                body: formData,
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                },
-                            });
-                
-                            const resJson = await response.json();
-                
-                            if (response.ok) {
-                                alert('Surat final berhasil diunggah');
-                                this.selected.surat_final = resJson.path;
-                                this.selected.status = 'selesai'; // ✅ Update status di frontend
-                                this.layanan = this.layanan.filter(i => i.id !== this.selected.id);
-                                this.selected = null;
-                            } else {
-                                alert('Gagal mengunggah: ' + (resJson.error ?? 'Periksa format dan ukuran file'));
-                            }
-                        } catch (e) {
-                            alert('Terjadi kesalahan saat mengunggah');
-                        }
-                    }
-                }">
+                <div id="pengajuanDiproses" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4"
+                    x-data="{ layanan: @js($layananDiproses), selected: null }">
 
-                    {{-- Header --}}
                     <h2 class="text-lg font-semibold">Layanan Diproses</h2>
 
                     {{-- Daftar Layanan --}}
@@ -801,10 +706,9 @@
                         </div>
                     </div>
 
-                    {{-- Detail Modal --}}
+                    {{-- Modal --}}
                     <x-modal show="selected">
-                        <div class=" rounded-2xl space-y-6 max-w-md mx-auto">
-                            <!-- Header -->
+                        <div class="rounded-2xl space-y-6 max-w-md mx-auto">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xl font-semibold text-gray-800">Detail Layanan</h3>
                                 <button @click="selected = null" class="text-gray-400 hover:text-gray-600 transition">
@@ -815,22 +719,13 @@
                                 </button>
                             </div>
 
-                            <!-- Detail Info -->
+                            <!-- Informasi -->
                             <div class="space-y-2 text-sm text-gray-600">
-                                <p>
-                                    <span class="font-medium text-gray-700">Nama Layanan:</span><br>
-                                    <span class="text-gray-800" x-text="selected.nama_layanan"></span>
-                                </p>
-                                <p>
-                                    <span class="font-medium text-gray-700">Pengguna:</span><br>
-                                    <span class="text-gray-800" x-text="selected.nama_user"></span>
-                                </p>
-                                <p>
-                                    <span class="font-medium text-gray-700">Tanggal Pengajuan:</span><br>
-                                    <span class="text-gray-800" x-text="selected.tanggal_pengajuan"></span>
-                                </p>
-                                <p>
-                                    <span class="font-medium text-gray-700">Status:</span><br>
+                                <p><strong>Nama Layanan:</strong><br><span x-text="selected.nama_layanan"></span></p>
+                                <p><strong>Pengguna:</strong><br><span x-text="selected.nama_user"></span></p>
+                                <p><strong>Tanggal Pengajuan:</strong><br><span
+                                        x-text="selected.tanggal_pengajuan"></span></p>
+                                <p><strong>Status:</strong><br>
                                     <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full text-white"
                                         :class="{
                                             'bg-yellow-500': selected.status === 'baru',
@@ -843,60 +738,10 @@
                                     </span>
                                 </p>
                             </div>
-
-                            <!-- File Links -->
-                            <div class="space-y-1 text-sm">
-                                <div class="space-y-2">
-                                    <!-- Formulir -->
-                                    <template x-if="selected.form">
-                                        <a :href="'/storage/' + selected.form" target="_blank"
-                                            class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
-                                            <div class="flex items-center gap-3">
-                                                <!-- Icon -->
-                                                <svg class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600"
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M12 4v16m8-8H4" />
-                                                </svg>
-                                                <span
-                                                    class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
-                                                    Unduh Formulir
-                                                </span>
-                                            </div>
-                                            <span
-                                                class="text-xs text-indigo-400 group-hover:text-indigo-600">PDF</span>
-                                        </a>
-                                    </template>
-
-                                    <!-- Lampiran -->
-                                    <template x-if="selected.lampiran">
-                                        <a :href="'/storage/' + selected.lampiran" target="_blank"
-                                            class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
-                                            <div class="flex items-center gap-3">
-                                                <!-- Icon -->
-                                                <svg class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600"
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15.172 7l-6.586 6.586a2 2 0 1 0 2.828 2.828L18 9.828a4 4 0 1 0-5.656-5.656L7 9" />
-                                                </svg>
-                                                <span
-                                                    class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
-                                                    Unduh Lampiran
-                                                </span>
-                                            </div>
-                                            <span
-                                                class="text-xs text-indigo-400 group-hover:text-indigo-600">File</span>
-                                        </a>
-                                    </template>
-                                </div>
-                            </div>
-
                             <!-- Upload Surat Final -->
                             <form x-show="selected" :action="`/admin/upload-surat-final/${selected.id}`"
-                                method="POST" enctype="multipart/form-data"
-                                @submit.prevent="uploadSuratFinal($event)" class="space-y-4">
+                                method="POST" enctype="multipart/form-data" class="space-y-4 mt-6">
+                                @csrf
                                 <label for="surat_final" class="block text-sm font-medium text-gray-700">
                                     Upload Surat Final <span class="text-red-500">*</span>
                                     <small class="block text-xs text-gray-400">Format: PDF, DOC, DOCX • Maks
@@ -904,10 +749,9 @@
                                 </label>
 
                                 <input id="surat_final" type="file" name="surat_final" required
-                                    accept=".pdf,.doc,.docx" maxlength="2048"
+                                    accept=".pdf,.doc,.docx"
                                     class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
 
-                                <!-- Tombol Upload -->
                                 <div class="flex justify-end pt-6 mt-8 border-t border-gray-200">
                                     <button type="submit"
                                         class="inline-flex items-center rounded-md bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 transition">
@@ -915,6 +759,8 @@
                                     </button>
                                 </div>
                             </form>
+
+                            <!-- Link Surat Final -->
                             <template x-if="selected?.surat_final">
                                 <a :href="`/storage/${selected.surat_final}`" target="_blank"
                                     class="inline-flex items-center gap-2 text-green-600 hover:text-green-800 transition underline text-sm">
