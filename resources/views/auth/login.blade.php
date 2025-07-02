@@ -83,19 +83,45 @@
                     <!-- Email Input -->
                     <div class="relative mb-6 flex flex-col" x-data="{
                         email: '{{ old('email') }}',
-                    }">
-                        <input x-model ="email" name="email" type="email" placeholder="Email" required
-                            autocomplete="username"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') is-invalid @enderror" />
-                        <button type="button" @click="email=''" x-show="email.length > 0"
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
+                        isValid: true,
+                        validateEmail() {
+                            // Validasi email dengan regex standar
+                            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            this.isValid = pattern.test(this.email);
+                        }
+                    }" @input="validateEmail()">
+                        <div class="relative flex flex-col">
+                            <input x-model="email" name="email" type="email" placeholder="Email" required
+                                autocomplete="username"
+                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                :class="!isValid && email.length > 0 ? 'border-red-500 ring-red-500' : ''" />
+
+                            <!-- Tombol clear -->
+                            <button type="button" @click="email=''; isValid=true" x-show="email.length > 0"
+                                class="absolute right-3 top-0 bottom-0 my-auto text-gray-400 hover:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-2 flex items-center gap-1" x-show="email.length > 0"
+                            :class="isValid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                        </button>
-
+                            <span x-text="isValid ? 'Email valid' : 'Format email tidak valid'"></span>
+                        </p>
                     </div>
 
                     {{-- Error Message --}}
@@ -105,38 +131,57 @@
                         </div>
                     @enderror
                     <!-- Password Input -->
-                    <div class="relative mb-6">
-                        <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
-                            placeholder="Password" required autocomplete="current-password"
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') is-invalid @enderror" />
+                    <div x-data="{ password: '', show: false, valid: false }" class="relative mb-6">
 
-                        <button type="button" @click="showPassword = !showPassword"
-                            class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
-                            <template x-if="!showPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-eye-closed-icon lucide-eye-closed">
-                                    <path d="m15 18-.722-3.25" />
-                                    <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                    <path d="m20 15-1.726-2.05" />
-                                    <path d="m4 15 1.726-2.05" />
-                                    <path d="m9 18 .722-3.25" />
-                                </svg>
-                            </template>
-                            <template x-if="showPassword">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide lucide-eye-icon lucide-eye">
-                                    <path
-                                        d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                            </template>
-                        </button>
+                        <div class="relative flex flex-col">
+                            <input :type="show ? 'text' : 'password'" x-model="password" name="password"
+                                placeholder="Password" required autocomplete="current-password"
+                                @input="valid = password.length >= 8"
+                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                            <!-- Tombol mata -->
+                            <button type="button" @click="show = !show"
+                                class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
+                                <template x-if="!show">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-eye-closed-icon lucide-eye-closed">
+                                        <path d="m15 18-.722-3.25" />
+                                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                                        <path d="m20 15-1.726-2.05" />
+                                        <path d="m4 15 1.726-2.05" />
+                                        <path d="m9 18 .722-3.25" />
+                                    </svg>
+                                </template>
+                                <template x-if="show">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="lucide lucide-eye-icon lucide-eye">
+                                        <path
+                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+                                </template>
+                            </button>
+                        </div>
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-2 flex items-center gap-1" x-show="password.length > 0"
+                            :class="valid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="valid ? 'Password memenuhi syarat' : 'Password minimal 8 karakter'"></span>
+                        </p>
                     </div>
-
 
                     <!-- Checkbox Agree -->
                     <div class="flex items-center space-x-2 mb-6">
@@ -191,56 +236,175 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('register') }}" x-data="{
+                    email: '{{ old('email') }}',
+                    password: '',
+                    confirmPassword: '',
+                    showPassword: false,
+                    isEmailValid: true,
+                    isPasswordValid: false,
+                    isMatch: true,
+                    validateEmail() {
+                        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        this.isEmailValid = pattern.test(this.email);
+                    },
+                    validatePassword() {
+                        this.isPasswordValid = this.password.length >= 8;
+                        this.isMatch = this.password === this.confirmPassword;
+                    }
+                }"
+                    @input="validateEmail(); validatePassword()">
                     @csrf
                     <div class="flex flex-col space-y-6">
-                        <div>
-                            <input type="text" name="nik" placeholder="NIK" value="{{ old('nik') }}"
-                                maxlength="16"
-                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
-                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div class="relative">
-                            <input :type="showRegisterPassword ? 'text' : 'password'" name="password"
-                                placeholder="Password"
-                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <button type="button" @click="showRegisterPassword = !showRegisterPassword"
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                <template x-if="!showRegisterPassword">
-                                    <!-- eye closed -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-eye-closed-icon lucide-eye-closed">
-                                        <path d="m15 18-.722-3.25" />
-                                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                        <path d="m20 15-1.726-2.05" />
-                                        <path d="m4 15 1.726-2.05" />
-                                        <path d="m9 18 .722-3.25" />
+                        <!-- NIK -->
+                        <div class="relative flex flex-col" x-data="{
+                            nik: '{{ old('nik') }}',
+                            isValidNik: true,
+                            validateNik() {
+                                this.isValidNik = this.nik.length === 16;
+                            }
+                        }" @input="validateNik()">
+                            <div class="relative flex flex-col">
+                                <input x-model="nik" name="nik" maxlength="16" placeholder="NIK" required
+                                    class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    :class="!isValidNik && nik.length > 0 ? 'border-red-500 ring-red-500' : ''" />
+
+                                <!-- Tombol clear -->
+                                <button type="button" @click="nik=''; isValidNik=true" x-show="nik.length > 0"
+                                    class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
                                     </svg>
-                                </template>
-                                <template x-if="showRegisterPassword">
-                                    <!-- eye open -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-eye-icon lucide-eye">
-                                        <path
-                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </template>
-                            </button>
+                                </button>
+                            </div>
+                            <!-- Validasi realtime -->
+                            <p class="text-xs mt-2 flex items-center gap-1" x-show="nik.length > 0"
+                                :class="isValidNik ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="isValidNik" xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!isValidNik" xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="isValidNik ? 'NIK valid' : 'NIK harus 16 digit'"></span>
+                            </p>
                         </div>
 
-                        <div>
-                            <input type="password" name="password_confirmation" placeholder="Confirm Password"
-                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <!-- Email -->
+                        <div class="flex flex-col space-y-6">
+                            <div class="relative flex flex-col">
+                                <input x-model="email" type="email" name="email" placeholder="Email" required
+                                    @input="validateEmail"
+                                    class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    :class="!isEmailValid && email.length > 0 ? 'border-red-500 ring-red-500' : ''">
+                                <!-- Clear Button -->
+                                <button type="button" @click="email=''; isEmailValid=true" x-show="email.length > 0"
+                                    class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <!-- Validasi realtime -->
+                            <p class="text-xs mt-2 flex items-center gap-1" x-show="email.length > 0"
+                                :class="isEmailValid ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="isEmailValid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!isEmailValid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="isEmailValid ? 'Email valid' : 'Format email tidak valid'"></span>
+                            </p>
                         </div>
 
+                        <!-- Password -->
+                        <div class="flex flex-col space-y-6">
+                            <div class="relative flex flex-col">
+                                <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
+                                    required placeholder="Password" @input="validatePassword"
+                                    class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <!-- Eye Toggle -->
+                                <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
+                                    <template x-if="!showPassword">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-eye-closed">
+                                            <path d="m15 18-.722-3.25" />
+                                            <path d="M2 8a10.645 10.645 0 0 0 20 0" />
+                                            <path d="m20 15-1.726-2.05" />
+                                            <path d="m4 15 1.726-2.05" />
+                                            <path d="m9 18 .722-3.25" />
+                                        </svg>
+                                    </template>
+                                    <template x-if="showPassword">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-eye">
+                                            <path
+                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                    </template>
+                                </button>
+                            </div>
+                            <!-- Validasi realtime -->
+                            <p class="text-xs mt-2 flex items-center gap-1" x-show="password.length > 0"
+                                :class="isPasswordValid ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="isPasswordValid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!isPasswordValid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span
+                                    x-text="isPasswordValid ? 'Password memenuhi syarat' : 'Password minimal 8 karakter'"></span>
+                            </p>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="flex flex-col">
+                            <input type="password" x-model="confirmPassword" name="password_confirmation" required
+                                placeholder="Confirm Password" @input="validatePassword"
+                                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <p class="text-xs mt-2 flex items-center gap-1" x-show="confirmPassword.length > 0"
+                                :class="isMatch ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="isMatch" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!isMatch" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="isMatch ? 'Konfirmasi cocok' : 'Konfirmasi tidak cocok'"></span>
+                            </p>
+                        </div>
+
+                        <!-- Checkbox -->
                         <div class="flex items-center space-x-2">
                             <input type="checkbox" name="terms" required
                                 class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -249,21 +413,12 @@
                                     Conditions</a>
                             </label>
                         </div>
+
+                        <!-- Register Button -->
                         <button type="submit"
                             class="w-full bg-blue-700 text-white py-3 rounded hover:bg-blue-800 transition font-bold">
                             Register
                         </button>
-                        <div class="flex items-center my-4">
-                            <div class="flex-grow border-t border-gray-300"></div>
-                            <span class="mx-2 text-gray-400 text-sm">OR</span>
-                            <div class="flex-grow border-t border-gray-300"></div>
-                        </div>
-                        <a href="{{ url('/auth/google') }}"
-                            class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                                class="w-5 h-5 mr-2">
-                            <span class="text-gray-700 font-semibold">Login with Google</span>
-                        </a>
                     </div>
                 </form>
             </div>
@@ -323,30 +478,92 @@
                 <!-- Form Login -->
                 <form x-show="isLogin" x-transition method="POST" action="{{ route('login.post') }}">
                     @csrf
-                    <input x-model="email" name="email" type="email" placeholder="Email" required
-                        class="w-full p-3 mb-4 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <!-- Email -->
+                    <div class="relative mb-4" x-data="{
+                        email: '{{ old('email') }}',
+                        isValid: true,
+                        validateEmail() {
+                            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            this.isValid = pattern.test(this.email);
+                        }
+                    }" @input="validateEmail()">
+                        <div class="relative flex flex-col">
+                            <input x-model="email" name="email" type="email" placeholder="Email" required
+                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                :class="!isValid && email.length > 0 ? 'border-red-500 ring-red-500' : ''" />
 
-                    <div class="relative mb-4">
-                        <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
-                            placeholder="Password" required
-                            class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="button" @click="showPassword = !showPassword"
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                            <template x-if="!showPassword">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M6 6l12 12" />
+                            <!-- Tombol clear -->
+                            <button type="button" @click="email=''; isValid=true" x-show="email.length > 0"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                            </template>
-                            <template x-if="showPassword">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="3" />
-                                    <path
-                                        d="M2.05 12C3.4 7.1 7.5 4 12 4s8.6 3.1 9.95 8c-1.35 4.9-5.45 8-9.95 8s-8.6-3.1-9.95-8z" />
-                                </svg>
-                            </template>
-                        </button>
+                            </button>
+                        </div>
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-1 ml-1 flex items-center gap-1" x-show="email.length > 0"
+                            :class="isValid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="isValid ? 'Email valid' : 'Format email tidak valid'"></span>
+                        </p>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative mb-4" x-data="{ showPassword: false, password: '', valid: false }">
+
+                        <div class="relative flex flex-col">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="password" name="password"
+                                placeholder="Password" required
+                                class="w-full p-3 pr-10 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                @input="valid = password.length >= 8" />
+
+                            <button type="button" @click="showPassword = !showPassword"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                <template x-if="!showPassword">
+                                    <!-- Mata tertutup -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10a13.358 13.358 0 0 0 3 2.685M21 10a13.358 13.358 0 0 1-3 2.685m-8 1.624L9.5 16.5m.5-2.19a10.59 10.59 0 0 0 4 0m-4 0a11.275 11.275 0 0 1-4-1.625m8 1.624l.5 2.191m-.5-2.19a11.275 11.275 0 0 0 4-1.625m0 0l1.5 1.815M6 12.685L4.5 14.5" />
+                                    </svg>
+                                </template>
+                                <template x-if="showPassword">
+                                    <!-- Mata terbuka -->
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                        viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path
+                                            d="M2.05 12C3.4 7.1 7.5 4 12 4s8.6 3.1 9.95 8c-1.35 4.9-5.45 8-9.95 8s-8.6-3.1-9.95-8z" />
+                                    </svg>
+                                </template>
+                            </button>
+                        </div>
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-1 ml-1 flex items-center gap-1" x-show="password.length > 0"
+                            :class="valid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="valid ? 'Password kuat' : 'Minimal 8 karakter'"></span>
+                        </p>
                     </div>
 
                     <div class="flex items-center space-x-2 mb-4">
@@ -376,36 +593,156 @@
                 <form x-show="!isLogin" x-transition method="POST" action="{{ route('register') }}">
                     @csrf
 
-                    <input type="text" name="nik" placeholder="NIK" value="{{ old('nik') }}"
-                        maxlength="16" class="w-full p-3 mb-4 border rounded focus:ring-blue-500">
-
-                    <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
-                        class="w-full p-3 mb-4 border rounded focus:ring-blue-500">
-
-                    <div class="relative mb-4">
-                        <input :type="showRegisterPassword ? 'text' : 'password'" name="password"
-                            placeholder="Password" class="w-full p-3 pr-10 border rounded focus:ring-blue-500">
-                        <button type="button" @click="showRegisterPassword = !showRegisterPassword"
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                            <template x-if="!showRegisterPassword">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <path d="M6 18L18 6M6 6l12 12" />
+                    <!-- NIK -->
+                    <div class="relative mb-4" x-data="{
+                        nik: '{{ old('nik') }}',
+                        isValid: true,
+                        validateNIK() {
+                            this.isValid = this.nik.length === 16 && /^\d+$/.test(this.nik);
+                        }
+                    }" @input="validateNIK()">
+                        <div class="relative flex flex-col">
+                            <input x-model="nik" name="nik" placeholder="NIK" maxlength="16"
+                                class="w-full p-3 pr-10 border rounded focus:ring-blue-500"
+                                :class="!isValid && nik.length > 0 ? 'border-red-500 ring-red-500' : ''" />
+                            <!-- Tombol clear -->
+                            <button type="button" @click="nik=''; isValidNik=true" x-show="nik.length > 0"
+                                class="absolute right-3 inset-y-0 my-auto flex items-center text-gray-400 hover:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
                                 </svg>
-                            </template>
-                            <template x-if="showRegisterPassword">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
-                                    viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="3" />
-                                    <path
-                                        d="M2.05 12C3.4 7.1 7.5 4 12 4s8.6 3.1 9.95 8c-1.35 4.9-5.45 8-9.95 8s-8.6-3.1-9.95-8z" />
-                                </svg>
-                            </template>
-                        </button>
+                            </button>
+                        </div>
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-1 flex items-center gap-1" x-show="nik.length > 0"
+                            :class="isValid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="isValid ? 'NIK valid' : 'NIK harus 16 digit angka'"></span>
+                        </p>
                     </div>
 
-                    <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
-                        class="w-full p-3 mb-4 border rounded focus:ring-blue-500">
+                    <!-- Email -->
+                    <div class="relative mb-4" x-data="{
+                        email: '{{ old('email') }}',
+                        isValid: true,
+                        validateEmail() {
+                            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            this.isValid = pattern.test(this.email);
+                        }
+                    }" @input="validateEmail()">
+                        <div class="relative flex flex-col">
+                            <input x-model="email" name="email" placeholder="Email"
+                                class="w-full p-3 pr-10 border rounded focus:ring-blue-500"
+                                :class="!isValid && email.length > 0 ? 'border-red-500 ring-red-500' : ''" />
+                            <!-- Tombol clear -->
+                            <button type="button" @click="email=''; isValid=true" x-show="email.length > 0"
+                                class="absolute right-3 top-0 bottom-0 my-auto text-gray-400 hover:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Validasi realtime -->
+                        <p class="text-xs mt-1 flex items-center gap-1" x-show="email.length > 0"
+                            :class="isValid ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="!isValid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="isValid ? 'Email valid' : 'Format email salah'"></span>
+                        </p>
+                    </div>
+
+                    <!-- Password -->
+                    <div x-data="{ show: false, showConfirm: false, password: '', confirm: '', valid: false }">
+
+                        <!-- Password -->
+                        <div class="relative mb-4">
+                            <div class="relative flex flex-col">
+                                <input :type="show ? 'text' : 'password'" x-model="password" name="password"
+                                    placeholder="Password" class="w-full p-3 pr-10 border rounded focus:ring-blue-500"
+                                    @input="valid = password.length >= 8" />
+
+                                <button type="button" @click="show = !show"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <template x-if="!show">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24">
+                                            <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M3 10a13.358 13.358 0 0 0 3 2.685M21 10a13.358 13.358 0 0 1-3 2.685m-8 1.624L9.5 16.5m.5-2.19a10.59 10.59 0 0 0 4 0m-4 0a11.275 11.275 0 0 1-4-1.625m8 1.624l.5 2.191m-.5-2.19a11.275 11.275 0 0 0 4-1.625m0 0l1.5 1.815M6 12.685L4.5 14.5" />
+                                        </svg>
+                                    </template>
+                                    <template x-if="show">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                                            viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="3" />
+                                            <path
+                                                d="M2.05 12C3.4 7.1 7.5 4 12 4s8.6 3.1 9.95 8c-1.35 4.9-5.45 8-9.95 8s-8.6-3.1-9.95-8z" />
+                                        </svg>
+                                    </template>
+                                </button>
+                            </div>
+
+                            <!-- Validasi password -->
+                            <p class="text-xs mt-1 flex items-center gap-1" x-show="password.length > 0"
+                                :class="valid ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="valid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!valid" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="valid ? 'Password kuat' : 'Minimal 8 karakter'"></span>
+                            </p>
+                        </div>
+
+                        <!-- Konfirmasi Password -->
+                        <div class="relative mb-4">
+                            <input type="password" x-model="confirm" name="password_confirmation"
+                                placeholder="Konfirmasi Password"
+                                class="w-full p-3 pr-10 border rounded focus:ring-blue-500"
+                                :class="confirm.length > 0 && confirm !== password ? 'border-red-500 ring-red-500' : ''" />
+
+                            <!-- Validasi konfirmasi -->
+                            <p class="text-xs mt-1 flex items-center gap-1" x-show="confirm.length > 0"
+                                :class="confirm === password ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="confirm === password" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="confirm !== password" class="h-4 w-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="confirm === password ? 'Password cocok' : 'Password tidak cocok'"></span>
+                            </p>
+                        </div>
+                    </div>
 
                     <div class="flex items-center space-x-2 mb-4">
                         <input type="checkbox" name="terms" required class="text-blue-600">
@@ -415,19 +752,6 @@
 
                     <button type="submit"
                         class="w-full bg-blue-700 text-white py-3 rounded font-bold hover:bg-blue-800 transition">Daftar</button>
-
-                    <div class="flex items-center my-4">
-                        <div class="flex-grow border-t border-gray-300"></div>
-                        <span class="mx-2 text-gray-400 text-sm">atau</span>
-                        <div class="flex-grow border-t border-gray-300"></div>
-                    </div>
-
-                    <a href="{{ url('/auth/google') }}"
-                        class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                            class="w-5 h-5 mr-2">
-                        <span class="text-gray-700 font-semibold">Daftar dengan Google</span>
-                    </a>
                 </form>
 
                 <!-- Switch Between Login/Register -->
