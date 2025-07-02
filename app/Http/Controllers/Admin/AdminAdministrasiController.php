@@ -96,7 +96,7 @@ class AdminAdministrasiController extends Controller
             ->map(function ($item) {
                 return [
                     'id' => $item->id_pengajuan_administrasi,
-                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_user' => $item->user->penduduk->nama ?? 'Tidak diketahui',
                     'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
                     'tanggal_pengajuan' => Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
                     'status' => $item->status_pengajuan,
@@ -115,7 +115,7 @@ class AdminAdministrasiController extends Controller
             ->map(function ($item) {
                 return [
                     'id' => $item->id_pengajuan_administrasi,
-                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_user' => $item->user->penduduk->nama ?? 'Tidak diketahui',
                     'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
                     'tanggal_pengajuan' => \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
                     'status' => $item->status_pengajuan,
@@ -154,7 +154,7 @@ class AdminAdministrasiController extends Controller
             ->map(function ($item) {
                 return [
                     'id' => $item->id_pengajuan_administrasi,
-                    'nama_user' => $item->user->username ?? 'Tidak diketahui',
+                    'nama_user' => $item->user->penduduk->nama ?? 'Tidak diketahui',
                     'nama_layanan' => $item->administrasi->nama_administrasi ?? 'Tidak diketahui',
                     'tanggal_pengajuan' => \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d F Y'),
                     'status' => $item->status_pengajuan,

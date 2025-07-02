@@ -695,7 +695,7 @@
                 </div>
 
                 {{-- container tabel pengajuan di proses --}}
-                <div class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4" x-data="{
+                <div id="pengajuanDiproses" class="md:col-span-2 bg-white p-5 rounded-2xl shadow space-y-4" x-data="{
                     layanan: @js($layananDiproses),
                     selected: null,
                 
@@ -926,7 +926,7 @@
                 </div>
 
                 {{-- container tabel Riwayat Layanan --}}
-                <div class="md:col-span-4 bg-white p-6 rounded-2xl shadow mt-6">
+                <div id="pengajuanRiwayat" class="md:col-span-4 bg-white p-6 rounded-2xl shadow mt-6">
                     {{-- Header --}}
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-semibold text-gray-800">Riwayat Layanan</h2>
