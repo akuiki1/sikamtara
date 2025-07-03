@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Sejarah;
 use App\Models\Penduduk;
 use App\Models\Visimisi;
+use App\Models\LuasWilayah;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StrukturPemerintahan;
@@ -48,6 +49,7 @@ class ProfilDesaController extends Controller
         $programs = ProgramPembangunanDesa::orderByDesc('tanggal_mulai')->get();
         $jumlahRt = Rt::count();
         $jumlahRw = Rw::count();
+        $luasWilayah = LuasWilayah::first();
 
         return view('user.profil-desa', [
             'strukturPemerintahan' => $strukturPemerintahan,
@@ -59,7 +61,8 @@ class ProfilDesaController extends Controller
             'users' => $users,
             'programs' => $programs,
             'jumlahRt' => $jumlahRt,
-            'jumlahRw' => $jumlahRw
+            'jumlahRw' => $jumlahRw,
+            'luasWilayah' => $luasWilayah ? $luasWilayah->luas . ' ' . $luasWilayah->satuan : '0 Ha',
         ]);
     }
 }

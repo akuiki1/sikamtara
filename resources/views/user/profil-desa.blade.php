@@ -48,7 +48,7 @@
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Wilayah</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
                 <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600">2.100 Ha</div>
+                    <div class="text-3xl font-bold text-green-600">{{ $luasWilayah }}</div>
                     <div class="text-gray-600 mt-2">Luas Wilayah</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 text-center">
