@@ -80,10 +80,9 @@
             <div class="text-center">
                 <p class="text-gray-700 mb-4">Belum ada visi-misi</p>
                 <div class="flex justify-center mb-6">
-                    <button @click="editing = true"
-                        class="bg-green-600 text-white text-sm px-6 py-2 rounded-full hover:bg-green-700">
+                    <x-button @click="editing = true">
                         Tambah Visi & Misi
-                    </button>
+                    </x-button>
                 </div>
             </div>
         @endif
@@ -101,13 +100,12 @@
                     <textarea name="misi" rows="5" class="w-full border rounded p-2" required></textarea>
                 </div>
                 <div class="flex justify-end gap-4">
-                    <button type="button" @click="editing = false"
-                        class="px-4 py-2 rounded-full border text-gray-600 hover:bg-gray-100">
+                    <x-button type="button" @click="editing = false" variant="secondary">
                         Batal
-                    </button>
-                    <button type="submit" class="px-6 py-2 bg-green-600 text-white rounded-full hover:bg-green-700">
+                    </x-button>
+                    <x-button type="submit">
                         Simpan
-                    </button>
+                    </x-button>
                 </div>
             </form>
         @endif
@@ -201,15 +199,15 @@
 
         <!-- Tombol Simpan / Batal -->
         <div class="text-center mt-8" x-show="editing">
-            <button @click="saveEdit()" class="bg-green-600 text-white px-6 py-2 rounded-lg mr-2">Simpan</button>
-            <button @click="cancelEdit()" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Batal</button>
+            <x-button @click="saveEdit()">Simpan</x-button>
+            <x-button @click="cancelEdit()" variant="secondary">Batal</x-button>
         </div>
 
         <!-- Kalau Belum Ada Data, tampilkan tombol Tambah -->
         <template x-if="!luas && !penduduk && !rt && !rw && !editing">
             <div class="text-center mt-8">
-                <p class="text-gray-500 mb-4">Data masih kosong</p>
-                <button @click="tambahData()" class="bg-green-600 text-white px-6 py-2 rounded-lg">Tambah</button>
+                <p class="text-gray-500 mb-4">Belum ada data wilayah</p>
+                <x-button @click="tambahData()">Tambah</x-button>
             </div>
         </template>
     </section>
@@ -229,9 +227,12 @@
         </div>
 
         <!-- Tombol Tambah -->
-        <div class="text-center mb-8">
-            <x-button @click="showAddModal = true">Tambah Struktur Pemerintahan</x-button>
-        </div>
+        @if ($strukturPemerintahan->count())
+            <div class="text-center mb-8">
+                <x-button @click="showAddModal = true">Tambah Struktur Pemerintahan</x-button>
+            </div>
+        @endif
+
 
         <!-- Kartu Struktur -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -246,7 +247,10 @@
                     <p class="text-gray-600 text-sm">{{ $p->jabatan }}</p>
                 </div>
             @empty
-                <div class="text-center col-span-full text-gray-500">Tidak ada data struktur pemerintahan.</div>
+                <div class="col-span-full p-4 text-center">
+                    <p class="text-gray-500 mb-4">Belum ada struktur pemerintahan.</p>
+                    <x-button @click="showAddModal = true">Tambah Struktur Pemerintahan</x-button>
+                </div>
             @endforelse
         </div>
 
