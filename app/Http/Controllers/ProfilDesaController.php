@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rt;
+use App\Models\Rw;
 use App\Models\User;
 use App\Models\Sejarah;
+use App\Models\Penduduk;
 use App\Models\Visimisi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StrukturPemerintahan;
+use App\Models\ProgramPembangunanDesa;
 
 class ProfilDesaController extends Controller
 {
@@ -37,17 +41,25 @@ class ProfilDesaController extends Controller
             ];
         });
 
+        $penduduk = Penduduk::count();
         $sejarah = Sejarah::first();
         $visimisi = Visimisi::first();
         $users = User::with('penduduk')->get();
+        $programs = ProgramPembangunanDesa::orderByDesc('tanggal_mulai')->get();
+        $jumlahRt = Rt::count();
+        $jumlahRw = Rw::count();
 
         return view('user.profil-desa', [
             'strukturPemerintahan' => $strukturPemerintahan,
             'strukturPemerintahanJs' => $transformed,
             'search' => $request->search,
+            'penduduk' => $penduduk,
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
-            'users' => $users
+            'users' => $users,
+            'programs' => $programs,
+            'jumlahRt' => $jumlahRt,
+            'jumlahRw' => $jumlahRw
         ]);
     }
 }

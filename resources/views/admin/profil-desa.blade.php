@@ -419,13 +419,36 @@
     {{-- Program Pembangunan Desa --}}
     <section class="py-16 px-6 md:px-16 bg-gray-50">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
-        <div class="space-y-6 max-w-3xl mx-auto text-justify">
-            <ul class="list-disc list-inside text-gray-700">
-                <li>Pembangunan jalan desa untuk meningkatkan akses transportasi.</li>
-                <li>Peningkatan fasilitas pendidikan dan kesehatan di desa.</li>
-                <li>Program pemberdayaan ekonomi lokal melalui pelatihan keterampilan.</li>
-                <li>Penanaman pohon dan pemeliharaan lingkungan untuk menjaga kelestarian alam.</li>
-            </ul>
-        </div>
+
+        @if ($programs->isEmpty())
+            <p class="text-center text-gray-600">Belum ada program pembangunan yang tercatat.</p>
+        @else
+            <div class="space-y-6 max-w-4xl mx-auto text-justify">
+                @foreach ($programs as $program)
+                    <div class="bg-white shadow-md rounded-lg p-6 space-y-2">
+                        <h3 class="text-xl font-bold text-green-700">{{ $program->nama_program }}</h3>
+                        <p class="text-sm text-gray-500">{{ $program->jenis_program }} — {{ $program->lokasi }}</p>
+                        <p class="text-sm text-gray-600">
+                            <strong>Periode:</strong>
+                            {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} -
+                            {{ \Carbon\Carbon::parse($program->tanggal_selesai)->format('d M Y') }}
+                        </p>
+                        <p class="text-sm text-gray-600"><strong>Anggaran:</strong>
+                            Rp{{ number_format($program->anggaran, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-600"><strong>Sumber Dana:</strong> {{ $program->sumber_dana }}</p>
+                        <p class="text-sm text-gray-600"><strong>Penanggung Jawab:</strong>
+                            {{ $program->penanggung_jawab }}</p>
+                        <p class="text-sm text-gray-600"><strong>Status:</strong> {{ $program->status }}</p>
+                        <p class="text-gray-700 mt-2">{{ $program->deskripsi }}</p>
+                        @if ($program->foto_dokumentasi)
+                            <div class="mt-2">
+                                <img src="{{ asset('storage/' . $program->foto_dokumentasi) }}" alt="Foto Program"
+                                    class="rounded shadow max-w-full h-auto">
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </section>
 </x-admin-layout>

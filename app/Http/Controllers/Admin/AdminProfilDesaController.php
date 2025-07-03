@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\StrukturPemerintahan;
+use App\Models\ProgramPembangunanDesa;
 
 class AdminProfilDesaController extends Controller
 {
@@ -44,6 +45,7 @@ class AdminProfilDesaController extends Controller
         $sejarah = Sejarah::first();
         $visimisi = Visimisi::first();
         $users = User::with('penduduk')->get();
+        $programs = ProgramPembangunanDesa::orderByDesc('tanggal_mulai')->get();
 
         return view('admin.profil-desa', [
             'strukturPemerintahan' => $strukturPemerintahan,
@@ -51,7 +53,8 @@ class AdminProfilDesaController extends Controller
             'search' => $request->search,
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
-            'users' => $users
+            'users' => $users,
+            'programs' => $programs
         ]);
     }
 

@@ -43,7 +43,6 @@
             @endif
         </section>
 
-
         {{-- Data Wilayah --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Wilayah</h2>
@@ -53,16 +52,16 @@
                     <div class="text-gray-600 mt-2">Luas Wilayah</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600">1.872</div>
+                    <div class="text-3xl font-bold text-green-600">{{ $penduduk }}</div>
                     <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600">3</div>
-                    <div class="text-gray-600 mt-2">Jumlah Dusun</div>
+                    <div class="text-3xl font-bold text-green-600">{{ $jumlahRt }}</div>
+                    <div class="text-gray-600 mt-2">Jumlah RT</div>
                 </div>
                 <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <div class="text-3xl font-bold text-green-600">8</div>
-                    <div class="text-gray-600 mt-2">RT/RW</div>
+                    <div class="text-3xl font-bold text-green-600">{{ $jumlahRw }}</div>
+                    <div class="text-gray-600 mt-2">Jumlah RW</div>
                 </div>
             </div>
         </section>
@@ -123,104 +122,42 @@
             </x-modal>
         </section>
 
-        {{-- Dasar Hukum --}}
-        <section class="py-16 px-6 md:px-16 bg-white">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Dasar Hukum</h2>
-            <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify mb-4">
-                Peraturan Desa Kambat Utara berdasarkan keputusan rapat desa dan peraturan daerah yang berlaku.
-                Untuk informasi lebih lanjut, Anda dapat mengunduh dokumen peraturan desa di bawah ini.
-            </p>
-            <div class="flex justify-center">
-                <a href="link-ke-peraturan-desa.pdf"
-                    class="inline-block bg-green-600 text-white py-2 px-6 rounded-full hover:bg-green-700 transition">Unduh
-                    Peraturan Desa</a>
-            </div>
-        </section>
-
-        {{-- Tujuan Penyusunan Website --}}
-        <section class="py-16 px-6 md:px-16">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Tujuan Penyusunan Website</h2>
-            <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify">
-                Website ini dibangun untuk memberikan akses informasi yang lebih mudah dan transparan mengenai kegiatan
-                dan program pembangunan di Desa Kambat Utara. Tujuan utamanya adalah untuk mempermudah komunikasi antara
-                pemerintahan desa dan warga, serta mempromosikan potensi desa ke dunia luar.
-            </p>
-        </section>
-
-        {{-- Data Kependudukan --}}
-        <section class="py-16 px-6 md:px-16 bg-gray-50">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Kependudukan</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white shadow-lg rounded-lg">
-                    <thead class="bg-green-600 text-white">
-                        <tr>
-                            <th class="py-3 px-6 text-left">No</th>
-                            <th class="py-3 px-6 text-left">Deskripsi</th>
-                            <th class="py-3 px-6 text-left">Jumlah</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-gray-700">
-                        <tr>
-                            <td class="py-3 px-6">1</td>
-                            <td class="py-3 px-6">Jumlah Penduduk</td>
-                            <td class="py-3 px-6">1,872</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-6">2</td>
-                            <td class="py-3 px-6">Jumlah Kepala Keluarga</td>
-                            <td class="py-3 px-6">450</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-6">3</td>
-                            <td class="py-3 px-6">Distribusi Gender</td>
-                            <td class="py-3 px-6">Laki-laki: 900, Perempuan: 972</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        {{-- Strategi dan Arah Kebijakan Desa --}}
-        <section class="py-16 px-6 md:px-16">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Strategi dan Arah Kebijakan Desa</h2>
-            <div class="space-y-6 max-w-3xl mx-auto text-justify">
-                <p class="text-gray-700">
-                    Strategi kebijakan desa mencakup peningkatan kualitas pendidikan, kesehatan, dan ekonomi lokal
-                    melalui
-                    penguatan infrastruktur dan pemberdayaan masyarakat. Kami juga berfokus pada pelestarian lingkungan
-                    dan
-                    budaya lokal.
-                </p>
-                <p class="text-gray-700">
-                    Arah kebijakan ini bertujuan untuk menciptakan desa yang mandiri, berdaya saing, dan mampu
-                    menghadapi
-                    tantangan global.
-                </p>
-            </div>
-        </section>
-
         {{-- Program Pembangunan Desa --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
-            <div class="space-y-6 max-w-3xl mx-auto text-justify">
-                <ul class="list-disc list-inside text-gray-700">
-                    <li>Pembangunan jalan desa untuk meningkatkan akses transportasi.</li>
-                    <li>Peningkatan fasilitas pendidikan dan kesehatan di desa.</li>
-                    <li>Program pemberdayaan ekonomi lokal melalui pelatihan keterampilan.</li>
-                    <li>Penanaman pohon dan pemeliharaan lingkungan untuk menjaga kelestarian alam.</li>
-                </ul>
-            </div>
+
+            @if ($programs->isEmpty())
+                <p class="text-center text-gray-600">Belum ada program pembangunan yang tercatat.</p>
+            @else
+                <div class="space-y-6 max-w-4xl mx-auto text-justify">
+                    @foreach ($programs as $program)
+                        <div class="bg-white shadow-md rounded-lg p-6 space-y-2">
+                            <h3 class="text-xl font-bold text-green-700">{{ $program->nama_program }}</h3>
+                            <p class="text-sm text-gray-500">{{ $program->jenis_program }} — {{ $program->lokasi }}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                <strong>Periode:</strong>
+                                {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} -
+                                {{ \Carbon\Carbon::parse($program->tanggal_selesai)->format('d M Y') }}
+                            </p>
+                            <p class="text-sm text-gray-600"><strong>Anggaran:</strong>
+                                Rp{{ number_format($program->anggaran, 0, ',', '.') }}</p>
+                            <p class="text-sm text-gray-600"><strong>Sumber Dana:</strong> {{ $program->sumber_dana }}
+                            </p>
+                            <p class="text-sm text-gray-600"><strong>Penanggung Jawab:</strong>
+                                {{ $program->penanggung_jawab }}</p>
+                            <p class="text-sm text-gray-600"><strong>Status:</strong> {{ $program->status }}</p>
+                            <p class="text-gray-700 mt-2">{{ $program->deskripsi }}</p>
+                            @if ($program->foto_dokumentasi)
+                                <div class="mt-2">
+                                    <img src="{{ asset('storage/' . $program->foto_dokumentasi) }}"
+                                        alt="Foto Program" class="rounded shadow max-w-full h-auto">
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </section>
-
-
-        {{-- CTA Kontak --}}
-        {{-- <section class="py-16 px-6 md:px-16 bg-green-600 text-white text-center">
-            <h2 class="text-2xl md:text-3xl font-semibold mb-4">Kunjungi atau Hubungi Kami</h2>
-            <p class="mb-6">Kantor Desa Kambat Utara - Jl. Raya Pandawan KM. 5, Hulu Sungai Tengah</p>
-            <a href="#"
-                class="inline-block bg-white text-green-600 font-semibold px-6 py-3 rounded-full shadow hover:bg-gray-100 transition">Hubungi
-                Sekarang</a>
-        </section> --}}
-
     </div>
 </x-layout>
