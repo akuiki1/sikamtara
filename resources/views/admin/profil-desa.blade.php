@@ -7,33 +7,6 @@
         sejarah: @js($sejarah->sejarah ?? ''),
         editedSejarah: @js($sejarah->sejarah ?? '')
     }" class="py-16 px-6 md:px-16 bg-gray-50">
-
-        @if (session('success'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
-                class="relative bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
-                role="alert">
-                <strong class="font-semibold">Sukses!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-                <button @click="show = false"
-                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-green-700 hover:text-green-900">
-                    &times;
-                </button>
-            </div>
-        @endif
-        @error('sejarah')
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
-                class="relative bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
-                role="alert">
-                <strong class="font-semibold">Gagal!</strong>
-                <span class="block sm:inline">Sejarah tidak boleh kosong!</span>
-                <button @click="show = false"
-                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-red-700 hover:text-red-900">
-                    &times;
-                </button>
-            </div>
-        @enderror
-
-
         <div class="max-w-xl mx-auto text-center">
             {{-- judul --}}
             <h2 class="text-2xl md:text-3xl font-semibold mb-8">Sejarah Desa</h2>
@@ -86,32 +59,6 @@
         editedVisi: @js($visimisi->visi ?? ''),
         editedMisi: @js($visimisi->misi ?? '')
     }">
-
-        @if (session('success'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
-                class="relative bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
-                role="alert">
-                <strong class="font-semibold">Sukses!</strong>
-                <span class="block sm:inline">{{ session('success') }}</span>
-                <button @click="show = false"
-                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-green-700 hover:text-green-900">
-                    &times;
-                </button>
-            </div>
-        @endif
-        @error('visimisi')
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
-                class="relative bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-full max-w-xl mx-auto mb-6"
-                role="alert">
-                <strong class="font-semibold">Gagal!</strong>
-                <span class="block sm:inline">Sejarah tidak boleh kosong!</span>
-                <button @click="show = false"
-                    class="absolute top-0 bottom-0 right-0 px-4 py-3 text-red-700 hover:text-red-900">
-                    &times;
-                </button>
-            </div>
-        @enderror
-
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Visi & Misi</h2>
 
         @if ($visimisi)
@@ -268,111 +215,198 @@
     </section>
 
     {{-- Struktur Pemerintahan --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{
-        search: '',
-        filterRole: '',
-        filterStatus: '',
-        email: '',
-        showPassword: false,
-        showPassword2: false,
+    <section class="py-16 px-6 md:px-16 bg-gray-100" x-data="{
+        showDetailModal: false,
         showAddModal: false,
         showEditModal: false,
         showDeleteModal: false,
-        showDetailModal: false,
-        selectedStrukturPemerintahan: null,
-        strukturPemerintahan: @js($strukturPemerintahanJs),
-        get filteredStrukturPemerintahan() {
-            return this.strukturPemerintahan.filter(item => {
-                const matchesSearch = `${item.id}`.toLowerCase().includes(this.search.toLowerCase());
-                const matchesRole = this.filterRole === '' || item.role === this.filterRole;
-                const matchesStatus = this.filterStatus === '' || item.status_verifikasi === this.filterStatus;
-                return matchesSearch && matchesRole && matchesStatus;
-            });
-        }
+        selectedStruktur: null,
     }">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
-        <div class="md:col-span-4 bg-white p-5 rounded-2xl shadow mt-4">
 
-            {{-- container header --}}
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-                {{-- LEFT SECTION: Search, Filter, Clear --}}
-                <div class="flex flex-wrap items-center gap-2">
-                    {{-- SEARCH FORM --}}
-                    <form method="GET" class="relative w-full md:w-80">
-                        <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                            {{-- Search Icon --}}
-                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-width="2"
-                                    d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </span>
-                        <input type="text" name="search" placeholder="Cari Layanan..."
-                            value="{{ request('search') }}"
-                            class="pl-10 pr-24 py-2 w-full rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                            @keydown.enter="$event.target.form.submit()">
-                        <x-button type="submit"
-                            class="absolute right-1 top-1 bottom-1 bg-indigo-400 hover:bg-indigo-600 text-white px-4 py-1 rounded-full text-sm">
-                            Cari
-                        </x-button>
-                    </form>
-
-                    {{-- TOMBOL CLEAR FILTER (hanya muncul kalau filter aktif) --}}
-                    @if (request()->has('search') || request()->has('role') || request()->has('status'))
-                        <a href="{{ url()->current() }}"
-                            class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-400 text-gray-600 rounded-full">
-                            Tampilkan Semua
-                        </a>
-                    @endif
-                </div>
-
-                {{-- RIGHT SECTION: Tambah Layanan --}}
-                <div>
-                    <x-button @click="selectedLayanan = null; showAddModal = true">
-                        {{-- Plus Icon --}}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <span>Tambah Layanan Baru</span>
-                    </x-button>
-                </div>
-            </div>
-
-            {{-- layanan - card version --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 rounded-xl">
-
-                <!-- Jika tidak ada data -->
-                <template x-if="filteredStrukturPemerintahan.length === 0">
-                    <div class="col-span-full text-center text-gray-500 py-6">
-                        Data Pegawai tidak ditemukan.
-                    </div>
-                </template>
-
-                <!-- Card binding alpine -->
-                <template x-for="item in filteredstrukturPemerintahan" :key="item.id">
-                    <div
-                        class="bg-white rounded-2xl hover:shadow-lg transition-all border border-black/10 p-6 flex flex-col justify-between h-full">
-                        <div class="flex-grow">
-                            <h3 class="text-2xl font-semibold text-gray-800 mb-2" x-text="item.nama">
-                            </h3>
-                            <p class="text-gray-600 text-sm leading-relaxed"
-                                x-text="item.deskripsi || 'Deskripsi tidak tersedia.'"></p>
-                        </div>
-                        <div class="mt-4">
-                            <x-button variant="primary" @click="selectedStrukturPemerintahan = item; showDetailModal = true">
-                                Detail
-                            </x-button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-
-            {{-- pagination --}}
-            <div class="mt-4">
-                {{ $strukturPemerintahan->links() }}
-            </div>
+        <!-- Judul & Penjelasan -->
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-4">Struktur Pemerintahan Desa</h2>
         </div>
+
+        <!-- Tombol Tambah -->
+        <div class="text-center mb-8">
+            <x-button @click="showAddModal = true">Tambah Struktur Pemerintahan</x-button>
+        </div>
+
+        <!-- Kartu Struktur -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            @forelse ($strukturPemerintahan as $p)
+                <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
+                    @click="selectedStruktur = {{ $p }}; showDetailModal = true">
+                    <div class="w-32 h-32 mb-4">
+                        <img src="{{ asset('storage/' . $p->user->foto) }}" alt="{{ $p->user->penduduk->nama }}"
+                            class="w-full h-full object-cover rounded-full border-2 border-green-500">
+                    </div>
+                    <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p->user->penduduk->nama }}</h3>
+                    <p class="text-gray-600 text-sm">{{ $p->jabatan }}</p>
+                </div>
+            @empty
+                <div class="text-center col-span-full text-gray-500">Tidak ada data struktur pemerintahan.</div>
+            @endforelse
+        </div>
+
+        <!-- Modal Detail -->
+        <x-modal show="showDetailModal">
+            <div class="p-6 text-center">
+                <template x-if="selectedStruktur">
+                    <div>
+                        <img :src="`/storage/${selectedStruktur.user.foto}`" alt=""
+                            class="w-52 h-52 object-cover rounded-xl mx-auto mb-4 border-2 border-green-500">
+                        <h3 class="text-lg font-bold text-green-600" x-text="selectedStruktur.user.penduduk.nama">
+                        </h3>
+                        <p class="text-gray-700 font-semibold mt-2" x-text="selectedStruktur.jabatan"></p>
+                        <p class="text-gray-600 mt-2 text-sm justify-items-start" x-text="selectedStruktur.deskripsi">
+                        </p>
+
+                        <div class="mt-6 flex justify-center space-x-2 border-t pt-4">
+                            <x-button @click="showDetailModal = false" variant="secondary">Tutup</x-button>
+                            <x-button @click="showEditModal = true; showDetailModal = false"
+                                variant="warning">Edit</x-button>
+                            <x-button @click="showDeleteModal = true; showDetailModal = false"
+                                variant="danger">Hapus</x-button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </x-modal>
+
+        <!-- Modal Tambah -->
+        <x-modal show="showAddModal">
+            <form action="{{ route('admin.struktur.create') }}" method="POST" class="space-y-4">
+                @csrf
+                <h3 class="text-xl font-semibold text-center text-green-600 mb-4">Tambah Struktur Pemerintahan</h3>
+
+                <!-- Input Nama -->
+                <div>
+                    <label for="user_nama" class="block text-sm font-medium text-gray-700">Pilih Warga</label>
+                    <input list="namaList" id="user_nama" name="user_nama"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                        placeholder="Ketik nama warga..." autocomplete="off" required>
+                    <input type="hidden" id="id_user" name="id_user">
+                    <datalist id="namaList">
+                        @foreach ($users as $user)
+                            <option data-id="{{ $user->id_user }}" value="{{ $user->penduduk->nama }}"></option>
+                        @endforeach
+                    </datalist>
+                    <p id="namaError" class="text-sm text-red-500 hidden mt-1">Warga tidak ditemukan.</p>
+                </div>
+
+                <!-- Jabatan -->
+                <div>
+                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <input type="text" name="jabatan" id="jabatan" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label for="deskripsi" class="block text-sm font-medium text-gray-700">Kontak / Deskripsi</label>
+                    <textarea name="deskripsi" id="deskripsi" rows="3"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-end space-x-2 pt-4 border-t">
+                    <x-button type="button" @click="showAddModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <!-- Modal Edit Struktur Pemerintahan -->
+        <x-modal show="showEditModal">
+            <form :action="`/admin/struktur/${selectedStruktur?.id}/update`" method="POST" class="space-y-4">
+                @csrf
+                @method('PUT')
+                <h3 class="text-xl font-semibold text-center text-green-600 mb-4">Edit Struktur Pemerintahan</h3>
+
+                <!-- Pilih Warga -->
+                <div>
+                    <label for="user_nama_edit" class="block text-sm font-medium text-gray-700">Pilih Warga</label>
+                    <input list="namaListEdit" id="user_nama_edit" name="user_nama"
+                        x-model="selectedStruktur?.user?.penduduk?.nama"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
+                        placeholder="Ketik nama warga..." autocomplete="off" required>
+                    <input type="hidden" id="id_user_edit" name="id_user" :value="selectedStruktur?.user?.id_user">
+                    <datalist id="namaListEdit">
+                        @foreach ($users as $user)
+                            <option data-id="{{ $user->id_user }}" value="{{ $user->penduduk->nama }}"></option>
+                        @endforeach
+                    </datalist>
+                    <p id="namaErrorEdit" class="text-sm text-red-500 hidden mt-1">Warga tidak ditemukan.</p>
+                </div>
+
+                <!-- Jabatan -->
+                <div>
+                    <label for="jabatan_edit" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <input type="text" name="jabatan" id="jabatan_edit" x-model="selectedStruktur?.jabatan"
+                        required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label for="deskripsi_edit" class="block text-sm font-medium text-gray-700">Deskripsi /
+                        Kontak</label>
+                    <textarea name="deskripsi" id="deskripsi_edit" rows="3" x-text="selectedStruktur?.deskripsi"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-end space-x-2 pt-4 border-t">
+                    <x-button type="button" @click="showEditModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <!-- Modal Hapus -->
+        <x-modal show="showDeleteModal">
+            <form :action="`/admin/struktur/${selectedStruktur?.id}/delete`" method="POST" class="text-center p-6">
+                @csrf
+                @method('DELETE')
+                <h3 class="text-lg font-semibold text-red-600 mb-4">Hapus Struktur Pemerintahan</h3>
+                <p class="text-gray-700 mb-4">Yakin ingin menghapus data ini?</p>
+                <div class="flex justify-center space-x-4">
+                    <x-button type="button" @click="showDeleteModal = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <!-- Validasi Nama JS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const validateNama = (inputId, datalistId, hiddenId, errorId) => {
+                    const input = document.getElementById(inputId);
+                    const datalist = document.getElementById(datalistId);
+                    const hidden = document.getElementById(hiddenId);
+                    const error = document.getElementById(errorId);
+
+                    input?.addEventListener('change', function() {
+                        const entered = input.value.trim();
+                        const match = [...datalist.options].find(opt => opt.value === entered);
+
+                        if (match) {
+                            hidden.value = match.dataset.id;
+                            error.classList.add('hidden');
+                            input.classList.remove('border-red-500', 'ring-red-500');
+                        } else {
+                            hidden.value = '';
+                            error.classList.remove('hidden');
+                            input.classList.add('border-red-500', 'ring-red-500');
+                        }
+                    });
+                };
+
+                validateNama('user_nama', 'namaList', 'id_user', 'namaError');
+            });
+        </script>
     </section>
 
     {{-- Program Pembangunan Desa --}}

@@ -3,7 +3,7 @@
 
         <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-9 px-6 text-center">
         </section>
-        
+
         {{-- Sejarah Desa --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Sejarah Desa</h2>
@@ -72,84 +72,43 @@
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
-                {{-- Data Perangkat Desa --}}
-                @php
-                    $perangkat = [
-                        [
-                            'nama' => 'Ahmad Zulkarnain',
-                            'jabatan' => 'Kepala Desa',
-                            'foto' =>
-                                'https://perpustakaan.widyatama.ac.id/wp-content/uploads/2020/07/foto-formal-compres-scaled.jpg',
-                            'detail' => 'Menjabat sejak 2020, fokus pada pembangunan infrastruktur desa.',
-                        ],
-                        [
-                            'nama' => 'Siti Maemunah',
-                            'jabatan' => 'Sekretaris Desa',
-                            'foto' => 'https://i.pinimg.com/736x/88/f7/31/88f7318c8cb5f88bfc30a02ea0963a6b.jpg',
-                            'detail' => 'Mengelola administrasi desa dan koordinasi surat menyurat.',
-                        ],
-                        [
-                            'nama' => 'Rahmat Hidayat',
-                            'jabatan' => 'Bendahara Desa',
-                            'foto' => 'https://i.pinimg.com/originals/79/60/24/79602435883656852374940fb74baac4.jpg',
-                            'detail' => 'Bertanggung jawab atas keuangan dan laporan dana desa.',
-                        ],
-                        [
-                            'nama' => 'Nurul Aini',
-                            'jabatan' => 'Kasi Pelayanan',
-                            'foto' => 'https://i.pinimg.com/736x/88/f7/31/88f7318c8cb5f88bfc30a02ea0963a6b.jpg',
-                            'detail' => 'Melayani administrasi warga seperti surat pengantar, SKTM, dsb.',
-                        ],
-                        [
-                            'nama' => 'Budi Santoso',
-                            'jabatan' => 'Kaur Umum',
-                            'foto' =>
-                                'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
-                            'detail' => 'Mengurus keperluan umum desa dan inventarisasi aset.',
-                        ],
-                        [
-                            'nama' => 'Dewi Lestari',
-                            'jabatan' => 'Kaur Perencanaan',
-                            'foto' =>
-                                'https://png.pngtree.com/png-vector/20240710/ourlarge/pngtree-silhouette-of-a-man-wearing-a-suit-vector-png-image_7053804.png',
-                            'detail' => 'Membantu penyusunan program kerja dan anggaran desa.',
-                        ],
-                    ];
-                @endphp
-
-                {{-- Loop Perangkat --}}
-                @foreach ($perangkat as $p)
+                @forelse ($strukturPemerintahan as $p)
                     <div x-data="{ open: false }"
-                        class="bg-white rounded-lg shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
+                        class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
                         @click="open = true">
                         <div class="w-32 h-32 mb-4">
-                            <img src="{{ $p['foto'] }}" alt="{{ $p['nama'] }}"
+                            <img src="{{ asset('storage/' . $p->user->foto) }}"
+                                alt="Foto {{ $p->user->penduduk->nama }}"
                                 class="w-full h-full object-cover rounded-full border-2 border-green-500">
                         </div>
-                        <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p['nama'] }}</h3>
-                        <p class="text-gray-600 text-sm">{{ $p['jabatan'] }}</p>
+                        <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p->user->penduduk->nama }}</h3>
+                        <p class="text-gray-600 text-sm">{{ $p->jabatan }}</p>
 
                         {{-- Modal --}}
                         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
                             x-show="open" x-transition @click.away="open = false">
                             <div class="bg-white rounded-xl shadow-lg p-6 w-11/12 max-w-md" @click.stop>
                                 <div class="flex justify-between items-center mb-4">
-                                    <h4 class="text-xl font-semibold text-green-600">{{ $p['nama'] }}</h4>
+                                    <h4 class="text-xl font-semibold text-green-600">{{ $p->nama }}</h4>
                                     <button @click="open = false"
                                         class="text-gray-400 hover:text-gray-600">&times;</button>
                                 </div>
-                                <img src="{{ $p['foto'] }}" alt="{{ $p['nama'] }}"
+                                <img src="{{ asset('storage/' . $p->user->foto) }}" alt="{{ $p->user->penduduk->nama }}"
                                     class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-2 border-green-500">
-                                <p class="text-gray-700 mb-2 font-semibold">{{ $p['jabatan'] }}</p>
-                                <p class="text-gray-600 text-sm">{{ $p['detail'] }}</p>
+                                <p class="text-gray-700 mb-2 font-semibold">{{ $p->jabatan }}</p>
+                                <p class="text-gray-600 text-sm">{{ $p->deskripsi }}</p>
                                 <button @click="open = false"
                                     class="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">Tutup</button>
                             </div>
                         </div>
                     </div>
-                @endforeach
-
+                @empty
+                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
+                        <div class="w-32 h-32 mb-4 flex items-center justify-center bg-gray-200 rounded-full">
+                            <span class="text-gray-500">Tidak ada data</span>
+                        </div>
+                    </div>
+                @endforelse
             </div>
         </section>
 

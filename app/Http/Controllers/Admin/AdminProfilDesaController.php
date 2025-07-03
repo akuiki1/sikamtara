@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use App\Models\Sejarah;
 use App\Models\Visimisi;
 use Illuminate\Support\Str;
@@ -16,48 +17,43 @@ class AdminProfilDesaController extends Controller
      */
     public function index(Request $request)
     {
-        $query = StrukturPemerintahan::with('user');
+        $query = StrukturPemerintahan::with('user.penduduk');
 
         if ($request->has('search')) {
-            $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
+            $query->whereHas('user.penduduk', function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->search . '%');
+            });
         }
 
-
-        // Filter berdasarkan role
+        // Jika ingin filter status, pastikan ada kolom 'status' di tabel
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Pagination dengan query string tetap
-        $strukturPemerintahan = $query->paginate(8)->appends($request->query());
+        $strukturPemerintahan = $query->get();
 
-        // Data untuk JavaScript (Alpine)
-        $transformed = collect($strukturPemerintahan->items())->map(function ($item) {
+        $transformed = $strukturPemerintahan->map(function ($item) {
             return [
-                'id_administrasi'         => $item->id_administrasi,
-                'nama_administrasi'      => $item->nama_administrasi,
-                'deskripsi'        => Str::limit($item->deskripsi, 100),
-                'deskripsi_full'        => $item->deskripsi,
-                'persyaratan'        => $item->persyaratan,
-                'form'      => $item->form,
-                // 'name_form' => Str::limit(Str::after(basename($item->form), '_'), 35),
-                // 'name_form_edit' => Str::limit(Str::after(basename($item->form), '_'), 25),
+                'id' => $item->id,
+                'jabatan' => $item->jabatan,
+                'deskripsi' => Str::limit($item->deskripsi, 100),
+                'nama' => $item->user->penduduk->nama ?? '-',
             ];
         });
-        
+
         $sejarah = Sejarah::first();
         $visimisi = Visimisi::first();
-
+        $users = User::with('penduduk')->get();
 
         return view('admin.profil-desa', [
-            'strukturPemerintahan'      => $strukturPemerintahan,
-            'strukturPemerintahanJs'    => $transformed,
-            'search'    => $request->search,
+            'strukturPemerintahan' => $strukturPemerintahan,
+            'strukturPemerintahanJs' => $transformed,
+            'search' => $request->search,
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
+            'users' => $users
         ]);
     }
-
 
     public function updateSejarah(Request $request)
     {
@@ -122,48 +118,46 @@ class AdminProfilDesaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function strukturCreate(Request $request)
     {
-        //
+        $request->validate([
+            'jabatan' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'id_user' => 'required|exists:users,id_user',
+        ]);
+
+        try {
+            StrukturPemerintahan::create($request->all());
+
+            return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('failed', 'Gagal menambahkan data: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function strukturUpdate(Request $request, $id)
     {
-        //
+        $request->validate([
+            'jabatan' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'id_user' => 'required|exists:users,id_user',
+        ]);
+
+        try {
+            $struktur = StrukturPemerintahan::findOrFail($id);
+            $struktur->update($request->all());
+
+            return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('failed', 'Gagal memperbarui data: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function strukturDestroy($id)
     {
-        //
-    }
+        $struktur = StrukturPemerintahan::findOrFail($id);
+        $struktur->delete();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+        return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil dihapus.');
+    }    
 }
