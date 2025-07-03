@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Sejarah;
 use App\Models\Visimisi;
 use Illuminate\Support\Str;
@@ -10,7 +11,7 @@ use App\Models\StrukturPemerintahan;
 
 class ProfilDesaController extends Controller
 {
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $query = StrukturPemerintahan::with('user.penduduk');
 
@@ -38,6 +39,7 @@ class ProfilDesaController extends Controller
 
         $sejarah = Sejarah::first();
         $visimisi = Visimisi::first();
+        $users = User::with('penduduk')->get();
 
         return view('user.profil-desa', [
             'strukturPemerintahan' => $strukturPemerintahan,
@@ -45,6 +47,7 @@ class ProfilDesaController extends Controller
             'search' => $request->search,
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
+            'users' => $users
         ]);
     }
 }

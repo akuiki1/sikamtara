@@ -51,64 +51,68 @@
         </form>
     </section>
 
-    {{-- Visi & Misi --}}
     <section class="py-16 px-6 md:px-16" x-data="{
         editing: false,
         visi: @js($visimisi->visi ?? ''),
-        misi: @js($visimisi->misi ?? ''),
-        editedVisi: @js($visimisi->visi ?? ''),
-        editedMisi: @js($visimisi->misi ?? '')
+        misi: @js($visimisi->misi ?? '')
     }">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Visi & Misi</h2>
 
-        @if ($visimisi)
-            <div class="grid md:grid-cols-2 gap-8" x-show="!editing">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
-                    <p class="text-gray-700"></p>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-2">
-                        @foreach (explode("\n", $visimisi->misi) as $misiItem)
-                            <li>{{ $misiItem }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @else
-            <div class="text-center">
-                <p class="text-gray-700 mb-4">Belum ada visi-misi</p>
-                <div class="flex justify-center mb-6">
-                    <x-button @click="editing = true">
-                        Tambah Visi & Misi
-                    </x-button>
-                </div>
-            </div>
-        @endif
+        <!-- Tampilan Awal -->
+        <template x-if="!editing">
+            <div>
+                @if ($visimisi)
+                    <div class="grid md:grid-cols-2 gap-8 mb-6">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
+                            <p class="text-gray-700" x-text="visi"></p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                <template x-for="item in misi.split('\n')" :key="item">
+                                    <li x-text="item"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                @else
+                    <p class="text-center text-gray-600 mb-4">Belum ada visi-misi desa.</p>
+                @endif
 
-        @if (!$visimisi)
-            <form action="{{ route('visimisi.update') }}" method="POST"
-                class="max-w-3xl mx-auto bg-white rounded-lg shadow p-6 space-y-4" x-show="editing">
-                @csrf
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Visi</label>
-                    <textarea name="visi" rows="3" class="w-full border rounded p-2" required></textarea>
-                </div>
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-1">Misi (Pisahkan dengan Enter)</label>
-                    <textarea name="misi" rows="5" class="w-full border rounded p-2" required></textarea>
-                </div>
-                <div class="flex justify-end gap-4">
-                    <x-button type="button" @click="editing = false" variant="secondary">
-                        Batal
-                    </x-button>
-                    <x-button type="submit">
-                        Simpan
+                <div class="flex justify-center">
+                    <x-button @click="editing = true">
+                        {{ $visimisi ? 'Edit Visi & Misi' : 'Tambah Visi & Misi' }}
                     </x-button>
                 </div>
-            </form>
-        @endif
+            </div>
+        </template>
+
+        <!-- Form Edit/Tambah -->
+        <form method="POST" action="{{ route('visimisi.update') }}"
+            class="max-w-3xl mx-auto bg-white rounded-lg shadow p-6 mt-8 space-y-4" x-show="editing">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label class="block font-semibold text-gray-700 mb-1">Visi</label>
+                <textarea name="visi" rows="3" class="w-full border rounded p-2" required x-text="visi"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-gray-700 mb-1">Misi (Pisahkan dengan Enter)</label>
+                <textarea name="misi" rows="5" class="w-full border rounded p-2" required x-text="misi"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-4">
+                <x-button type="button" variant="secondary" @click="editing = false">
+                    Batal
+                </x-button>
+                <x-button type="submit">
+                    Simpan
+                </x-button>
+            </div>
+        </form>
     </section>
 
 
@@ -232,7 +236,6 @@
                 <x-button @click="showAddModal = true">Tambah Struktur Pemerintahan</x-button>
             </div>
         @endif
-
 
         <!-- Kartu Struktur -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">

@@ -8,31 +8,41 @@
         <section class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Sejarah Desa</h2>
             <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify">
-                Desa Kambat Utara berdiri sejak tahun 1950 dan telah mengalami berbagai perkembangan. Dulu dikenal
-                sebagai perkampungan kecil dengan pertanian sebagai penghidupan utama...
+                {{ $sejarah ? $sejarah->sejarah : 'Sejarah desa belum tersedia.' }}
             </p>
         </section>
 
         {{-- Visi & Misi --}}
         <section class="py-16 px-6 md:px-16">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Visi & Misi</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
-                    <p class="text-gray-700">Menjadi desa mandiri, berdaya saing, dan sejahtera melalui pembangunan
-                        berbasis partisipasi masyarakat dan potensi lokal.</p>
+
+            @if ($visimisi)
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Visi -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4 text-green-600">Visi</h3>
+                        <p class="text-gray-700">
+                            {{ $visimisi->visi }}
+                        </p>
+                    </div>
+
+                    <!-- Misi -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            @foreach (explode("\n", $visimisi->misi) as $misiItem)
+                                <li>{{ $misiItem }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
-                <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-xl font-bold mb-4 text-green-600">Misi</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-2">
-                        <li>Mengembangkan potensi ekonomi lokal</li>
-                        <li>Meningkatkan kualitas pendidikan dan kesehatan</li>
-                        <li>Mendorong partisipasi aktif masyarakat</li>
-                        <li>Menjaga kelestarian lingkungan dan budaya lokal</li>
-                    </ul>
+            @else
+                <div class="text-center text-gray-600">
+                    <p>Visi dan misi belum tersedia.</p>
                 </div>
-            </div>
+            @endif
         </section>
+
 
         {{-- Data Wilayah --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50">
@@ -68,48 +78,49 @@
         </section>
 
         {{-- Struktur Pemerintahan --}}
-        <section class="py-16 px-6 md:px-16 bg-gray-50">
+        <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{
+            showDetailModal: false,
+            selectedStruktur: null
+        }">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                 @forelse ($strukturPemerintahan as $p)
-                    <div x-data="{ open: false }"
-                        class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
-                        @click="open = true">
+                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
+                        @click="selectedStruktur = {{ $p }}; showDetailModal = true">
                         <div class="w-32 h-32 mb-4">
-                            <img src="{{ asset('storage/' . $p->user->foto) }}"
-                                alt="Foto {{ $p->user->penduduk->nama }}"
+                            <img src="{{ asset('storage/' . $p->user->foto) }}" alt="{{ $p->user->penduduk->nama }}"
                                 class="w-full h-full object-cover rounded-full border-2 border-green-500">
                         </div>
                         <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p->user->penduduk->nama }}</h3>
                         <p class="text-gray-600 text-sm">{{ $p->jabatan }}</p>
-
-                        {{-- Modal --}}
-                        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-                            x-show="open" x-transition @click.away="open = false">
-                            <div class="bg-white rounded-xl shadow-lg p-6 w-11/12 max-w-md" @click.stop>
-                                <div class="flex justify-between items-center mb-4">
-                                    <h4 class="text-xl font-semibold text-green-600">{{ $p->nama }}</h4>
-                                    <button @click="open = false"
-                                        class="text-gray-400 hover:text-gray-600">&times;</button>
-                                </div>
-                                <img src="{{ asset('storage/' . $p->user->foto) }}" alt="{{ $p->user->penduduk->nama }}"
-                                    class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-2 border-green-500">
-                                <p class="text-gray-700 mb-2 font-semibold">{{ $p->jabatan }}</p>
-                                <p class="text-gray-600 text-sm">{{ $p->deskripsi }}</p>
-                                <button @click="open = false"
-                                    class="mt-4 w-full bg-green-500 text-white py-2 rounded hover:bg-green-600">Tutup</button>
-                            </div>
-                        </div>
                     </div>
                 @empty
-                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
-                        <div class="w-32 h-32 mb-4 flex items-center justify-center bg-gray-200 rounded-full">
-                            <span class="text-gray-500">Tidak ada data</span>
-                        </div>
+                    <div class="col-span-full p-4 text-center">
+                        <p class="text-gray-500 mb-4">Belum ada struktur pemerintahan.</p>
                     </div>
                 @endforelse
             </div>
+            <x-modal show="showDetailModal">
+                <div class="p-6 text-center">
+                    <template x-if="selectedStruktur">
+                        <div>
+                            <img :src="`/storage/${selectedStruktur.user.foto}`" alt=""
+                                class="w-52 h-52 object-cover rounded-xl mx-auto mb-4 border-2 border-green-500">
+                            <h3 class="text-lg font-bold text-green-600" x-text="selectedStruktur.user.penduduk.nama">
+                            </h3>
+                            <p class="text-gray-700 font-semibold mt-2" x-text="selectedStruktur.jabatan"></p>
+                            <p class="text-gray-600 mt-2 text-sm justify-items-start"
+                                x-text="selectedStruktur.deskripsi">
+                            </p>
+
+                            <div class="mt-6 flex justify-center space-x-2 border-t pt-4">
+                                <x-button @click="showDetailModal = false" variant="secondary">Tutup</x-button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </x-modal>
         </section>
 
         {{-- Dasar Hukum --}}

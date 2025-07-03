@@ -81,39 +81,38 @@ class AdminProfilDesaController extends Controller
 
             return redirect()->back()->with('success', 'Sejarah desa berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'Gagal memperbarui sejarah: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui sejarah: ' . $e->getMessage());
         }
     }
 
     public function updateVisimisi(Request $request)
     {
         $request->validate([
-            'visi' => 'required|text',
-            'misi' => 'required|text',
+            'visi' => 'required|string',
+            'misi' => 'required|string',
         ]);
 
         try {
-            // Ambil entri pertama
             $visimisi = Visimisi::first();
 
             if ($visimisi) {
                 $visimisi->update([
                     'visi' => $request->visi,
-                    'misi' => $request->misi ?? '',
+                    'misi' => $request->misi,
                 ]);
             } else {
-                // Kalau belum ada, baru buat
                 Visimisi::create([
                     'visi' => $request->visi,
-                    'misi' => $request->misi ?? '',
+                    'misi' => $request->misi,
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Sejarah desa berhasil diperbarui.');
+            return redirect()->back()->with('success', 'Visi dan misi berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'Gagal memperbarui sejarah: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui: ' . $e->getMessage());
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -149,7 +148,7 @@ class AdminProfilDesaController extends Controller
 
             return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'Gagal memperbarui data: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
 
@@ -159,5 +158,5 @@ class AdminProfilDesaController extends Controller
         $struktur->delete();
 
         return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil dihapus.');
-    }    
+    }
 }
