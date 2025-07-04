@@ -52,18 +52,21 @@
                                 </div>
                             </label>
                         </div>
-                        <p class="text-lg font-semibold flex">{{ $user->penduduk->nama }}</p>
+                        <p class="text-lg font-semibold flex items-center">
+                            <span class="relative inline-block">
+                                {{ $user->penduduk->nama }}
+
+                                @if ($user->status_verifikasi === 'Terverifikasi')
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="absolute -top-1 -right-4 h-4 w-4 text-blue-600 bg-white rounded-full"
+                                        viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="m8.6 22.5l-1.9-3.2l-3.6-.8l.35-3.7L1 12l2.45-2.8l-.35-3.7l3.6-.8l1.9-3.2L12 2.95l3.4-1.45l1.9 3.2l3.6.8l-.35 3.7L23 12l-2.45 2.8l.35 3.7l-3.6.8l-1.9 3.2l-3.4-1.45l-3.4 1.45Zm2.35-6.95L16.6 9.9l-1.4-1.45l-4.25 4.25l-2.15-2.1L7.4 12l3.55 3.55Z" />
+                                    </svg>
+                                @endif
+                            </span>
+                        </p>
                         <p class="text-sm text-gray-500">{{ $user->penduduk->pekerjaan }}</p>
-                        @if ($user->status_verifikasi === 'Terverifikasi')
-                            <div class="flex items-center gap-2 text-xs text-blue-600 mt-2">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="bg-white rounded-full h-4 w-4 text-blue-600" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                        d="m12 .186l3.617 3.082l4.737.378l.378 4.737L23.814 12l-3.082 3.617l-.378 4.737l-4.737.378L12 23.814l-3.616-3.082l-4.737-.378l-.378-4.737L.187 12l3.082-3.617l.378-4.737l4.737-.378L12 .186Zm0 2.628L9.188 5.21l-3.683.293l-.294 3.684L2.814 12l2.397 2.812l.294 3.684l3.683.294L12 21.186l2.813-2.396l3.683-.294l.294-3.684L21.186 12L18.79 9.188l-.294-3.684l-3.683-.293L12 2.814ZM17.915 9.5L11 16.414L6.586 12L8 10.586l3 3l5.5-5.5L17.915 9.5Z" />
-                                </svg>
-                                <p>Akun Terverifikasi</p>
-                            </div>
-                        @endif
                     </div>
 
                     {{-- Grid Fields --}}
