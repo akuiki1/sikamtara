@@ -50,7 +50,7 @@
                 <!-- Tombol Avatar/Profile -->
                 <button @click="open = !open" @click.away="open = false"
                     class="flex items-center space-x-2 px-3 py-2 rounded-lg text-white focus:outline-none">
-                    <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                    <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
                         class="w-8 h-8 rounded-full object-cover" alt="Foto Profil">
                     <span class="font-medium">{{ Auth::user()->nama }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -68,7 +68,7 @@
                     <div class="flex flex-col border-b border-gray-200 mb-4 pb-4 relative">
                         <!-- Foto profil -->
                         <div class="flex justify-center mb-2">
-                            <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                            <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
                                 class="w-20 h-20 rounded-full object-cover" alt="Foto Profil">
                         </div>
 
@@ -86,20 +86,7 @@
                                     stroke-width="1.5"
                                     d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0M6 21v-2a4 4 0 0 1 4-4h3.5m4.92.61a2.1 2.1 0 0 1 2.97 2.97L18 22h-3v-3l3.42-3.39z" />
                             </svg>
-
-                            Edit Profil
-                        </a>
-                        <!-- Verifikasi Akun -->
-                        <a href="{{ route('profil.edit') }}"
-                            class="flex items-center gap-2 text-sm w-full text-left py-2 px-3 text-gray-700 hover:bg-gray-100 rounded-xl transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 24 24">
-                                <g fill="none" stroke="currentColor" stroke-width="1.5">
-                                    <path
-                                        d="M10.521 2.624a2 2 0 0 1 2.958 0l1.02 1.12a2 2 0 0 0 1.572.651l1.513-.07a2 2 0 0 1 2.092 2.09l-.071 1.514a2 2 0 0 0 .651 1.572l1.12 1.02a2 2 0 0 1 0 2.958l-1.12 1.02a2 2 0 0 0-.651 1.572l.07 1.513a2 2 0 0 1-2.09 2.092l-1.514-.071a2 2 0 0 0-1.572.651l-1.02 1.12a2 2 0 0 1-2.958 0l-1.02-1.12a2 2 0 0 0-1.572-.651l-1.513.07a2 2 0 0 1-2.092-2.09l.071-1.514a2 2 0 0 0-.651-1.572l-1.12-1.02a2 2 0 0 1 0-2.958l1.12-1.02a2 2 0 0 0 .651-1.572l-.07-1.513a2 2 0 0 1 2.09-2.092l1.514.071a2 2 0 0 0 1.572-.651l1.02-1.12Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m9 12l2 2l4-4" />
-                                </g>
-                            </svg>
-                            Verifikasi Akun
+                            Profil
                         </a>
                     </div>
                     <!-- Link Riwayat Pengajuan -->
@@ -122,7 +109,6 @@
                                 stroke-linejoin="round"
                                 d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 10h.01M12 10h.01M16 10h.01" />
                         </svg>
-
                         Riwayat Pengaduan Online
                     </a>
 
@@ -146,7 +132,7 @@
                 <div x-data="{ openMobileProfile: false }" class="md:hidden relative ml-4">
                     <button @click="openMobileProfile = !openMobileProfile" @click.away="openMobileProfile = false"
                         class="flex items-center gap-2 text-white focus:outline-none">
-                        <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                        <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
                             class="w-8 h-8 rounded-full object-cover" alt="Foto Profil">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -160,7 +146,7 @@
                     <div x-show="openMobileProfile" x-transition
                         class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4">
                         <div class="text-center border-b pb-3 mb-3">
-                            <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                            <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
                                 class="w-16 h-16 rounded-full mx-auto object-cover" alt="Foto Profil">
                             <h3 class="font-semibold mt-2 text-gray-800 ">{{ Auth::user()->nama }}</h3>
                             <p class="text-sm text-gray-500 truncate">{{ Auth::user()->email }}</p>

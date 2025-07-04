@@ -15,7 +15,7 @@
         <div class="relative" x-data="{ open: false }">
             <button @click="open = !open"
                 class="flex items-center space-x-2 hover:text-blue-600 px-3 py-1.5 rounded-full transition">
-                <img src="{{ Auth::check() && Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('default-avatar.png') }}"
+                <img src="{{ Auth::check() && Auth::user()->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
                     alt="User Avatar" class="w-8 h-8 rounded-full object-cover border border-gray-300" />
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

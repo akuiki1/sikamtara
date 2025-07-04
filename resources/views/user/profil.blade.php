@@ -33,7 +33,7 @@
                     @csrf
 
                     {{-- Avatar --}}
-                    <div x-data="{ preview: '{{ $user->foto ? asset('storage/' . $user->foto) : '' }}' }" class="flex flex-col items-center mb-8">
+                    <div x-data="{ preview: '{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}' }" class="flex flex-col items-center mb-8">
                         <div class="relative w-28 h-28 mb-3">
                             <label class="cursor-pointer block w-full h-full">
                                 <template x-if="preview">

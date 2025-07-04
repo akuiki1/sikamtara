@@ -11,7 +11,7 @@
         <form x-data="{
             editEmail: false,
             editPassword: false,
-            preview: '{{ asset('storage/' . Auth::user()->foto) }}',
+            preview: '{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}',
             originalEmail: '{{ Auth::user()->email }}',
             email: '{{ Auth::user()->email }}',
             originalNama: '{{ Auth::user()->nama }}',
@@ -32,7 +32,7 @@
                 this.password = '';
                 this.editEmail = false;
                 this.editPassword = false;
-                this.preview = '{{ asset('storage/' . Auth::user()->foto) }}';
+                this.preview = '{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}';
                 this.fotoChanged = false;
             }
         }" action="{{ route('admin.profil.update') }}" method="POST"
