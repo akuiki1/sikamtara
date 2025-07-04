@@ -25,7 +25,6 @@ class AdministrasiController extends Controller
             $query->where('nama_administrasi', 'like', '%' . $request->search . '%');
         }
 
-
         // Filter berdasarkan role
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -47,10 +46,6 @@ class AdministrasiController extends Controller
                 'name_form_edit' => Str::limit(Str::after(basename($item->form), '_'), 25),
             ];
         });
-
-        // $penulis = User::select('id_user')->get();
-
-
 
         $dataRiwayat = $this->indexRiwayat($request);
 
@@ -134,15 +129,21 @@ class AdministrasiController extends Controller
         ]);
 
         try {
-            $userId = Auth::id();
+            $user = Auth::user();
 
-            // Simpan file
+            // Cek status verifikasi user
+            if ($user->status_verifikasi !== 'Terverifikasi') {
+                return redirect()->back()->with('error', 'Anda belum terverifikasi dan tidak dapat mengajukan administrasi.');
+            }
+
+            // Simpan file form
             if ($request->hasFile('form')) {
                 $formFile = $request->file('form');
                 $formFilename = time() . '_' . $formFile->getClientOriginalName();
                 $formPath = $formFile->storeAs('formulir', $formFilename, 'public');
             }
 
+            // Simpan file lampiran jika ada
             $lampiranPath = null;
             if ($request->hasFile('lampiran')) {
                 $lampiranFile = $request->file('lampiran');
@@ -150,9 +151,9 @@ class AdministrasiController extends Controller
                 $lampiranPath = $lampiranFile->storeAs('lampiran', $lampiranFilename, 'public');
             }
 
-            // Simpan ke DB
+            // Simpan data ke DB
             PengajuanAdministrasi::create([
-                'id_user' => $userId,
+                'id_user' => $user->id,
                 'id_administrasi' => $id_administrasi,
                 'form' => $formPath,
                 'lampiran' => $lampiranPath,
@@ -186,6 +187,8 @@ class AdministrasiController extends Controller
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         $filename = "{$namaLayanan}-{$namaUser}.{$ext}";
 
-        return Storage::disk('public')->download($path, $filename);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('public');
+        return $disk->download($path, $filename);
     }
 }

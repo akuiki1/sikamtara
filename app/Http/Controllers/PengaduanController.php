@@ -65,6 +65,13 @@ class PengaduanController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::user();
+
+        // Cek apakah user sudah terverifikasi
+        if ($user->status_verifikasi !== 'Terverifikasi') {
+            return back()->with('error', 'Akun Anda belum terverifikasi. Silakan verifikasi terlebih dahulu untuk mengirim pengaduan.');
+        }
+
         $request->validate([
             'id_user' => 'required|exists:users,id_user',
             'judul_pengaduan' => 'required|string|max:255',
@@ -73,14 +80,16 @@ class PengaduanController extends Controller
         ]);
 
         try {
-            $originalName = $request->file('lampiran')->getClientOriginalName();
-            $safeName = time() . '_' . $originalName;
+            $path = null;
 
-            $path = $request->file('lampiran')->storeAs('lampiran_pengaduan', $safeName, 'public');
-
+            if ($request->hasFile('lampiran')) {
+                $originalName = $request->file('lampiran')->getClientOriginalName();
+                $safeName = time() . '_' . $originalName;
+                $path = $request->file('lampiran')->storeAs('lampiran_pengaduan', $safeName, 'public');
+            }
 
             Pengaduan::create([
-                'id_user' => $request->id_user,
+                'id_user' => $user->id_user,
                 'judul_pengaduan' => $request->judul_pengaduan,
                 'isi_pengaduan' => $request->isi_pengaduan,
                 'lampiran' => $path ?? '',
@@ -93,6 +102,7 @@ class PengaduanController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menambahkan pengaduan.');
         }
     }
+
 
     public function update(Request $request)
     {
