@@ -52,8 +52,18 @@
                                 </div>
                             </label>
                         </div>
-                        <p class="text-lg font-semibold">{{ $user->penduduk->nama }}</p>
+                        <p class="text-lg font-semibold flex">{{ $user->penduduk->nama }}</p>
                         <p class="text-sm text-gray-500">{{ $user->penduduk->pekerjaan }}</p>
+                        @if ($user->status_verifikasi === 'Terverifikasi')
+                            <div class="flex items-center gap-2 text-xs text-blue-600 mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="bg-white rounded-full h-4 w-4 text-blue-600" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="m12 .186l3.617 3.082l4.737.378l.378 4.737L23.814 12l-3.082 3.617l-.378 4.737l-4.737.378L12 23.814l-3.616-3.082l-4.737-.378l-.378-4.737L.187 12l3.082-3.617l.378-4.737l4.737-.378L12 .186Zm0 2.628L9.188 5.21l-3.683.293l-.294 3.684L2.814 12l2.397 2.812l.294 3.684l3.683.294L12 21.186l2.813-2.396l3.683-.294l.294-3.684L21.186 12L18.79 9.188l-.294-3.684l-3.683-.293L12 2.814ZM17.915 9.5L11 16.414L6.586 12L8 10.586l3 3l5.5-5.5L17.915 9.5Z" />
+                                </svg>
+                                <p>Akun Terverifikasi</p>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- Grid Fields --}}
@@ -221,9 +231,7 @@
                             <p class="text-sm text-gray-600">Jenis Kelamin: {{ $user->penduduk->jenis_kelamin }}</p>
                             <p class="text-sm text-gray-600">Pekerjaan: {{ $user->penduduk->pekerjaan }}</p>
                         </div>
-
                     </div>
-
                 </div>
             </div>
             <x-modalstatus />
