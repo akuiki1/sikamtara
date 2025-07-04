@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class UserProfileController extends Controller
 {
@@ -78,6 +79,7 @@ class UserProfileController extends Controller
 
     public function verifikasiStore(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $userId = $user->id_user;
 
@@ -128,6 +130,9 @@ class UserProfileController extends Controller
             $data['id_user'] = $userId;
             Verifikasi::create($data);
         }
+
+        $user->status_verifikasi = 'Menunggu Verifikasi';
+        $user->save();
 
         return redirect()->route('profil.edit')->with('success', 'Dokumen berhasil dikirim atau diperbarui.');
     }

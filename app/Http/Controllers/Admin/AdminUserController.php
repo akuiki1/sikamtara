@@ -106,7 +106,7 @@ class AdminUserController extends Controller
                 'nik'               => $item->nik,
                 'nama'          => $item->nama,
                 'password'          => $item->password,
-                'id_verifikasi'     => $item->verifikasi?->id_verifikasi,
+                'id_verifikasi'     => $item->verifikasi?->id,
             ];
         });
 

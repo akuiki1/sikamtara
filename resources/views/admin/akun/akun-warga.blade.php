@@ -182,9 +182,19 @@
                         </td>
                         <td class="px-4 py-3 text-gray-600" x-text="item.email"></td>
                         <td class="px-4 py-3 text-gray-600 text-center" x-text="item.role"></td>
-                        <td class="px-4 py-3 text-gray-600 text-center" x-text="item.status_verifikasi">
+                        <td class="px-4 py-3 text-gray-600 text-left flex flex-col items-center">
+                            <div x-text="item.status_verifikasi"></div>
+
+                            <!-- Tombol Detail Verifikasi untuk 'Menunggu Verifikasi' -->
+                            <template x-if="item.status_verifikasi === 'Menunggu Verifikasi' && item.id_verifikasi">
+                                <a :href="`/admin/verifikasi/${item.id_verifikasi}`"
+                                    class="text-orange-600 hover:text-orange-800 hover:underline text-sm inline-block mt-1">
+                                    Detail Verifikasi
+                                </a>
+                            </template>
 
                         </td>
+
                         <td class="px-6 py-4 text-center">
                             <button @click="selectedUser = item; showDetailModal = true"
                                 class="text-blue-600 hover:text-blue-800">
@@ -460,37 +470,6 @@
                         </div>
                     </div>
 
-                    {{-- password --}}
-                    <div class="col-span-2">
-                        <label for="Password" class="block text-sm font-medium">Password</label>
-                        <div class="relative">
-                            <input disabled :type="showPassword ? 'text' : 'password'" x-model="selectedUser.password"
-                                name="password" placeholder="Password"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500 pr-10">
-                            <button type="button" @click="showPassword = !showPassword"
-                                class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
-                                <template x-if="!showPassword">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path d="m15 18-.722-3.25" />
-                                        <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                        <path d="m20 15-1.726-2.05" />
-                                        <path d="m4 15 1.726-2.05" />
-                                        <path d="m9 18 .722-3.25" />
-                                    </svg>
-                                </template>
-                                <template x-if="showPassword">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path
-                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                        <circle cx="12" cy="12" r="3" />
-                                    </svg>
-                                </template>
-                            </button>
-                        </div>
-                    </div>
-
                     <div>
                         <label for="role" class="block text-sm font-medium">Role</label>
                         <select id="role" name="role" x-model="selectedUser.role"
@@ -508,6 +487,7 @@
                             <option value="">Pilih Status Akun</option>
                             <option value="Terverifikasi">Terverifikasi</option>
                             <option value="Belum Terverifikasi">Belum Terverifikasi</option>
+                            <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
                         </select>
                     </div>
 
