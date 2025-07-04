@@ -73,6 +73,8 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::put('/layanan/pengaduan/pengaduan/update', [PengaduanController::class, 'update'])->name('user.pengaduan.update');
     Route::post('/layanan/pengaduan/delete', [PengaduanController::class, 'destroy'])->name('user.pengaduan.destroy');
 
+    Route::get('profile/verifikasi', [UserProfileController::class, 'verifikasi'])->name('profil.verifikasi');
+    Route::post('profile/verifikasi', [UserProfileController::class, 'verifikasiStore'])->name('profil.verifikasi.store');
     Route::get('profile/edit', [UserProfileController::class, 'edit'])->name('profil.edit');
     Route::post('profile/update', [UserProfileController::class, 'update'])->name('profil.update');
 });

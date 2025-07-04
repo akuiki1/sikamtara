@@ -14,8 +14,8 @@ class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
 
     protected $primaryKey = 'id_user';
-    public $incrementing = true;      
-    protected $keyType = 'int';  
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     protected $fillable = [
         'nama',
@@ -37,9 +37,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return 'id_user';
     }
 
-    // User.php
     public function penduduk()
     {
         return $this->belongsTo(Penduduk::class, 'nik', 'nik');
+    }
+
+    public function verifikasi()
+    {
+        return $this->hasOne(Verifikasi::class, 'id_user', 'id_user');
     }
 }

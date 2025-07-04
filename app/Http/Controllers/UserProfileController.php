@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Verifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -55,5 +56,79 @@ class UserProfileController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    public function verifikasi()
+    {
+        $user = Auth::user();
+
+        // Jika sudah terverifikasi, arahkan balik
+        if ($user->status_verifikasi === 'Terverifikasi') {
+            return redirect()->route('profil.edit')->with('info', 'Akun kamu sudah terverifikasi.');
+        }
+
+        // Ambil data verifikasi jika ada
+        $verifikasi = Verifikasi::where('id_user', $user->id_user)->first();
+
+        return view('user.verifikasi', [
+            'user' => $user,
+            'verifikasi' => $verifikasi,
+        ]);
+    }
+
+    public function verifikasiStore(Request $request)
+    {
+        $user = Auth::user();
+        $userId = $user->id_user;
+
+        // Cek apakah data verifikasi sudah ada
+        $verifikasi = Verifikasi::where('id_user', $userId)->first();
+
+        // Validasi hanya jika file dikirim
+        $rules = [];
+        if (!$verifikasi || $request->hasFile('foto_ktp')) {
+            $rules['foto_ktp'] = 'image|max:2048';
+        }
+        if (!$verifikasi || $request->hasFile('selfie_ktp')) {
+            $rules['selfie_ktp'] = 'image|max:2048';
+        }
+        if (!$verifikasi || $request->hasFile('foto_kk')) {
+            $rules['foto_kk'] = 'image|max:2048';
+        }
+
+        $request->validate($rules);
+
+        // Simpan file baru jika dikirim
+        $data = [];
+        if ($request->hasFile('foto_ktp')) {
+            if ($verifikasi && $verifikasi->foto_ktp) {
+                Storage::disk('public')->delete($verifikasi->foto_ktp);
+            }
+            $data['foto_ktp'] = $request->file('foto_ktp')->store('verifikasi/ktp', 'public');
+        }
+
+        if ($request->hasFile('selfie_ktp')) {
+            if ($verifikasi && $verifikasi->selfie_ktp) {
+                Storage::disk('public')->delete($verifikasi->selfie_ktp);
+            }
+            $data['selfie_ktp'] = $request->file('selfie_ktp')->store('verifikasi/selfie', 'public');
+        }
+
+        if ($request->hasFile('foto_kk')) {
+            if ($verifikasi && $verifikasi->foto_kk) {
+                Storage::disk('public')->delete($verifikasi->foto_kk);
+            }
+            $data['foto_kk'] = $request->file('foto_kk')->store('verifikasi/kk', 'public');
+        }
+
+        // Simpan ke DB
+        if ($verifikasi) {
+            $verifikasi->update($data);
+        } else {
+            $data['id_user'] = $userId;
+            Verifikasi::create($data);
+        }
+
+        return redirect()->route('profil.edit')->with('success', 'Dokumen berhasil dikirim atau diperbarui.');
     }
 }
