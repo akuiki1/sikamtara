@@ -152,8 +152,8 @@
         <x-table>
             <x-slot name="head">
                 <tr>
-                    <th class="px-4 py-3 text-center">Nama</th>
-                    <th class="px-4 py-3 text-center">Email</th>
+                    <th class="px-4 py-3 text-left">Nama</th>
+                    <th class="px-4 py-3 text-left">Email</th>
                     <th class="px-4 py-3 text-center">Role</th>
                     <th class="px-6 py-3 text-center">Status Akun</th>
                     <th class="px-6 py-3 text-center">Aksi</th>
@@ -182,7 +182,9 @@
                         </td>
                         <td class="px-4 py-3 text-gray-600" x-text="item.email"></td>
                         <td class="px-4 py-3 text-gray-600 text-center" x-text="item.role"></td>
-                        <td class="px-4 py-3 text-gray-600 text-left" x-text="item.status_verifikasi"></td>
+                        <td class="px-4 py-3 text-gray-600 text-center" x-text="item.status_verifikasi">
+
+                        </td>
                         <td class="px-6 py-4 text-center">
                             <button @click="selectedUser = item; showDetailModal = true"
                                 class="text-blue-600 hover:text-blue-800">

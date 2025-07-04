@@ -69,7 +69,7 @@ class AdminUserController extends Controller
 
     public function index(Request $request)
     {
-        $query = User::with('penduduk');
+        $query = User::with(['penduduk', 'verifikasi']);
 
         // Pencarian berdasarkan email atau nama penduduk
         if ($request->has('search')) {
@@ -106,6 +106,7 @@ class AdminUserController extends Controller
                 'nik'               => $item->nik,
                 'nama'          => $item->nama,
                 'password'          => $item->password,
+                'id_verifikasi'     => $item->verifikasi?->id_verifikasi,
             ];
         });
 
