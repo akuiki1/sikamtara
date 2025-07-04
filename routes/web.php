@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\AdminPendudukController;
 use App\Http\Controllers\Admin\AdminPengaduanController;
 use App\Http\Controllers\Admin\AdminPengumumanController;
 use App\Http\Controllers\Admin\AdminProfilDesaController;
+use App\Http\Controllers\Admin\AdminVerifikasiController;
 use App\Http\Controllers\Admin\AdminAdministrasiController;
 
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
@@ -129,6 +130,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('/akun-warga', [AdminUserController::class, 'index'])->name('user.index');
     Route::post('/akun-warga', [AdminUserController::class, 'store'])->name('user.store');
+    Route::get('/verifikasi/{id}', [AdminVerifikasiController::class, 'index'])->name('user.verifikasi');
+    Route::put('/verifikasi/{id}', [AdminVerifikasiController::class, 'update'])->name('user.verifikasi.update');
     Route::post('/akun-warga/update/{id}', [AdminUserController::class, 'update'])->name('user.update');
     Route::delete('/akun-warga/delete/{id}', [AdminUserController::class, 'destroy'])->name('user.destroy');
 
