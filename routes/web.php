@@ -92,6 +92,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/admin/struktur/create', [AdminProfilDesaController::class, 'strukturCreate'])->name('admin.struktur.create');
     Route::put('/struktur/{id}/update', [AdminProfilDesaController::class, 'strukturUpdate'])->name('admin.struktur.update');
     Route::delete('/struktur/{id}/delete', [AdminProfilDesaController::class, 'strukturDestroy'])->name('admin.struktur.delete');
+    Route::post('/admin/program/store', [AdminProfilDesaController::class, 'pembangunanStore'])->name('admin.program.store');
 
     // halaman kelola layanan admin
     Route::get('/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');

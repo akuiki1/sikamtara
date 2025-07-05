@@ -116,7 +116,6 @@ class AdminProfilDesaController extends Controller
         }
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
@@ -161,5 +160,30 @@ class AdminProfilDesaController extends Controller
         $struktur->delete();
 
         return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil dihapus.');
+    }
+
+    public function pembangunanStore(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_program' => 'required|string|max:255',
+            'jenis_program' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'anggaran' => 'required|numeric|min:0',
+            'sumber_dana' => 'required|string|max:255',
+            'penanggung_jawab' => 'required|string|max:255',
+            'status' => 'required|in:perencanaan,pelaksanaan,selesai,batal',
+            'deskripsi' => 'nullable|string',
+            'foto_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('foto_dokumentasi')) {
+            $validated['foto_dokumentasi'] = $request->file('foto_dokumentasi')->store('program', 'public');
+        }
+
+        ProgramPembangunanDesa::create($validated);
+
+        return redirect()->back()->with('success', 'Program pembangunan berhasil ditambahkan.');
     }
 }

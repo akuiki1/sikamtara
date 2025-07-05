@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('jenis_program');
             $table->string('lokasi');
             $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
+            $table->date('tanggal_selesai')->nullable();
             $table->bigInteger('anggaran');
             $table->string('sumber_dana');
             $table->string('penanggung_jawab');

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('luas_wilayah', function (Blueprint $table) {
             $table->id();
-            $table->decimal('luas', 10, 2)->comment('Luas wilayah dalam satuan Hektar (Ha)');
-            $table->string('satuan')->default('Ha')->comment('Satuan luas wilayah, default adalah Hektar (Ha)');
+            $table->decimal('luas', 10, 2)->comment('Luas wilayah dalam satuan Hektar (Km)');
+            $table->string('satuan')->default('Km')->comment('Satuan luas wilayah, default adalah Kilometer (Km)');
             $table->timestamps();
         });
     }

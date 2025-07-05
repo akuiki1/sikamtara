@@ -115,107 +115,6 @@
         </form>
     </section>
 
-
-    {{-- Data Wilayah --}}
-    <section x-data="{
-        luas: '',
-        penduduk: '',
-        rt: '',
-        rw: '',
-        editing: false,
-        original: {},
-        startEdit() {
-            this.original = { luas: this.luas, penduduk: this.penduduk, rt: this.rt, rw: this.rw };
-            this.editing = true;
-        },
-        cancelEdit() {
-            Object.assign(this, this.original);
-            this.editing = false;
-        },
-        saveEdit() {
-            // kirim ke server pake fetch/ajax di sini kalau mau
-            this.editing = false;
-        },
-        tambahData() {
-            this.luas = '';
-            this.penduduk = '';
-            this.rt = '';
-            this.rw = '';
-            this.editing = true;
-        }
-    }" class="py-16 px-6 md:px-16 bg-gray-50">
-        <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Data Wilayah</h2>
-
-        <template x-if="luas || penduduk || rt || rw">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="luas" @input="startEdit()"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
-                    <div class="text-gray-600 mt-2">Luas Wilayah</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="penduduk" @input="startEdit()"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
-                    <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="rt" @input="startEdit()"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
-                    <div class="text-gray-600 mt-2">Jumlah RT</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="rw" @input="startEdit()"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full" />
-                    <div class="text-gray-600 mt-2">Jumlah RW</div>
-                </div>
-            </div>
-        </template>
-
-        <!-- Form Input Baru saat Data Masih Kosong -->
-        <div class="max-w-5xl mx-auto" x-show="editing && !(luas || penduduk || rt || rw)">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="luas"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
-                        placeholder="Isi luas" />
-                    <div class="text-gray-600 mt-2">Luas Wilayah</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="penduduk"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
-                        placeholder="Isi jumlah penduduk" />
-                    <div class="text-gray-600 mt-2">Jumlah Penduduk</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="rt"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
-                        placeholder="Isi RT" />
-                    <div class="text-gray-600 mt-2">Jumlah RT</div>
-                </div>
-                <div class="bg-white rounded-lg shadow p-6 text-center">
-                    <input x-model="rw"
-                        class="text-3xl font-bold text-green-600 text-center bg-transparent focus:outline-none w-full"
-                        placeholder="Isi RW" />
-                    <div class="text-gray-600 mt-2">Jumlah RW</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tombol Simpan / Batal -->
-        <div class="text-center mt-8" x-show="editing">
-            <x-button @click="saveEdit()">Simpan</x-button>
-            <x-button @click="cancelEdit()" variant="secondary">Batal</x-button>
-        </div>
-
-        <!-- Kalau Belum Ada Data, tampilkan tombol Tambah -->
-        <template x-if="!luas && !penduduk && !rt && !rw && !editing">
-            <div class="text-center mt-8">
-                <p class="text-gray-500 mb-4">Belum ada data wilayah</p>
-                <x-button @click="tambahData()">Tambah</x-button>
-            </div>
-        </template>
-    </section>
-
     {{-- Struktur Pemerintahan --}}
     <section class="py-16 px-6 md:px-16 bg-gray-100" x-data="{
         showDetailModal: false,
@@ -243,7 +142,8 @@
                 <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
                     @click="selectedStruktur = {{ $p }}; showDetailModal = true">
                     <div class="w-32 h-32 mb-4">
-                        <img src="{{ asset('storage/' . $p->user->foto) }}" alt="{{ $p->user->penduduk->nama }}"
+                        <img src="{{ optional($p->user)->foto ? asset('storage/' . $p->user->foto) : asset('img/default-avatar.jpg') }}"
+                            alt="{{ $p->user->penduduk->nama }}"
                             class="w-full h-full object-cover rounded-full border-2 border-green-500">
                     </div>
                     <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p->user->penduduk->nama }}</h3>
@@ -262,7 +162,10 @@
             <div class="p-6 text-center">
                 <template x-if="selectedStruktur">
                     <div>
-                        <img :src="`/storage/${selectedStruktur.user.foto}`" alt=""
+                        <img :src="selectedStruktur.user.foto ?
+                            `/storage/${selectedStruktur.user.foto}` :
+                            '/img/default-avatar.jpg'"
+                            alt=""
                             class="w-52 h-52 object-cover rounded-xl mx-auto mb-4 border-2 border-green-500">
                         <h3 class="text-lg font-bold text-green-600" x-text="selectedStruktur.user.penduduk.nama">
                         </h3>
@@ -417,38 +320,221 @@
     </section>
 
     {{-- Program Pembangunan Desa --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50">
+    <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showAdd: false, showDetail: false, selectedProgram: null }">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
+        @if ($programs->count())
+            <div class="text-center mb-8">
+                <x-button @click="showAdd = true">Tambah Struktur Pemerintahan</x-button>
+            </div>
+        @endif
 
         @if ($programs->isEmpty())
             <p class="text-center text-gray-600">Belum ada program pembangunan yang tercatat.</p>
-        @else
-            <div class="space-y-6 max-w-4xl mx-auto text-justify">
-                @foreach ($programs as $program)
-                    <div class="bg-white shadow-md rounded-lg p-6 space-y-2">
-                        <h3 class="text-xl font-bold text-green-700">{{ $program->nama_program }}</h3>
-                        <p class="text-sm text-gray-500">{{ $program->jenis_program }} — {{ $program->lokasi }}</p>
-                        <p class="text-sm text-gray-600">
-                            <strong>Periode:</strong>
-                            {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} -
-                            {{ \Carbon\Carbon::parse($program->tanggal_selesai)->format('d M Y') }}
-                        </p>
-                        <p class="text-sm text-gray-600"><strong>Anggaran:</strong>
-                            Rp{{ number_format($program->anggaran, 0, ',', '.') }}</p>
-                        <p class="text-sm text-gray-600"><strong>Sumber Dana:</strong> {{ $program->sumber_dana }}</p>
-                        <p class="text-sm text-gray-600"><strong>Penanggung Jawab:</strong>
-                            {{ $program->penanggung_jawab }}</p>
-                        <p class="text-sm text-gray-600"><strong>Status:</strong> {{ $program->status }}</p>
-                        <p class="text-gray-700 mt-2">{{ $program->deskripsi }}</p>
-                        @if ($program->foto_dokumentasi)
-                            <div class="mt-2">
-                                <img src="{{ asset('storage/' . $program->foto_dokumentasi) }}" alt="Foto Program"
-                                    class="rounded shadow max-w-full h-auto">
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
+            <div class="text-center mt-4">
+                <x-button @click="showAdd = true">Tambah Program Pembangunan</x-button>
             </div>
+        @else
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach ($programs as $program)
+                        <div @click="selectedProgram = {{ $program->toJson() }}; showDetail = true"
+                            class="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer p-5 overflow-hidden">
+
+                            {{-- Header --}}
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="w-3/4">
+                                    <h3
+                                        class="text-lg font-bold text-green-700 leading-tight line-clamp-2 break-words">
+                                        {{ $program->nama_program }}
+                                    </h3>
+                                    <p class="text-xs text-gray-500 mt-1 truncate">
+                                        {{ $program->jenis_program }} &mdash; {{ $program->lokasi }}
+                                    </p>
+                                </div>
+                                <span
+                                    class="text-[10px] px-2 py-1 rounded-full font-medium whitespace-nowrap
+                                            {{ $program->status === 'selesai'
+                                                ? 'bg-green-100 text-green-700'
+                                                : ($program->status === 'pelaksanaan'
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : ($program->status === 'batal'
+                                                        ? 'bg-red-100 text-red-700'
+                                                        : 'bg-gray-100 text-gray-700')) }}">
+                                    {{ ucfirst($program->status) }}
+                                </span>
+                            </div>
+
+                            {{-- Info --}}
+                            <div class="text-xs text-gray-600 space-y-1">
+                                <p><span class="font-semibold">Periode:</span><br>
+                                    {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} –
+                                    {{ \Carbon\Carbon::parse($program->tanggal_selesai)->format('d M Y') }}
+                                </p>
+                                <p><span class="font-semibold">Anggaran:</span><br>
+                                    Rp{{ number_format($program->anggaran, 0, ',', '.') }}
+                                </p>
+                                <p><span class="font-semibold">Sumber Dana:</span><br>{{ $program->sumber_dana }}</p>
+                                <p><span class="font-semibold">PJ:</span> {{ $program->penanggung_jawab }}</p>
+                            </div>
+
+                            {{-- Deskripsi --}}
+                            @if ($program->deskripsi)
+                                <p class="mt-3 text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                                    {{ $program->deskripsi }}
+                                </p>
+                            @endif
+
+                            {{-- Foto --}}
+                            @if ($program->foto_dokumentasi)
+                                <div class="mt-3">
+                                    <img src="{{ asset('storage/' . $program->foto_dokumentasi) }}"
+                                        alt="Foto Program" class="rounded-md shadow-sm w-full h-32 object-cover">
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
         @endif
+
+        <!-- Modal Tambah Program -->
+        <x-modal show="showAdd" title="Tambah Program Pembangunan">
+            <form action="{{ route('admin.program.store') }}" method="POST" enctype="multipart/form-data"
+                class="space-y-4">
+                @csrf
+                <div>
+                    <label for="nama_program" class="block text-sm font-medium text-gray-700">Nama Program<span
+                            class="text-red-600">*</span></label>
+                    <input type="text" name="nama_program" id="nama_program" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="jenis_program" class="block text-sm font-medium text-gray-700">Jenis Program<span
+                            class="text-red-600">*</span></label>
+                    <input type="text" name="jenis_program" id="jenis_program" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="lokasi" class="block text-sm font-medium text-gray-700">Lokasi<span
+                            class="text-red-600">*</span></label>
+                    <input type="text" name="lokasi" id="lokasi" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal
+                            Mulai<span class="text-red-600">*</span></label>
+                        <input type="date" name="tanggal_mulai" id="tanggal_mulai" required
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    <div>
+                        <label for="tanggal_selesai" class="block text-sm font-medium text-gray-700">Tanggal
+                            Selesai</label>
+                        <input type="date" name="tanggal_selesai" id="tanggal_selesai"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="anggaran" class="block text-sm font-medium text-gray-700">Anggaran (Rp)<span
+                            class="text-red-600">*</span></label>
+                    <input type="number" name="anggaran" id="anggaran" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="sumber_dana" class="block text-sm font-medium text-gray-700">Sumber Dana<span
+                            class="text-red-600">*</span></label>
+                    <input type="text" name="sumber_dana" id="sumber_dana" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="penanggung_jawab" class="block text-sm font-medium text-gray-700">Penanggung
+                        Jawab<span class="text-red-600">*</span></label>
+                    <input type="text" name="penanggung_jawab" id="penanggung_jawab" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status<span
+                            class="text-red-600">*</span></label>
+                    <select name="status" id="status" required
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="perencanaan">Perencanaan</option>
+                        <option value="pelaksanaan">Pelaksanaan</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="batal">Batal</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                    <textarea name="deskripsi" id="deskripsi" rows="3"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+                </div>
+                <div>
+                    <label for="foto_dokumentasi" class="block text-sm font-medium text-gray-700">Foto
+                        Dokumentasi</label>
+                    <input type="file" name="foto_dokumentasi" id="foto_dokumentasi" accept="image/*"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="flex justify-end space-x-2 pt-4 border-t">
+                    <x-button type="button" @click="showAdd = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Simpan</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <!-- Modal Detail Program -->
+        <x-modal show="showDetail" title="Detail Program Pembangunan">
+            <div class="">
+                <template x-if="selectedProgram">
+                    <div class="space-y-4 text-left">
+                        <!-- Judul -->
+                        <div>
+                            <h3 class="text-2xl font-semibold text-green-700" x-text="selectedProgram.nama_program">
+                            </h3>
+                            <p class="text-sm text-gray-500"
+                                x-text="`${selectedProgram.jenis_program} — ${selectedProgram.lokasi}`"></p>
+                        </div>
+
+                        <!-- Info Utama -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                            <p><span class="font-semibold text-gray-600">Periode:</span><br>
+                                <span
+                                    x-text="`${new Date(selectedProgram.tanggal_mulai).toLocaleDateString()} - ${new Date(selectedProgram.tanggal_selesai).toLocaleDateString()}`"></span>
+                            </p>
+                            <p><span class="font-semibold text-gray-600">Anggaran:</span><br>
+                                <span x-text="`Rp${selectedProgram.anggaran.toLocaleString()}`"></span>
+                            </p>
+                            <p><span class="font-semibold text-gray-600">Sumber Dana:</span><br>
+                                <span x-text="selectedProgram.sumber_dana"></span>
+                            </p>
+                            <p><span class="font-semibold text-gray-600">Penanggung Jawab:</span><br>
+                                <span x-text="selectedProgram.penanggung_jawab"></span>
+                            </p>
+                        </div>
+
+                        <!-- Deskripsi -->
+                        <div x-show="selectedProgram.deskripsi" class="text-sm text-gray-700">
+                            <span class="font-semibold text-gray-600">Deskripsi:</span>
+                            <p class="mt-1 leading-snug line-clamp-3 break-words" x-text="selectedProgram.deskripsi"></p>
+                        </div>
+
+                        <!-- Foto Dokumentasi -->
+                        <template x-if="selectedProgram.foto_dokumentasi">
+                            <div>
+                                <img :src="`/storage/${selectedProgram.foto_dokumentasi}`" alt="Foto Program"
+                                    class="w-full max-h-64 object-cover rounded-lg shadow mt-2 border">
+                            </div>
+                        </template>
+
+                        <!-- Tombol Aksi -->
+                        <div class="pt-4 border-t flex justify-end gap-3">
+                            <x-button @click="showDetail = false" variant="secondary">Tutup</x-button>
+                            <x-button @click="showEdit = true; showDetail = false" variant="warning">Edit</x-button>
+                            <x-button @click="showDelete = true; showDetail = false" variant="danger">Hapus</x-button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </x-modal>
     </section>
 </x-admin-layout>
