@@ -49,24 +49,20 @@
 
             <!-- Statistik Wilayah -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
-                <div
-                    class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
+                <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
                     <div class="text-2xl font-bold text-green-600">6.5 <span class="text-sm align-super">Km</span>
                     </div>
                     <div class="text-gray-500 mt-2">Luas Wilayah</div>
                 </div>
-                <div
-                    class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
+                <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
                     <div class="text-2xl font-bold text-green-600">{{ number_format($penduduk) }}</div>
                     <div class="text-gray-500 mt-2">Jumlah Penduduk</div>
                 </div>
-                <div
-                    class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
+                <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
                     <div class="text-2xl font-bold text-green-600">3</div>
                     <div class="text-gray-500 mt-2">Jumlah Dusun</div>
                 </div>
-                <div
-                    class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
+                <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
                     <div class="text-2xl font-bold text-green-600">8</div>
                     <div class="text-gray-500 mt-2">RT/RW</div>
                 </div>
@@ -117,26 +113,29 @@
             showDetailModal: false,
             selectedStruktur: null
         }">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
+            <h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-center mb-8">Struktur Pemerintahan</h2>
 
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 @forelse ($strukturPemerintahan as $p)
-                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition"
+                    <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center cursor-pointer hover:shadow-lg hover:scale-105 transition"
                         @click="selectedStruktur = {{ $p }}; showDetailModal = true">
-                        <div class="w-32 h-32 mb-4">
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 mb-4">
                             <img src="{{ optional($p->user)->foto ? asset('storage/' . $p->user->foto) : asset('img/default-avatar.jpg') }}"
                                 alt="{{ optional($p->user->penduduk)->nama }}"
                                 class="w-full h-full object-cover rounded-full border-2 border-green-500">
                         </div>
-                        <h3 class="text-lg font-bold text-green-600 mb-1">{{ $p->user->penduduk->nama }}</h3>
-                        <p class="text-gray-600 text-sm">{{ $p->jabatan }}</p>
+                        <h3 class="text-sm sm:text-base md:text-lg font-bold text-green-600 mb-1">
+                            {{ $p->user->penduduk->nama }}
+                        </h3>
+                        <p class="text-xs sm:text-sm md:text-base text-gray-600">{{ $p->jabatan }}</p>
                     </div>
                 @empty
                     <div class="col-span-full p-4 text-center">
-                        <p class="text-gray-500 mb-4">Belum ada struktur pemerintahan.</p>
+                        <p class="text-gray-500 mb-4 text-sm sm:text-base">Belum ada struktur pemerintahan.</p>
                     </div>
                 @endforelse
             </div>
+
             <x-modal show="showDetailModal">
                 <div class="p-6 text-center">
                     <template x-if="selectedStruktur">
@@ -145,13 +144,12 @@
                                 `/storage/${selectedStruktur.user.foto}` :
                                 '/img/default-avatar.jpg'"
                                 alt=""
-                                class="w-52 h-52 object-cover rounded-xl mx-auto mb-4 border-2 border-green-500">
-                            <h3 class="text-lg font-bold text-green-600" x-text="selectedStruktur.user.penduduk.nama">
-                            </h3>
-                            <p class="text-gray-700 font-semibold mt-2" x-text="selectedStruktur.jabatan"></p>
-                            <p class="text-gray-600 mt-2 text-sm justify-items-start"
-                                x-text="selectedStruktur.deskripsi">
-                            </p>
+                                class="w-40 h-40 sm:w-52 sm:h-52 object-cover rounded-xl mx-auto mb-4 border-2 border-green-500">
+                            <h3 class="text-lg sm:text-xl font-bold text-green-600"
+                                x-text="selectedStruktur.user.penduduk.nama"></h3>
+                            <p class="text-sm sm:text-base font-semibold text-gray-700 mt-2"
+                                x-text="selectedStruktur.jabatan"></p>
+                            <p class="text-xs sm:text-sm text-gray-600 mt-2" x-text="selectedStruktur.deskripsi"></p>
 
                             <div class="mt-6 flex justify-center space-x-2 border-t pt-4">
                                 <x-button @click="showDetailModal = false" variant="secondary">Tutup</x-button>
@@ -164,49 +162,53 @@
 
         {{-- Program Pembangunan Desa --}}
         <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showDetail: false, selectedProgram: null }">
-            <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
+            <h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
 
             @if ($programs->isEmpty())
-                <p class="text-center text-gray-600">Belum ada program pembangunan yang tercatat.</p>
+                <p class="text-center text-gray-600 text-sm sm:text-base">Belum ada program pembangunan yang tercatat.
+                </p>
             @else
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach ($programs as $program)
                             <div @click="selectedProgram = {{ $program->toJson() }}; showDetail = true"
-                                class="relative w-full h-96 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.01] cursor-pointer">
-                                {{-- Gambar latar --}}
+                                class="relative w-full sm:w-64 md:w-72 lg:w-80 h-60 sm:h-64 md:h-72 lg:h-80 max-w-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
 
+                                {{-- Gambar latar --}}
                                 @if ($program->foto_dokumentasi)
                                     <img src="{{ asset('storage/' . $program->foto_dokumentasi) }}" alt="Foto Program"
                                         class="absolute inset-0 w-full h-full object-cover" />
                                 @endif
+
                                 {{-- Overlay gelap --}}
                                 <div class="absolute inset-x-0 bottom-0 h-full bg-gradient-to-b from-black/5 to-black">
                                 </div>
+
                                 {{-- Badge Status --}}
                                 <div class="absolute top-4 right-4">
                                     <span
-                                        class="px-3 py-1 rounded-lg text-xs font-medium
-                                        {{ $program->status === 'selesai'
-                                            ? 'bg-green-100 text-green-700'
-                                            : ($program->status === 'pelaksanaan'
-                                                ? 'bg-yellow-100 text-yellow-700'
-                                                : ($program->status === 'batal'
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-gray-100 text-gray-700')) }}">
+                                        class="px-3 py-1 rounded-lg text-[10px] sm:text-xs font-medium
+                                            {{ $program->status === 'selesai'
+                                                ? 'bg-green-100 text-green-700'
+                                                : ($program->status === 'pelaksanaan'
+                                                    ? 'bg-yellow-100 text-yellow-700'
+                                                    : ($program->status === 'batal'
+                                                        ? 'bg-red-100 text-red-700'
+                                                        : 'bg-gray-100 text-gray-700')) }}">
                                         {{ ucfirst($program->status) }}
                                     </span>
                                 </div>
 
                                 {{-- Konten teks --}}
                                 <div class="absolute bottom-7 left-6 right-6 text-white space-y-1">
-                                    <h2 class="text-lg font-bold leading-snug">{{ $program->nama_program }}</h2>
-                                    <p class="text-xs font-semibold">
-                                        Periode
-                                        {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} -
+                                    <h2 class="text-sm sm:text-base md:text-lg font-bold leading-snug">
+                                        {{ $program->nama_program }}
+                                    </h2>
+                                    <p class="text-[10px] sm:text-xs font-semibold">
+                                        Periode {{ \Carbon\Carbon::parse($program->tanggal_mulai)->format('d M Y') }} -
                                         {{ \Carbon\Carbon::parse($program->tanggal_selesai)->format('d M Y') }}
                                     </p>
-                                    <p class="text-xs leading-normal line-clamp-2">
+                                    <p class="text-[10px] sm:text-xs leading-normal line-clamp-2">
                                         {{ $program->deskripsi ?? 'Tidak ada deskripsi tersedia.' }}
                                     </p>
                                 </div>
@@ -221,13 +223,14 @@
                 <div class="p-6">
                     <template x-if="selectedProgram">
                         <div class="space-y-4 text-left">
-                            <!-- Judul -->
-                            <h3 class="text-lg font-bold text-green-700" x-text="selectedProgram.nama_program"></h3>
-                            <p class="text-xs text-gray-500 mb-2"
-                                x-text="selectedProgram.jenis_program + ' &mdash; ' + selectedProgram.lokasi">
+                            <h3 class="text-base sm:text-lg font-bold text-green-700"
+                                x-text="selectedProgram.nama_program"></h3>
+                            <p class="text-xs sm:text-sm text-gray-500 mb-2"
+                                x-text="selectedProgram.jenis_program + ' — ' + selectedProgram.lokasi">
                             </p>
+
                             <!-- Status -->
-                            <span class="text-[10px] px-2 py-1 rounded-full font-medium whitespace-nowrap"
+                            <span class="text-[10px] sm:text-xs px-2 py-1 rounded-full font-medium whitespace-nowrap"
                                 :class="{
                                     'bg-green-100 text-green-700': selectedProgram.status === 'selesai',
                                     'bg-yellow-100 text-yellow-700': selectedProgram.status === 'pelaksanaan',
@@ -236,8 +239,9 @@
                                 }"
                                 x-text="selectedProgram.status.charAt(0).toUpperCase() + selectedProgram.status.slice(1)">
                             </span>
-                            <!-- Periode -->
-                            <p class="text-xs text-gray-600">
+
+                            <!-- Info Lainnya -->
+                            <p class="text-xs sm:text-sm text-gray-600">
                                 <span class="font-semibold">Periode:</span><br>
                                 <span
                                     x-text="new Date(selectedProgram.tanggal_mulai).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })"></span>
@@ -245,33 +249,36 @@
                                 <span
                                     x-text="new Date(selectedProgram.tanggal_selesai).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })"></span>
                             </p>
-                            <!-- Anggaran -->
-                            <p class="text-xs text-gray-600">
+
+                            <p class="text-xs sm:text-sm text-gray-600">
                                 <span class="font-semibold">Anggaran:</span><br>
                                 <span
                                     x-text="'Rp' + new Intl.NumberFormat('id-ID').format(selectedProgram.anggaran)"></span>
                             </p>
-                            <!-- Sumber Dana -->
-                            <p class="text-xs text-gray-600">
+
+                            <p class="text-xs sm:text-sm text-gray-600">
                                 <span class="font-semibold">Sumber Dana:</span><br>
                                 <span x-text="selectedProgram.sumber_dana"></span>
                             </p>
-                            <!-- Penanggung Jawab -->
-                            <p class="text-xs text-gray-600">
+
+                            <p class="text-xs sm:text-sm text-gray-600">
                                 <span class="font-semibold">Penanggung Jawab:</span><br>
                                 <span x-text="selectedProgram.penanggung_jawab"></span>
                             </p>
+
                             <!-- Deskripsi -->
                             <div x-show="selectedProgram.deskripsi" class="text-sm text-gray-700">
                                 <span class="font-semibold text-gray-600">Deskripsi:</span>
                                 <p class="mt-1 leading-snug line-clamp-3 break-words"
                                     x-text="selectedProgram.deskripsi"></p>
                             </div>
-                            <!-- Foto Dokumentasi -->
+
+                            <!-- Foto -->
                             <div x-show="selectedProgram.foto_dokumentasi" class="mt-3">
                                 <img :src="`/storage/${selectedProgram.foto_dokumentasi}`" alt="Foto Dokumentasi"
                                     class="rounded-md shadow-sm w-full h-32 object-cover">
                             </div>
+
                             <!-- Actions -->
                             <div class="mt-6 flex justify-center space-x-2 border-t pt-4">
                                 <x-button @click="showDetail = false" variant="secondary">Tutup</x-button>
