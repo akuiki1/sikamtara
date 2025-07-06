@@ -303,8 +303,12 @@
         <!-- Section: Keuangan Desa -->
         <section id="apbdes" class="bg-gray-50 py-20">
             <div class="max-w-6xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between mb-10">
-                    <h2 class="text-2xl sm:text-4xl font-bold text-center text-gray-800">Ringkasan Dana Desa</h2>
+                <div class="flex justify-between items-center mb-12 sm:mb-14">
+                    
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
+                        RINGKASAN APBDES
+                    </h2>
+
 
                     {{-- Tahun Selector --}}
                     <form id="tahunForm" class="flex items-center justify-center space-x-4">
