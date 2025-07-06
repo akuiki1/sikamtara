@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\KeuanganController;
@@ -10,7 +8,6 @@ use App\Http\Controllers\PendudukController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PengaduanController;
-use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\PembiayaanController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\ProfilDesaController;
@@ -34,14 +31,6 @@ use App\Http\Controllers\Admin\AdminAdministrasiController;
 Route::get('/', [BerandaController::class, 'index'])->name('Beranda');
 Route::get('/ringkasan-tahun', [BerandaController::class, 'ringkasanTahun']);
 
-Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('google.redirect');
-Route::get('/auth/google/callback', [SocialiteController::class, 'callback'])->name('google.callback');
-
-
-Route::get('/auth/google', function () {
-    return Socialite::driver('google')->redirect();
-});
-
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
 
@@ -55,9 +44,6 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-
-// Route::get('/auth/redirect', [SocialiteController::class, 'redirect']);
-// Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
 
 Route::get('/profil-desa', [ProfilDesaController::class, 'index'])->name('public.profil.desa');
 Route::get('/informasi/Pengumuman', [PengumumanController::class, 'index'])->name('public.pengumuman');

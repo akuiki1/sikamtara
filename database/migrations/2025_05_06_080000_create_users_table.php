@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('password');
             
             $table->enum('role', ['admin', 'user'])->default('user');
-            $table->string('google_id')->nullable();
             $table->string('foto')->nullable();
             $table->enum('status_verifikasi', ['Belum Terverifikasi', 'Menunggu Verifikasi', 'Terverifikasi'])->default('Belum Terverifikasi');
             $table->rememberToken();

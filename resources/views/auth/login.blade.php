@@ -207,22 +207,6 @@
                     </button>
 
                 </form>
-
-                <!-- Divider -->
-                <div class="flex items-center my-6">
-                    <div class="flex-grow border-t border-gray-300"></div>
-                    <span class="mx-2 text-gray-400 text-sm">OR</span>
-                    <div class="flex-grow border-t border-gray-300"></div>
-                </div>
-
-                <!-- Login with Google -->
-                <a href="{{ url('/auth/google') }}"
-                    class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                        class="w-5 h-5 mr-2" />
-                    <span class="text-gray-700 font-semibold">Login with Google</span>
-                </a>
-
             </div>
         </div>
 
@@ -586,19 +570,6 @@
 
                     <button type="submit"
                         class="w-full bg-blue-700 text-white py-3 rounded font-bold hover:bg-blue-800 transition">Login</button>
-
-                    <div class="flex items-center my-4">
-                        <div class="flex-grow border-t border-gray-300"></div>
-                        <span class="mx-2 text-gray-400 text-sm">atau</span>
-                        <div class="flex-grow border-t border-gray-300"></div>
-                    </div>
-
-                    <a href="{{ url('/auth/google') }}"
-                        class="w-full border border-gray-300 py-3 rounded flex items-center justify-center hover:bg-gray-100 transition">
-                        <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google"
-                            class="w-5 h-5 mr-2">
-                        <span class="text-gray-700 font-semibold">Login dengan Google</span>
-                    </a>
                 </form>
 
                 <!-- Form Register -->

@@ -130,29 +130,5 @@
                 <x-button type="submit" variant="primary">Simpan Perubahan</x-button>
             </div>
         </form>
-
-        {{-- Google Account --}}
-        <div class="pt-6 border-t">
-            <h2 class="text-lg font-semibold text-gray-800 mb-3">Google Account</h2>
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-                @if (Auth::user()->google_id)
-                    <span class="text-green-600 text-sm">Akun Google telah terhubung.</span>
-                    <form action="#" method="POST">
-                    {{-- <form action="{{ route('admin.profil.google.disconnect') }}" method="POST"> --}}
-                        @csrf
-                        <button type="submit" class="text-red-600 hover:underline">Putuskan Akun Google</button>
-                    </form>
-                @else
-                    <a href="#"
-                    {{-- <a href="{{ route('admin.profil.google.connect') }}" --}}
-                        class="flex items-center bg-white border px-4 py-2 rounded-xl shadow hover:scale-105 transition">
-                        <img class="h-5 w-5 mr-2"
-                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png"
-                            alt="Google">
-                        <span>Hubungkan Akun Google</span>
-                    </a>
-                @endif
-            </div>
-        </div>
     </div>
 </x-admin-layout>
