@@ -40,4 +40,10 @@ class BeritaController extends Controller
         $berita = $query->paginate(30);
         return view('user.berita', compact('berita'));
     }
+
+    public function detail($id)
+    {
+        $berita = Berita::findOrFail($id);
+        return view('user.berita-detail', compact('berita'));
+    }
 }

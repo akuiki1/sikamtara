@@ -524,7 +524,7 @@
                                             </p>
                                             <p>Oleh {{ $item->user->nama }}</p>
                                         </div>
-                                        <a href="/informasi/berita/detail/{{ $item->id_berita }}"
+                                        <a href="{{ route('berita.index', ['search' => $item->judul_berita]) }}"
                                             class="bg-green-600 hover:bg-green-700 text-white px-3 py-0.5 rounded-full text-[11px] transition">Detail</a>
                                     </div>
                                 </div>

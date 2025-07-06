@@ -1,5 +1,5 @@
 <x-layout>
-    <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-10 px-6 text-center">
+    <section class="relative bg-gradient-to-r from-blue-700 to-blue-900 text-white py-9 px-6 text-center">
     </section>
 
     <section class="bg-gray-50 pt-6 pb-6">
@@ -12,6 +12,8 @@
 
     <!-- Grid Berita -->
     <section class="bg-gray-50">
+
+        {{-- content --}}
         <div class="bg-white mx-4 mb-6 p-6 rounded-xl shadow-lg">
             {{-- header --}}
             <div class="mb-6">
@@ -63,7 +65,7 @@
             {{-- body --}}
             <div class="max-w-6xl">
                 @if ($berita->count())
-                    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach ($berita as $item)
                             <div
                                 class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-md transition border">
@@ -85,8 +87,10 @@
                                             </p>
                                             <p>Oleh {{ $item->user->nama }}</p>
                                         </div>
-                                        <a href="/informasi/berita/detail/{{ $item->id_berita }}"
-                                            class="bg-green-600 hover:bg-green-700 text-white px-3 py-0.5 rounded-full text-[11px] transition">Detail</a>
+                                        <a href="{{ route('berita.detail', $item->id_berita) }}"
+                                            class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm font-medium px-4 py-1.5 rounded-full shadow-sm transition duration-200">
+                                            Lihat Detail
+                                        </a>
                                     </div>
                                 </div>
                             </div>

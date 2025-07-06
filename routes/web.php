@@ -55,7 +55,7 @@ Route::get('/profil-desa', [ProfilDesaController::class, 'index'])->name('public
 Route::get('/informasi/Pengumuman', [PengumumanController::class, 'index'])->name('public.pengumuman');
 
 Route::get('/informasi/berita', [BeritaController::class, 'index'])->name('berita.index');
-
+Route::get('/informasi/berita/{id}', [BeritaController::class, 'detail'])->name('berita.detail');
 
 Route::get('informasi/berita/detail', function () {
     return view('user.detailberita', ['title' => 'Detail Berita']);
