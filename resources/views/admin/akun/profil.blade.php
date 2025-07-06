@@ -16,7 +16,13 @@
             email: '{{ Auth::user()->email }}',
             originalNama: '{{ Auth::user()->nama }}',
             nama: '{{ Auth::user()->nama }}',
+            editing: false,
             password: '',
+            confirm: '',
+            confirmshow: false,
+            valid: false,
+            match: true,
+            show: false,
             fotoChanged: false,
             isChanged() {
                 return (
@@ -96,31 +102,116 @@
 
                 {{-- Password --}}
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Password Baru</label>
-                    <div class="relative">
-                        <div class="space-y-2">
-                            <input type="password" name="password" x-model="password" :readonly="!editPassword"
-                                :class="editPassword ? 'bg-white text-gray-900 ring-2 ring-indigo-400' :
-                                    'bg-gray-100 text-gray-500'"
-                                placeholder="**************"
-                                class="px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm focus:outline-none transition w-full">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
 
-                            <template x-if="editPassword">
-                                <input type="password" name="password_confirmation" placeholder="Konfirmasi Password"
-                                    class="px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none w-full">
-                            </template>
+                    <!-- Mode Edit -->
+                    <template x-if="editing">
+                        <div class="space-y-4">
+                            <!-- Password -->
+                            <div class="relative">
+                                <input :type="show ? 'text' : 'password'" name="password" x-model="password"
+                                    @input="valid = password.length >= 8; match = password === confirm"
+                                    class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500 transition bg-white"
+                                    placeholder="Password baru">
+
+                                <!-- SVG mata -->
+                                <button type="button" @click="show = !show"
+                                    class="absolute top-2.5 right-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                                    <svg x-show="show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                        viewBox="0 0 24 24">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10a13.358 13.358 0 0 0 3 2.685M21 10a13.358 13.358 0 0 1-3 2.685m-8 1.624L9.5 16.5m.5-2.19a10.59 10.59 0 0 0 4 0m-4 0a11.275 11.275 0 0 1-4-1.625m8 1.624l.5 2.191m-.5-2.19a11.275 11.275 0 0 0 4-1.625m0 0l1.5 1.815M6 12.685L4.5 14.5" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Validasi password -->
+                            <p class="text-xs mt-1 flex items-center gap-1" x-show="password.length > 0"
+                                :class="valid ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!valid" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span
+                                    x-text="valid ? 'Password memenuhi syarat' : 'Password minimal 8 karakter'"></span>
+                            </p>
+
+                            <!-- Konfirmasi password -->
+                            <div class="relative">
+                                <input :type="confirmshow ? 'text' : 'password'" name="password_confirmation"
+                                    x-model="confirm" @input="match = password === confirm"
+                                    class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-blue-500 transition bg-white"
+                                    placeholder="Konfirmasi password">
+
+                                <!-- SVG mata -->
+                                <button type="button" @click="confirmshow = !confirmshow"
+                                    class="absolute top-2.5 right-3 text-gray-500 hover:text-gray-700 focus:outline-none">
+                                    <svg x-show="confirmshow" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="!confirmshow" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                        viewBox="0 0 24 24">
+                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                            stroke-linejoin="round" stroke-width="2"
+                                            d="M3 10a13.358 13.358 0 0 0 3 2.685M21 10a13.358 13.358 0 0 1-3 2.685m-8 1.624L9.5 16.5m.5-2.19a10.59 10.59 0 0 0 4 0m-4 0a11.275 11.275 0 0 1-4-1.625m8 1.624l.5 2.191m-.5-2.19a11.275 11.275 0 0 0 4-1.625m0 0l1.5 1.815M6 12.685L4.5 14.5" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Validasi konfirmasi -->
+                            <p class="text-xs mt-1 flex items-center gap-1" x-show="confirm.length > 0"
+                                :class="match ? 'text-green-500' : 'text-red-500'">
+                                <svg x-show="match" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg x-show="!match" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span x-text="match ? 'Password sesuai' : 'Password harus sesuai'"></span>
+                            </p>
+                            <button type="button"
+                                @click="editing = false; show = false; valid = false; password=''; confirm='';"
+                                class="text-sm text-gray-500 hover:text-red-600 hover:underline">
+                                Batal
+                            </button>
                         </div>
-                        <div class="absolute top-2 right-3 flex gap-2">
-                            <template x-if="editPassword">
-                                <button @click.prevent="editPassword = false; password = ''"
-                                    class="text-sm text-gray-600 hover:text-red-500">Batal</button>
-                            </template>
-                            <template x-if="!editPassword">
-                                <button @click.prevent="editPassword = true"
-                                    class="text-sm text-indigo-600 hover:underline">Ganti password</button>
-                            </template>
+                    </template>
+
+                    <!-- Mode Non-Edit -->
+                    <template x-if="!editing">
+                        <div class="relative">
+                            <input type="password" value="********" readonly
+                                class="w-full px-4 py-2 pr-24 border border-gray-300 rounded-lg shadow-sm bg-gray-100 text-gray-500 cursor-not-allowed" />
+                            <div class="absolute top-1/2 right-3 transform -translate-y-1/2">
+                                <button type="button" @click="editing = true"
+                                    class="text-sm text-indigo-600 hover:underline focus:outline-none">
+                                    Edit Password
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    </template>
                 </div>
             </div>
 
