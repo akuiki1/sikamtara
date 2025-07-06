@@ -13,7 +13,8 @@
     <link rel="icon" type="image/png" href="/img/LogoHST.png">
 </head>
 
-<body class="h-full flex items-center justify-center">
+<body class="h-full flex items-center justify-center py-6 bg-gray-100">
+
     {{-- tampilan dekstop --}}
     <div x-data="{
         email: '',
@@ -35,7 +36,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-            <div class="bg-white p-8 rounded shadow-md w-full max-w-md" x-show="true" x-transition.duration.700ms>
+            <div class="p-8 rounded w-full max-w-md" x-show="true" x-transition.duration.700ms>
 
                 <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Login</h2>
 
@@ -131,7 +132,7 @@
                         </div>
                     @enderror
                     <!-- Password Input -->
-                    <div x-data="{ password: '', show: false, valid: false }" class="relative mb-6">
+                    <div x-data="{ password: '', show: false, valid: false }" class="relative mb-4">
 
                         <div class="relative flex flex-col">
                             <input :type="show ? 'text' : 'password'" x-model="password" name="password"
@@ -181,6 +182,12 @@
                             </svg>
                             <span x-text="valid ? 'Password memenuhi syarat' : 'Password minimal 8 karakter'"></span>
                         </p>
+                    </div>
+
+                    {{-- forgot password --}}
+                    <div class="flex justify-end items-center mb-6">
+                        <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline text-sm">Lupa
+                            Password?</a>
                     </div>
 
                     <!-- Checkbox Agree -->
@@ -424,7 +431,6 @@
             </div>
         </div>
 
-
         <!-- Sliding Panel -->
         <div class="hidden md:flex w-1/2 bg-gradient-to-r from-blue-700 to-blue-900 text-white items-center justify-center p-8 absolute top-0 left-0 h-full transition-transform duration-700 ease-in-out z-20"
             :class="isLogin ? 'translate-x-full' : 'translate-x-0'">
@@ -566,6 +572,12 @@
                         </p>
                     </div>
 
+                    {{-- forgot password --}}
+                    <div class="flex justify-end items-center mb-6">
+                        <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline text-sm">Lupa
+                            Password?</a>
+                    </div>
+
                     <div class="flex items-center space-x-2 mb-4">
                         <input x-model="agree" type="checkbox" required class="text-blue-600">
                         <label class="text-sm text-gray-600">Saya setuju dengan <a href="#"
@@ -595,7 +607,7 @@
 
                     <!-- NIK -->
                     <div class="relative mb-4" x-data="{
-                        nik: '{{ old("nik") }}',
+                        nik: '{{ old('nik') }}',
                         isValid: true,
                         validateNIK() {
                             this.isValid = this.nik.length === 16 && /^\d+$/.test(this.nik);
@@ -634,7 +646,7 @@
 
                     <!-- Email -->
                     <div class="relative mb-4" x-data="{
-                        email: '{{ old("email") }}',
+                        email: '{{ old('email') }}',
                         isValid: true,
                         validateEmail() {
                             const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -766,8 +778,8 @@
             </div>
         </div>
     </div>
-    
-   <x-modalstatus></x-modalstatus>
+
+    <x-modalstatus></x-modalstatus>
 </body>
 
 </html>

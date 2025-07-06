@@ -361,6 +361,7 @@
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                             <option value="">Pilih Status Akun</option>
                             <option value="Terverifikasi">Terverifikasi</option>
+                            <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
                             <option value="Belum Terverifikasi">Belum Terverifikasi</option>
                         </select>
                     </div>

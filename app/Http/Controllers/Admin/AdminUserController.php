@@ -145,7 +145,7 @@ class AdminUserController extends Controller
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|confirmed',
                 'role' => 'required|in:user,admin',
-                'status_verifikasi' => 'required|in:Terverifikasi,Belum Terverifikasi',
+                'status_verifikasi' => 'required|in:Terverifikasi,Menunggu Verifikasi,Belum Terverifikasi',
             ]);
 
             // Enkripsi password sebelum disimpan
