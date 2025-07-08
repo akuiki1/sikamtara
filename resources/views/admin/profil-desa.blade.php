@@ -324,7 +324,7 @@
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
         @if ($programs->count())
             <div class="text-center mb-8">
-                <x-button @click="showAdd = true">Tambah Struktur Pemerintahan</x-button>
+                <x-button @click="showAdd = true">Tambah Program Pembangunan</x-button>
             </div>
         @endif
 

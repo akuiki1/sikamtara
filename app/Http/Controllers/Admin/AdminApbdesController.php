@@ -162,7 +162,7 @@ class AdminApbdesController extends Controller
 
 
         return view('admin.apbdes.pendapatan', [
-            'title' => 'Halaman Pendapatan',
+            'title' => 'Pendapatan',
             'tahunList' => $tahunList,
             'tahunDipilih' => $tahunDipilih,
             'data' => $data,
@@ -253,7 +253,7 @@ class AdminApbdesController extends Controller
         }
 
         return view('admin.apbdes.belanja', [
-            'title' => 'Halaman Belanja',
+            'title' => 'Belanja',
             'tahunList' => $tahunList,
             'tahunDipilih' => $tahunDipilih,
             'data' => $data,
