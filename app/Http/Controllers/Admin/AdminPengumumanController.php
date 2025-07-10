@@ -148,7 +148,7 @@ class AdminPengumumanController extends Controller
 
             $searchKeyword = Str::limit(strip_tags($pengumuman->judul_pengumuman), 50);
 
-            return redirect()->route('pengumuman.index', ['search' => $searchKeyword])
+            return redirect()->route('adminpengumuman.index', ['search' => $searchKeyword])
                 ->with('success', 'Pengumuman berhasil diperbarui!');
         } catch (\Exception $e) {
             return redirect()->to('/admin/pengumuman')->with('error', 'Gagal: ' . $e->getMessage());

@@ -39,7 +39,8 @@
                                 d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                         </svg>
                     </span>
-                    <input type="text" name="search" placeholder="Cari pengumuman..." value="{{ request('search') }}"
+                    <input type="text" name="search" placeholder="Cari pengumuman..."
+                        value="{{ request('search') }}"
                         class="pl-10 pr-24 py-2 w-full rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                         @keydown.enter="$event.target.form.submit()">
                     <x-button type="submit"
@@ -205,22 +206,42 @@
             <form action="{{ route('pengumuman.store') }}" method="POST" enctype="multipart/form-data"
                 class="space-y-8" x-data="{
                     previewCover: null,
+                    fileTooLarge: false,
                     updatePreview(e) {
                         const file = e.target.files[0];
                         if (file) {
-                            this.previewCover = URL.createObjectURL(file);
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            if (!this.fileTooLarge) {
+                                this.previewCover = URL.createObjectURL(file);
+                            } else {
+                                this.previewCover = null;
+                            }
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran lampiran melebihi 2MB. Silakan pilih file yang lebih kecil.');
+                            event.preventDefault();
                         }
                     }
-                }">
+                }" @submit="handleSubmit($event)">
                 @csrf
 
                 {{-- Baris 1: file lampiran + Judul --}}
                 <div>
-                    <label for="file_lampiran" class="text-sm text-gray-600 mb-1 block">Lampiran</label>
+                    <label for="file_lampiran" class="text-sm text-gray-600 mb-1 block">Lampiran<span
+                            class="text-red-600">*</span>
+                        <small class="block text-xs font-normal text-gray-400">(Format: jpg, jpeg, png. Maks
+                            2Mb)</small></label>
                     <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
                         <input type="file" name="file_lampiran" id="file_lampiran" accept="image/*"
                             @change="updatePreview"
                             class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+
+                        <template x-if="fileTooLarge">
+                            <p class="text-xs text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
+
                         <template x-if="previewCover">
                             <img :src="previewCover" alt="Preview"
                                 class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
@@ -229,7 +250,8 @@
                 </div>
 
                 <div>
-                    <label for="judul_pengumuman" class="text-sm text-gray-600 mb-1 block">Judul Pengumuman</label>
+                    <label for="judul_pengumuman" class="text-sm text-gray-600 mb-1 block">Judul Pengumuman<span
+                            class="text-red-600">*</span></label>
                     <input type="text" name="judul_pengumuman" id="judul_pengumuman"
                         class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                         placeholder="Masukkan judul pengumuman" required />
@@ -238,7 +260,8 @@
 
                 {{-- Isi Pengumuman --}}
                 <div>
-                    <label for="isi_pengumuman" class="text-sm text-gray-600 mb-1 block">Isi Pengumuman</label>
+                    <label for="isi_pengumuman" class="text-sm text-gray-600 mb-1 block">Isi Pengumuman<span
+                            class="text-red-600">*</span></label>
                     <textarea name="isi_pengumuman" id="isi_pengumuman" rows="6"
                         class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                         placeholder="Tulis isi pengumuman di sini..." required></textarea>
@@ -247,7 +270,8 @@
                 {{-- Baris 2: Tanggal + Status --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label for="status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <label for="status" class="text-sm text-gray-600 mb-1 block">Status<span
+                                class="text-red-600">*</span></label>
                         <select name="status" id="status"
                             class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             <option value="draft">Draft</option>
@@ -258,7 +282,8 @@
 
                     {{-- Penulis --}}
                     <div>
-                        <label for="penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        <label for="penulis" class="text-sm text-gray-600 mb-1 block">Penulis<span
+                                class="text-red-600">*</span></label>
                         @auth
                             <input type="hidden" name="penulis" value="{{ Auth::user()->id_user }}">
                             <input type="text" disabled value="{{ Auth::user()->nama }}"
@@ -299,19 +324,23 @@
             <div class="flex justify-center mb-4">
                 <div class="relative">
                     <!-- Lampiran -->
-                    <img :src="selectedPengumuman.file_lampiran ? '/storage/' + selectedPengumuman.file_lampiran : 'img/default-avatar.png'"
-                        alt="Lampiran Pengumuman" class="col-span-full rounded-lg object-cover border border-gray-300" />
+                    <img :src="selectedPengumuman.file_lampiran ? '/storage/' + selectedPengumuman.file_lampiran :
+                        'img/default-avatar.png'"
+                        alt="Lampiran Pengumuman"
+                        class="col-span-full rounded-lg object-cover border border-gray-300" />
 
                 </div>
             </div>
             <div class="">
-                <p class="text-xs text-gray-500">Diupload <span x-text="selectedPengumuman.tanggal_publish"></span> Oleh
+                <p class="text-xs text-gray-500">Diupload <span x-text="selectedPengumuman.tanggal_publish"></span>
+                    Oleh
                     <span x-text="selectedPengumuman.penulis"></span>
                 </p>
             </div>
             <div class="grid mt-4 grid-cols-1 sm:grid-cols-2 gap-2">
                 <div class="col-span-full">
-                    <p class="font-normal text-gray-800 break-words" x-text="selectedPengumuman.isi_pengumuman_full"></p>
+                    <p class="font-normal text-gray-800 break-words" x-text="selectedPengumuman.isi_pengumuman_full">
+                    </p>
                 </div>
             </div>
 
@@ -325,26 +354,53 @@
 
         <!-- Modal edit -->
         <x-modal show="showEditModal" title="Edit Pengumuman">
-            <form :action="'/admin/pengumuman/' + selectedPengumuman.id_pengumuman" method="POST" enctype="multipart/form-data"
-                class="space-y-8" x-data="{
-                    previewCover: selectedPengumuman.file_lampiran ? '{{ asset('storage') }}/' + selectedPengumuman.file_lampiran : null,
+            <form :action="'/admin/pengumuman/' + selectedPengumuman.id_pengumuman" method="POST"
+                enctype="multipart/form-data" class="space-y-8" x-data="{
+                    previewCover: null,
+                    fileTooLarge: false,
+                
                     updatePreview(e) {
                         const file = e.target.files[0];
                         if (file) {
-                            this.previewCover = URL.createObjectURL(file);
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            if (!this.fileTooLarge) {
+                                this.previewCover = URL.createObjectURL(file);
+                            } else {
+                                this.previewCover = null;
+                            }
+                        }
+                    },
+                
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran lampiran melebihi 2MB. Silakan pilih file yang lebih kecil.');
+                            event.preventDefault();
                         }
                     }
-                }">
+                }" x-init="$watch('selectedPengumuman', value => {
+                    if (value.file_lampiran) {
+                        previewCover = '/storage/' + value.file_lampiran;
+                    }
+                })"
+                @submit="handleSubmit($event)">
                 @csrf
                 @method('PUT')
 
                 {{-- Baris 1: Gambar + Judul --}}
                 <div>
-                    <label for="edit_file_lampiran" class="text-sm text-gray-600 mb-1 block">Lampiran</label>
+                    <label for="edit_file_lampiran" class="text-sm text-gray-600 mb-1 block">Lampiran<span
+                            class="text-red-600">*</span>
+                        <small class="block text-xs font-normal text-gray-400">(Format: jpg, jpeg, png. Maks
+                            2Mb)</small></label>
                     <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
                         <input type="file" name="file_lampiran" id="edit_file_lampiran" accept="image/*"
                             @change="updatePreview"
                             class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
+
                         <template x-if="previewCover">
                             <img :src="previewCover" alt="Preview"
                                 class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
@@ -352,7 +408,8 @@
                     </div>
                 </div>
                 <div>
-                    <label for="edit_judul_Pengumuman" class="text-sm text-gray-600 mb-1 block">Judul Pengumuman</label>
+                    <label for="edit_judul_Pengumuman" class="text-sm text-gray-600 mb-1 block">Judul
+                        Pengumuman<span class="text-red-600">*</span></label>
                     <input type="text" name="judul_pengumuman" id="edit_judul_pengumuman"
                         x-model="selectedPengumuman.judul_pengumuman"
                         class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -361,8 +418,10 @@
 
                 {{-- Isi Pengumuman --}}
                 <div>
-                    <label for="edit_isi_pengumuman" class="text-sm text-gray-600 mb-1 block">Isi Pengumuman</label>
-                    <textarea name="isi_pengumuman" id="edit_isi_pengumuman" rows="6" x-text="selectedPengumuman.isi_pengumuman_full"
+                    <label for="edit_isi_pengumuman" class="text-sm text-gray-600 mb-1 block">Isi Pengumuman<span
+                            class="text-red-600">*</span></label>
+                    <textarea name="isi_pengumuman" id="edit_isi_pengumuman" rows="6"
+                        x-text="selectedPengumuman.isi_pengumuman_full"
                         class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                         placeholder="Tulis isi pengumuman di sini..." required></textarea>
                 </div>
@@ -370,7 +429,8 @@
                 {{-- Baris 2: Tanggal + Status --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label for="edit_status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <label for="edit_status" class="text-sm text-gray-600 mb-1 block">Status<span
+                                class="text-red-600">*</span></label>
                         <select name="status" id="edit_status" x-model="selectedPengumuman.status"
                             class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             <option value="draft">Draft</option>
@@ -379,7 +439,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="edit_penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        <label for="edit_penulis" class="text-sm text-gray-600 mb-1 block">Penulis<span
+                                class="text-red-600">*</span></label>
                         <input type="text" id="edit_penulis" x-model="selectedPengumuman.penulis"
                             class="rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-gray-100 cursor-not-allowed"
                             readonly />
