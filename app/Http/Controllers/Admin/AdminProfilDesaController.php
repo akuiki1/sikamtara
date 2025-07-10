@@ -72,13 +72,11 @@ class AdminProfilDesaController extends Controller
             if ($sejarah) {
                 $sejarah->update([
                     'sejarah' => $request->sejarah,
-                    'foto' => $request->foto ?? '',
                 ]);
             } else {
                 // Kalau belum ada, baru buat
                 Sejarah::create([
                     'sejarah' => $request->sejarah,
-                    'foto' => $request->foto ?? '',
                 ]);
             }
 

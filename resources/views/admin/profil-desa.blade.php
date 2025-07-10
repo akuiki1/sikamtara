@@ -2,7 +2,7 @@
     <x-slot:title>Profil Desa</x-slot:title>
 
     {{-- Sejarah Desa --}}
-    <section x-data="{
+    <section id="Sejarah" x-data="{
         editing: false,
         sejarah: @js($sejarah->sejarah ?? ''),
         editedSejarah: @js($sejarah->sejarah ?? '')
@@ -44,14 +44,24 @@
                 <x-button type="button" @click="editing = false; editedSejarah = sejarah" variant="secondary">
                     Batal
                 </x-button>
-                <x-button type="submit" @click="sejarah = editedSejarah; editing = false">
+                <x-button type="submit"
+                    @click.prevent="
+                        if (editedSejarah.trim() === '') {
+                            alert('Sejarah tidak boleh kosong.');
+                        } else {
+                            sejarah = editedSejarah;
+                            editing = false;
+                            $el.closest('form').submit();
+                        }
+                    ">
                     Simpan
                 </x-button>
             </div>
         </form>
     </section>
 
-    <section class="py-16 px-6 md:px-16" x-data="{
+    {{-- visi misi --}}
+    <section id="Visimisi" class="py-16 px-6 md:px-16" x-data="{
         editing: false,
         visi: @js($visimisi->visi ?? ''),
         misi: @js($visimisi->misi ?? '')
@@ -95,12 +105,12 @@
             @method('PUT')
 
             <div>
-                <label class="block font-semibold text-gray-700 mb-1">Visi</label>
+                <label class="block font-semibold text-gray-700 mb-1">Visi<span class="text-red-600">*</span></label>
                 <textarea name="visi" rows="3" class="w-full border rounded p-2" required x-text="visi"></textarea>
             </div>
 
             <div>
-                <label class="block font-semibold text-gray-700 mb-1">Misi (Pisahkan dengan Enter)</label>
+                <label class="block font-semibold text-gray-700 mb-1">Misi<span class="text-red-600">*</span> <span class="text-gray-400 text-xs font-normal">(Pisahkan dengan Enter)</span></label>
                 <textarea name="misi" rows="5" class="w-full border rounded p-2" required x-text="misi"></textarea>
             </div>
 
@@ -116,7 +126,7 @@
     </section>
 
     {{-- Struktur Pemerintahan --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-100" x-data="{
+    <section id="struktur" class="py-16 px-6 md:px-16 bg-gray-100" x-data="{
         showDetailModal: false,
         showAddModal: false,
         showEditModal: false,
@@ -193,7 +203,7 @@
 
                 <!-- Input Nama -->
                 <div>
-                    <label for="user_nama" class="block text-sm font-medium text-gray-700">Pilih Warga</label>
+                    <label for="user_nama" class="block text-sm font-medium text-gray-700">Pilih Warga<span class="text-red-600">*</span></label>
                     <input list="namaList" id="user_nama" name="user_nama"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                         placeholder="Ketik nama warga..." autocomplete="off" required>
@@ -208,7 +218,7 @@
 
                 <!-- Jabatan -->
                 <div>
-                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan<span class="text-red-600">*</span></label>
                     <input type="text" name="jabatan" id="jabatan" required
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
                 </div>
@@ -237,7 +247,7 @@
 
                 <!-- Pilih Warga -->
                 <div>
-                    <label for="user_nama_edit" class="block text-sm font-medium text-gray-700">Pilih Warga</label>
+                    <label for="user_nama_edit" class="block text-sm font-medium text-gray-700">Pilih Warga<span class="text-red-600">*</span></label>
                     <input list="namaListEdit" id="user_nama_edit" name="user_nama"
                         x-model="selectedStruktur?.user?.penduduk?.nama"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
@@ -253,7 +263,7 @@
 
                 <!-- Jabatan -->
                 <div>
-                    <label for="jabatan_edit" class="block text-sm font-medium text-gray-700">Jabatan</label>
+                    <label for="jabatan_edit" class="block text-sm font-medium text-gray-700">Jabatan<span class="text-red-600">*</span></label>
                     <input type="text" name="jabatan" id="jabatan_edit" x-model="selectedStruktur?.jabatan"
                         required
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
@@ -320,7 +330,7 @@
     </section>
 
     {{-- Program Pembangunan Desa --}}
-    <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showAdd: false, showDetail: false, selectedProgram: null }">
+    <section id="program" class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showAdd: false, showDetail: false, selectedProgram: null }">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
         @if ($programs->count())
             <div class="text-center mb-8">
@@ -515,7 +525,8 @@
                         <!-- Deskripsi -->
                         <div x-show="selectedProgram.deskripsi" class="text-sm text-gray-700">
                             <span class="font-semibold text-gray-600">Deskripsi:</span>
-                            <p class="mt-1 leading-snug line-clamp-3 break-words" x-text="selectedProgram.deskripsi"></p>
+                            <p class="mt-1 leading-snug line-clamp-3 break-words" x-text="selectedProgram.deskripsi">
+                            </p>
                         </div>
 
                         <!-- Foto Dokumentasi -->

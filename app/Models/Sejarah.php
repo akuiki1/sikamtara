@@ -9,6 +9,5 @@ class Sejarah extends Model
     protected $table = 'sejarah';
     protected $fillable = [
         'sejarah',
-        'foto',
     ];
 }
