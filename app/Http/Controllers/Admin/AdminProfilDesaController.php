@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\StrukturPemerintahan;
 use App\Models\ProgramPembangunanDesa;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProfilDesaController extends Controller
 {
@@ -80,9 +81,9 @@ class AdminProfilDesaController extends Controller
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Sejarah desa berhasil diperbarui.');
+            return redirect()->to(route('profildesa.index') . '#sejarah')->with('success', 'Sejarah desa berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui sejarah: ' . $e->getMessage());
+            return redirect()->to(route('profildesa.index') . '#sejarah')->with('error', 'Gagal memperbarui sejarah: ' . $e->getMessage());
         }
     }
 
@@ -108,9 +109,9 @@ class AdminProfilDesaController extends Controller
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Visi dan misi berhasil diperbarui.');
+            return redirect()->to(route('profildesa.index') . '#visimisi')->with('success', 'Visi dan misi berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui: ' . $e->getMessage());
+            return redirect()->to(route('profildesa.index') . '#visimisi')->with('error', 'Gagal memperbarui: ' . $e->getMessage());
         }
     }
 
@@ -128,9 +129,9 @@ class AdminProfilDesaController extends Controller
         try {
             StrukturPemerintahan::create($request->all());
 
-            return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil ditambahkan.');
+            return redirect()->to(route('profildesa.index') . '#struktur')->with('success', 'Data struktur pemerintahan berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'Gagal menambahkan data: ' . $e->getMessage());
+            return redirect()->to(route('profildesa.index') . '#struktur')->with('failed', 'Gagal menambahkan data: ' . $e->getMessage());
         }
     }
 
@@ -146,9 +147,9 @@ class AdminProfilDesaController extends Controller
             $struktur = StrukturPemerintahan::findOrFail($id);
             $struktur->update($request->all());
 
-            return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil diperbarui.');
+            return redirect()->to(route('profildesa.index') . '#struktur')->with('success', 'Data struktur pemerintahan berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+            return redirect()->to(route('profildesa.index') . '#struktur')->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
 
@@ -157,7 +158,7 @@ class AdminProfilDesaController extends Controller
         $struktur = StrukturPemerintahan::findOrFail($id);
         $struktur->delete();
 
-        return redirect()->back()->with('success', 'Data struktur pemerintahan berhasil dihapus.');
+        return redirect()->to(route('profildesa.index') . '#struktur')->with('success', 'Data struktur pemerintahan berhasil dihapus.');
     }
 
     public function pembangunanStore(Request $request)
@@ -182,6 +183,47 @@ class AdminProfilDesaController extends Controller
 
         ProgramPembangunanDesa::create($validated);
 
-        return redirect()->back()->with('success', 'Program pembangunan berhasil ditambahkan.');
+        return redirect()->to(route('profildesa.index') . '#program')->with('success', 'Program pembangunan berhasil ditambahkan.');
+    }
+
+    public function pembangunanUpdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'nama_program' => 'required|string|max:255',
+            'jenis_program' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'anggaran' => 'required|numeric|min:0',
+            'sumber_dana' => 'required|string|max:255',
+            'penanggung_jawab' => 'required|string|max:255',
+            'status' => 'required|in:perencanaan,pelaksanaan,selesai,batal',
+            'deskripsi' => 'nullable|string',
+            'foto_dokumentasi' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $program = ProgramPembangunanDesa::findOrFail($id);
+
+        if ($request->hasFile('foto_dokumentasi')) {
+            $validated['foto_dokumentasi'] = $request->file('foto_dokumentasi')->store('program', 'public');
+        }
+
+        $program->update($validated);
+
+        return redirect()->to(route('profildesa.index') . '#program')->with('success', 'Program berhasil diperbarui.');
+    }
+
+    public function pembangunanDestroy($id)
+    {
+        $program = ProgramPembangunanDesa::findOrFail($id);
+
+        // Optional: hapus file foto
+        if ($program->foto_dokumentasi && Storage::disk('public')->exists($program->foto_dokumentasi)) {
+            Storage::disk('public')->delete($program->foto_dokumentasi);
+        }
+
+        $program->delete();
+
+        return redirect()->to(route('profildesa.index') . '#program')->with('success', 'Program berhasil dihapus.');
     }
 }

@@ -2,7 +2,7 @@
     <x-slot:title>Profil Desa</x-slot:title>
 
     {{-- Sejarah Desa --}}
-    <section id="Sejarah" x-data="{
+    <section id="sejarah" x-data="{
         editing: false,
         sejarah: @js($sejarah->sejarah ?? ''),
         editedSejarah: @js($sejarah->sejarah ?? '')
@@ -61,7 +61,7 @@
     </section>
 
     {{-- visi misi --}}
-    <section id="Visimisi" class="py-16 px-6 md:px-16" x-data="{
+    <section id="visimisi" class="py-16 px-6 md:px-16" x-data="{
         editing: false,
         visi: @js($visimisi->visi ?? ''),
         misi: @js($visimisi->misi ?? '')
@@ -110,7 +110,8 @@
             </div>
 
             <div>
-                <label class="block font-semibold text-gray-700 mb-1">Misi<span class="text-red-600">*</span> <span class="text-gray-400 text-xs font-normal">(Pisahkan dengan Enter)</span></label>
+                <label class="block font-semibold text-gray-700 mb-1">Misi<span class="text-red-600">*</span> <span
+                        class="text-gray-400 text-xs font-normal">(Pisahkan dengan Enter)</span></label>
                 <textarea name="misi" rows="5" class="w-full border rounded p-2" required x-text="misi"></textarea>
             </div>
 
@@ -203,7 +204,8 @@
 
                 <!-- Input Nama -->
                 <div>
-                    <label for="user_nama" class="block text-sm font-medium text-gray-700">Pilih Warga<span class="text-red-600">*</span></label>
+                    <label for="user_nama" class="block text-sm font-medium text-gray-700">Pilih Warga<span
+                            class="text-red-600">*</span></label>
                     <input list="namaList" id="user_nama" name="user_nama"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
                         placeholder="Ketik nama warga..." autocomplete="off" required>
@@ -218,7 +220,8 @@
 
                 <!-- Jabatan -->
                 <div>
-                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan<span class="text-red-600">*</span></label>
+                    <label for="jabatan" class="block text-sm font-medium text-gray-700">Jabatan<span
+                            class="text-red-600">*</span></label>
                     <input type="text" name="jabatan" id="jabatan" required
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
                 </div>
@@ -247,7 +250,8 @@
 
                 <!-- Pilih Warga -->
                 <div>
-                    <label for="user_nama_edit" class="block text-sm font-medium text-gray-700">Pilih Warga<span class="text-red-600">*</span></label>
+                    <label for="user_nama_edit" class="block text-sm font-medium text-gray-700">Pilih Warga<span
+                            class="text-red-600">*</span></label>
                     <input list="namaListEdit" id="user_nama_edit" name="user_nama"
                         x-model="selectedStruktur?.user?.penduduk?.nama"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
@@ -263,7 +267,8 @@
 
                 <!-- Jabatan -->
                 <div>
-                    <label for="jabatan_edit" class="block text-sm font-medium text-gray-700">Jabatan<span class="text-red-600">*</span></label>
+                    <label for="jabatan_edit" class="block text-sm font-medium text-gray-700">Jabatan<span
+                            class="text-red-600">*</span></label>
                     <input type="text" name="jabatan" id="jabatan_edit" x-model="selectedStruktur?.jabatan"
                         required
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
@@ -330,7 +335,7 @@
     </section>
 
     {{-- Program Pembangunan Desa --}}
-    <section id="program" class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showAdd: false, showDetail: false, selectedProgram: null }">
+    <section id="program" class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showAdd: false, showDetail: false, showEdit: false, showDelete: false, selectedProgram: null }">
         <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
         @if ($programs->count())
             <div class="text-center mb-8">
@@ -405,7 +410,6 @@
                     @endforeach
                 </div>
             </div>
-
         @endif
 
         <!-- Modal Tambah Program -->
@@ -546,6 +550,111 @@
                     </div>
                 </template>
             </div>
+        </x-modal>
+
+        <!-- Modal Edit Program -->
+        <x-modal show="showEdit" title="Edit Program Pembangunan">
+            <form action="{{ route('admin.program.update', $program->id) }}" method="POST"
+                enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                @method('PUT')
+
+                <input type="hidden" name="redirect_to" value="{{ route('profildesa.index') . '#program' }}">
+
+                <div>
+                    <label for="edit_nama_program" class="block text-sm font-medium text-gray-700">Nama
+                        Program</label>
+                    <input type="text" name="nama_program" id="edit_nama_program"
+                        x-model="selectedProgram.nama_program"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Jenis Program</label>
+                    <input type="text" name="jenis_program" x-model="selectedProgram.jenis_program"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Lokasi</label>
+                    <input type="text" name="lokasi" x-model="selectedProgram.lokasi"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                        <input type="date" name="tanggal_mulai" :value="selectedProgram.tanggal_mulai"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
+                        <input type="date" name="tanggal_selesai" :value="selectedProgram.tanggal_selesai"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Anggaran (Rp)</label>
+                    <input type="number" name="anggaran" x-model="selectedProgram.anggaran"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Sumber Dana</label>
+                    <input type="text" name="sumber_dana" x-model="selectedProgram.sumber_dana"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Penanggung Jawab</label>
+                    <input type="text" name="penanggung_jawab" x-model="selectedProgram.penanggung_jawab"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <select name="status" x-model="selectedProgram.status"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="perencanaan">Perencanaan</option>
+                        <option value="pelaksanaan">Pelaksanaan</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="batal">Batal</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                    <textarea name="deskripsi" rows="3" x-model="selectedProgram.deskripsi"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Ganti Foto (Opsional)</label>
+                    <input type="file" name="foto_dokumentasi" accept="image/*"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-4 border-t">
+                    <x-button type="button" @click="showEdit = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit">Perbarui</x-button>
+                </div>
+            </form>
+        </x-modal>
+
+        <!-- Modal Konfirmasi Hapus -->
+        <x-modal show="showDelete" title="Hapus Program Pembangunan">
+            <form action="{{ route('admin.program.destroy', $program->id) }}" method="POST" class="space-y-4">
+                @csrf
+                @method('DELETE')
+
+                <p>Apakah Anda yakin ingin menghapus program <strong>{{ $program->nama_program }}</strong>?</p>
+
+                <div class="flex justify-end space-x-2 pt-4 border-t">
+                    <x-button type="button" @click="showDelete = false" variant="secondary">Batal</x-button>
+                    <x-button type="submit" variant="danger">Hapus</x-button>
+                </div>
+            </form>
         </x-modal>
     </section>
 </x-admin-layout>
