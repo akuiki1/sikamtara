@@ -194,12 +194,33 @@
 
             {{-- modal tambah --}}
             <x-modal show="showAddModal" title="Tambah Layanan Baru">
-                <form action="{{ route('adminadministrasi.store') }}" method="POST" enctype="multipart/form-data">
+                <form x-data="{
+                    docName: '',
+                    fileTooLarge: false,
+                
+                    previewDoc(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.docName = file.name;
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024; // 2MB = 2 * 1024 * 1024 bytes
+                        }
+                    },
+                
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file melebihi 2MB. Silakan unggah file yang lebih kecil.');
+                            event.preventDefault();
+                        }
+                    }
+                }" @submit.prevent="handleSubmit($event)"
+                    action="{{ route('adminadministrasi.store') }}" method="POST" enctype="multipart/form-data">
+
                     @csrf
 
                     {{-- Baris 1: Nama Administrasi --}}
                     <div>
-                        <label for="nama_administrasi" class="text-sm text-gray-600 mb-1 block">Nama Layanan</label>
+                        <label for="nama_administrasi" class="text-sm text-gray-600 mb-1 block">Nama Layanan<span
+                                class="text-red-600">*</span></label>
                         <input type="text" name="nama_administrasi" id="nama_administrasi"
                             class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                             placeholder="Masukkan nama layanan" required />
@@ -207,7 +228,8 @@
 
                     {{-- Baris 2: deskripsi --}}
                     <div>
-                        <label for="deskripsi" class="text-sm text-gray-600 mb-1 block">Deskripsi</label>
+                        <label for="deskripsi" class="text-sm text-gray-600 mb-1 block">Deskripsi<span
+                                class="text-red-600">*</span></label>
                         <textarea name="deskripsi" id="deskripsi" rows="6"
                             class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                             placeholder="Tulis deskripsi layanan di sini..." required></textarea>
@@ -215,7 +237,8 @@
 
                     {{-- persyaratan --}}
                     <div>
-                        <label for="persyaratan" class="text-sm text-gray-600 mb-1 block">Persyaratan</label>
+                        <label for="persyaratan" class="text-sm text-gray-600 mb-1 block">Persyaratan<span
+                                class="text-red-600">*</span></label>
                         <textarea name="persyaratan" id="persyaratan" rows="6"
                             class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                             placeholder="- Persyaratan..." required oninput="formatPersyaratan(this)"></textarea>
@@ -224,12 +247,16 @@
 
                     {{-- Form Upload PDF/Word --}}
                     <div>
-                        <label for="form" class="text-sm text-gray-600 mb-1 block">Form (PDF atau Word)</label>
+                        <label for="form" class="text-sm text-gray-600 mb-1 block">Form<span
+                                class="text-red-600">*</span><span class="text-gray-400 text-xs font-normal"> (File
+                                Pdf atau Word, Maksimal 2Mb)</span></label>
                         <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
                             <input type="file" name="form" id="form" accept=".pdf,.doc,.docx"
                                 @change="previewDoc($event)"
                                 class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
-
+                            <template x-if="fileTooLarge">
+                                <p class="mt-2 text-sm text-red-600">Ukuran file melebihi 2MB.</p>
+                            </template>
                             <template x-if="docName">
                                 <div class="mt-3 flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-lg">
                                     <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor"
@@ -255,7 +282,6 @@
             {{-- Modal Detail --}}
             <x-modal show="showDetailModal">
                 <!-- Header -->
-
                 <div class="mb-6 space-y-1">
                     <h2 class="text-2xl font-bold text-gray-900">
                         Detail Layanan <span x-text="selectedAdministrasi.nama_administrasi"></span>
@@ -297,36 +323,15 @@
 
                 <!-- Tombol Aksi -->
                 <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                    <x-button type="button" @click="showDetailModal = false" variant="secondary"
-                        class="flex items-center gap-2">
-                        <!-- Icon Close -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                    <x-button type="button" @click="showDetailModal = false" variant="secondary">
                         Tutup
                     </x-button>
 
-                    <x-button variant="warning" @click="showDetailModal = false; showEditModal = true"
-                        class="flex items-center gap-2">
-                        <!-- Icon Edit -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L13 14l-4 1 1-4 8.5-8.5z" />
-                        </svg>
+                    <x-button variant="warning" @click="showDetailModal = false; showEditModal = true">
                         Edit
                     </x-button>
 
-                    <x-button variant="danger" @click="showDetailModal = false; showDeleteModal = true"
-                        class="flex items-center gap-2">
-                        <!-- Icon Trash -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0a2 2 0 00-2-2H9a2 2 0 00-2 2" />
-                        </svg>
+                    <x-button variant="danger" @click="showDetailModal = false; showDeleteModal = true">
                         Hapus
                     </x-button>
                 </div>
@@ -334,8 +339,49 @@
 
             {{-- Modal Edit --}}
             <x-modal show="showEditModal">
-                <form method="POST" :action="'/admin/layanan/administrasi/' + selectedAdministrasi.id_administrasi"
+                <!-- Tombol Panah Kembali -->
+                <div class="flex items-center mb-8">
+                    <button type="button" @click="showEditModal = false; showDetailModal = true"
+                        class="flex items-center text-gray-600 hover:text-indigo-600 transition">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                        <span>Kembali</span>
+                    </button>
+                </div>
+
+                <form x-data="{
+                    fileName: '',
+                    fileTooLarge: false,
+                
+                    previewFile() {
+                        const file = this.$refs.fileInput.files[0];
+                        if (file) {
+                            this.fileName = file.name;
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                        } else {
+                            this.fileTooLarge = false;
+                        }
+                    },
+                
+                    clearFile() {
+                        this.fileName = '';
+                        this.$refs.fileInput.value = '';
+                        this.fileTooLarge = false;
+                    },
+                
+                    handleSubmit(e) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                }" @submit="handleSubmit($event)" method="POST"
+                    :action="'/admin/layanan/administrasi/' + selectedAdministrasi.id_administrasi"
                     enctype="multipart/form-data">
+
                     @csrf
                     @method('PUT')
 
@@ -343,41 +389,33 @@
                     <div class="relative w-full mb-6">
                         <label for="nama_administrasi"
                             class="absolute -top-2 left-3 bg-white px-1 text-sm text-gray-500 transition-all peer-focus:-top-3 peer-focus:text-xs peer-focus:text-indigo-500">
-                            Nama Layanan
+                            Nama Layanan<span class="text-red-600">*</span>
                         </label>
                         <input type="text" name="nama_administrasi"
-                            class="peer px-4 pt-5 pb-2 border border-gray-300 rounded-xl text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 text-2xl font-bold w-full"
+                            class="peer px-4 pt-3 pb-2 border border-gray-300 rounded-xl text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400 text-2xl font-bold w-full"
                             :value="selectedAdministrasi.nama_administrasi">
                     </div>
 
-                    {{-- File Form --}}
-                    <div x-data="{
-                        fileName: '',
-                        clearFile() {
-                            this.fileName = '';
-                            this.$refs.fileInput.value = '';
-                        }
-                    }" class="mb-6">
-
+                    <!-- Form Upload (Gunakan $refs dan state dari x-data di form) -->
+                    <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Formulir Administrasi
-                            <span class="text-xs text-gray-400 font-normal">(opsional - hanya jika ingin
-                                mengganti)</span>
+                            <span class="text-xs text-gray-400 font-normal">(unggah untuk mengganti)</span>
                         </label>
 
                         <!-- Input File (Hidden) -->
                         <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
-                            class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
+                            class="hidden" @change="previewFile()">
 
                         <!-- Baris Tombol & Info -->
                         <div class="flex items-center gap-4">
                             <!-- Tombol Upload -->
                             <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
                                 class="flex items-center">
-                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                                 </svg>
-                                <span class="ml-2">Upload File Baru</span>
+                                <span class="ml-2">Unggah Form Baru</span>
                             </x-button>
 
                             <!-- Info File Baru -->
@@ -423,13 +461,19 @@
                                 </div>
                             </template>
                         </div>
+
+                        <!-- Pesan error jika terlalu besar -->
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file melebihi 2MB. Silakan pilih file lain.</p>
+                        </template>
                     </div>
+
 
                     <!-- Deskripsi -->
                     <div class="relative w-full mb-6">
                         <label
                             class="absolute -top-2 left-3 bg-white px-1 text-sm text-gray-500 transition-all peer-focus:-top-3 peer-focus:text-xs peer-focus:text-indigo-500">
-                            Deskripsi <span class="font-normal text-xs text-gray-400">(dapat diubah)</span>
+                            Deskripsi<span class="text-red-600">*</span>
                         </label>
                         <textarea name="deskripsi" rows="8"
                             class="peer px-4 pt-5 pb-2 w-full text-base border border-gray-300 rounded-xl text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
@@ -440,7 +484,7 @@
                     <div class="relative w-full mb-6">
                         <label
                             class="absolute -top-2 left-3 bg-white px-1 text-sm text-gray-500 transition-all peer-focus:-top-3 peer-focus:text-xs peer-focus:text-indigo-500">
-                            Persyaratan <span class="font-normal text-xs text-gray-400">(dapat diubah)</span>
+                            Persyaratan<span class="text-red-600">*</span></span>
                         </label>
                         <textarea name="persyaratan" rows="8"
                             class="peer px-4 pt-5 pb-2 w-full text-base border border-gray-300 rounded-xl text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-400"
@@ -449,22 +493,11 @@
 
                     <!-- CTA -->
                     <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
-                        <x-button type="button" @click="showEditModal = false; showDetailModal = true"
-                            variant="secondary" class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                        <x-button type="button" @click="showEditModal = false" variant="secondary">
                             Batal
                         </x-button>
 
-                        <x-button type="submit" variant="primary" class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
+                        <x-button type="submit" variant="primary">
                             Simpan Perubahan
                         </x-button>
                     </div>
@@ -483,13 +516,7 @@
                     @method('DELETE')
 
                     <div class="flex justify-center gap-4">
-                        <x-button type="button" @click="showDeleteModal = false; showDetailModal = true"
-                            variant="secondary" class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
+                        <x-button type="button" @click="showDeleteModal = false" variant="secondary">
                             Batal
                         </x-button>
                         <x-button variant="danger" type="submit">Hapus</x-button>
@@ -708,66 +735,79 @@
 
                     {{-- Modal --}}
                     <x-modal show="selected">
-                        <div class="rounded-2xl space-y-6 max-w-md mx-auto">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-xl font-semibold text-gray-800">Detail Layanan</h3>
-                                <button @click="selected = null" class="text-gray-400 hover:text-gray-600 transition">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Informasi -->
-                            <div class="space-y-2 text-sm text-gray-600">
-                                <p><strong>Nama Layanan:</strong><br><span x-text="selected.nama_layanan"></span></p>
-                                <p><strong>Pengguna:</strong><br><span x-text="selected.nama_user"></span></p>
-                                <p><strong>Tanggal Pengajuan:</strong><br><span
-                                        x-text="selected.tanggal_pengajuan"></span></p>
-                                <p><strong>Status:</strong><br>
-                                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full text-white"
-                                        :class="{
-                                            'bg-yellow-500': selected.status === 'baru',
-                                            'bg-indigo-500': selected.status === 'ditinjau',
-                                            'bg-green-600': selected.status === 'diproses',
-                                            'bg-red-500': selected.status === 'ditolak',
-                                            'bg-gray-500': selected.status === 'selesai',
-                                        }"
-                                        x-text="selected.status">
-                                    </span>
-                                </p>
-                            </div>
-                            <!-- Upload Surat Final -->
-                            <form x-show="selected" :action="`/admin/upload-surat-final/${selected.id}`"
-                                method="POST" enctype="multipart/form-data" class="space-y-4 mt-6">
-                                @csrf
-                                <label for="surat_final" class="block text-sm font-medium text-gray-700">
-                                    Upload Surat Final <span class="text-red-500">*</span>
-                                    <small class="block text-xs text-gray-400">Format: PDF, DOC, DOCX • Maks
-                                        2MB</small>
-                                </label>
-
-                                <input id="surat_final" type="file" name="surat_final" required
-                                    accept=".pdf,.doc,.docx"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
-
-                                <div class="flex justify-end pt-6 mt-8 border-t border-gray-200">
-                                    <button type="submit"
-                                        class="inline-flex items-center rounded-md bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 transition">
-                                        Upload
-                                    </button>
-                                </div>
-                            </form>
-
-                            <!-- Link Surat Final -->
-                            <template x-if="selected?.surat_final">
-                                <a :href="`/storage/${selected.surat_final}`" target="_blank"
-                                    class="inline-flex items-center gap-2 text-green-600 hover:text-green-800 transition underline text-sm">
-                                    📄 Lihat Surat Final
-                                </a>
-                            </template>
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800">Detail Layanan</h3>
+                            <button @click="selected = null" class="text-gray-400 hover:text-gray-600 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
+
+                        <!-- Informasi -->
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p><strong>Nama Layanan:</strong><br><span x-text="selected.nama_layanan"></span></p>
+                            <p><strong>Pengguna:</strong><br><span x-text="selected.nama_user"></span></p>
+                            <p><strong>Tanggal Pengajuan:</strong><br><span x-text="selected.tanggal_pengajuan"></span>
+                            </p>
+                            <p><strong>Status:</strong><br>
+                                <span class="inline-block px-2 py-1 text-xs font-semibold rounded-full text-white"
+                                    :class="{
+                                        'bg-yellow-500': selected.status === 'baru',
+                                        'bg-indigo-500': selected.status === 'ditinjau',
+                                        'bg-green-600': selected.status === 'diproses',
+                                        'bg-red-500': selected.status === 'ditolak',
+                                        'bg-gray-500': selected.status === 'selesai',
+                                    }"
+                                    x-text="selected.status">
+                                </span>
+                            </p>
+                        </div>
+                        <!-- Upload Surat Final -->
+                        <form x-show="selected" x-data="{
+                            fileName: '',
+                            fileTooLarge: false,
+                            validateFile(event) {
+                                const file = event.target.files[0];
+                                if (file) {
+                                    this.fileName = file.name;
+                                    this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                                } else {
+                                    this.fileName = '';
+                                    this.fileTooLarge = false;
+                                }
+                            },
+                            handleSubmit(event) {
+                                if (this.fileTooLarge) {
+                                    alert('Ukuran file melebihi 2MB. Harap unggah file yang lebih kecil.');
+                                    event.preventDefault();
+                                }
+                            }
+                        }" @submit="handleSubmit($event)"
+                            :action="`/admin/upload-surat-final/${selected.id}`" method="POST"
+                            enctype="multipart/form-data" class="space-y-4 mt-6">
+                            @csrf
+
+                            <label for="surat_final" class="block text-sm font-medium text-gray-700">
+                                Upload Surat Final<span class="text-red-500">*</span>
+                                <small class="block text-xs font-normal text-gray-400">Format: PDF, DOC, DOCX • Maks
+                                    2MB</small>
+                            </label>
+
+                            <input id="surat_final" type="file" name="surat_final" required
+                                accept=".pdf,.doc,.docx" @change="validateFile($event)"
+                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200" />
+
+                            <!-- Pesan error -->
+                            <template x-if="fileTooLarge">
+                                <p class="text-sm text-red-600">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                            </template>
+
+                            <div class="flex justify-end pt-6 mt-8 border-t border-gray-200">
+                                <x-button type="submit">Selesaikan</x-button>
+                            </div>
+                        </form>
                     </x-modal>
                 </div>
 
