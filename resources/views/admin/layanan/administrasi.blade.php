@@ -943,7 +943,7 @@
 
                         {{-- modal detail --}}
                         <x-modal show="selected">
-                            <div class="mt-4 rounded-2xl space-y-6 max-w-md mx-auto">
+                            <div class="rounded-2xl space-y-6 max-w-md mx-auto">
                                 <!-- Header -->
                                 <div class="flex items-center justify-between">
                                     <h3 class="text-xl font-semibold text-gray-800">Detail Layanan</h3>
@@ -989,25 +989,78 @@
 
                                 <!-- File Links -->
                                 <div class="space-y-1 text-sm">
-                                    <template x-if="selected.form">
-                                        <a :href="'/storage/' + selected.form" target="_blank"
-                                            class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition underline">
-                                            Unduh Formulir
-                                        </a>
-                                    </template>
+                                    <div class="space-y-2">
+                                        <!-- Formulir -->
+                                        <template x-if="selected.form">
+                                            <a :href="'/storage/' + selected.form" target="_blank"
+                                                class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
+                                                <div class="flex items-center gap-3">
+                                                    <!-- Icon -->
+                                                    <svg class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600"
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                        stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M12 4v16m8-8H4" />
+                                                    </svg>
+                                                    <span
+                                                        class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
+                                                        Lihat Formulir
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    class="text-xs text-indigo-400 group-hover:text-indigo-600">PDF</span>
+                                            </a>
+                                        </template>
 
-                                    <template x-if="selected.lampiran">
-                                        <a :href="'/storage/' + selected.lampiran" target="_blank"
-                                            class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 transition underline">
-                                            Unduh Lampiran
-                                        </a>
-                                    </template>
+                                        <!-- Lampiran -->
+                                        <template x-if="selected.lampiran">
+                                            <a :href="'/storage/' + selected.lampiran" target="_blank"
+                                                class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
+                                                <div class="flex items-center gap-3">
+                                                    <!-- Icon -->
+                                                    <svg class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600"
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                        stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M15.172 7l-6.586 6.586a2 2 0 1 0 2.828 2.828L18 9.828a4 4 0 1 0-5.656-5.656L7 9" />
+                                                    </svg>
+                                                    <span
+                                                        class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
+                                                        Lihat Lampiran
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    class="text-xs text-indigo-400 group-hover:text-indigo-600">File</span>
+                                            </a>
+                                        </template>
+
+                                        {{-- surat final --}}
+                                        <template x-if="selected.surat_final">
+                                            <a :href="'/storage/' + selected.surat_final" target="_blank"
+                                                class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
+                                                <div class="flex items-center gap-3">
+                                                    <!-- Icon -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600" viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M20 8.94a1.31 1.31 0 0 0-.06-.27v-.09a1.07 1.07 0 0 0-.19-.28l-6-6a1.07 1.07 0 0 0-.28-.19h-.09L13.06 2H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H14ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v5a1 1 0 0 0 1 1h5Z" />
+                                                    </svg>
+                                                    <span
+                                                        class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
+                                                        Lihat Surat Final
+                                                    </span>
+                                                </div>
+                                                <span
+                                                    class="text-xs text-indigo-400 group-hover:text-indigo-600">PDF</span>
+                                            </a>
+                                        </template>
+                                    </div>
                                 </div>
 
                                 <!-- Actions -->
                                 <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
                                     <x-button variant="secondary" @click="selected = null">Tutup</x-button>
-                                    <!-- Tombol Hapus jika status ditolak -->
+
+                                    <!-- Tampilkan tombol hapus hanya jika status ditolak -->
                                     <template x-if="selected.status === 'ditolak'">
                                         <x-button variant="danger" @click="hapusLayanan(selected.id)">
                                             Hapus

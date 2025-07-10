@@ -131,10 +131,25 @@ class AdminAdministrasiController extends Controller
             'surat_final' => 'required|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
-        $pengajuan = PengajuanAdministrasi::findOrFail($id);
+        $pengajuan = PengajuanAdministrasi::with('user.penduduk', 'administrasi')->findOrFail($id);
 
-        $path = $request->file('surat_final')->store('surat_final', 'public');
+        // Ambil nama user dan layanan
+        $namaUser = $pengajuan->user->penduduk->nama ?? 'pengguna';
+        $namaLayanan = $pengajuan->administrasi->nama_administrasi ?? 'layanan';
 
+        // Ubah ke format lowercase + strip spasi
+        $namaFile = 'surat_' . Str::slug($namaLayanan) . '_' . Str::slug($namaUser);
+
+        // Ambil ekstensi asli
+        $ext = $request->file('surat_final')->getClientOriginalExtension();
+
+        // Gabungkan jadi nama file lengkap
+        $fileName = $namaFile . '.' . $ext;
+
+        // Simpan file
+        $path = $request->file('surat_final')->storeAs('surat_final', $fileName, 'public');
+
+        // Simpan ke DB
         $pengajuan->surat_final = $path;
         $pengajuan->status_pengajuan = 'selesai';
         $pengajuan->save();
@@ -157,6 +172,7 @@ class AdminAdministrasiController extends Controller
                     'status' => $item->status_pengajuan,
                     'form' => $item->form,
                     'lampiran' => $item->lampiran,
+                    'surat_final' => $item->surat_final,
                 ];
             });
     }
