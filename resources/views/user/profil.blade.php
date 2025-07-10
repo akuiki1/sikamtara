@@ -15,7 +15,7 @@
 
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Edit Profil</h2>
                 <div class="flex justify-center">
-                    @if ($user->status_verifikasi === 'Belum Terverifikasi')
+                    @if (Auth::user()->status_verifikasi === 'Belum Terverifikasi')
                         <div
                             class="w-fit px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 1024 1024">
@@ -24,6 +24,16 @@
                             </svg>
                             Akun kamu belum terverifikasi.<a href="{{ route('profil.verifikasi') }}"
                                 class="hover:underline font-semibold">Verifikasi sekarang</a>
+                        </div>
+                    @elseif(Auth::user()->status_verifikasi === 'Menunggu Verifikasi')
+                        <div
+                            class="w-fit px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl text-sm flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 1024 1024">
+                                <path fill="currentColor"
+                                    d="M512 64a448 448 0 1 1 0 896a448 448 0 0 1 0-896zm0 832a384 384 0 0 0 0-768a384 384 0 0 0 0 768zm48-176a48 48 0 1 1-96 0a48 48 0 0 1 96 0zm-48-464a32 32 0 0 1 32 32v288a32 32 0 0 1-64 0V288a32 32 0 0 1 32-32z" />
+                            </svg>
+                            Verifikasi Akun kamu sedang kami tinjau.<a href="{{ route('profil.verifikasi') }}"
+                                class="hover:underline font-semibold">Lihat</a>
                         </div>
                     @endif
                 </div>
