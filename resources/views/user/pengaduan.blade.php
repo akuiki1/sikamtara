@@ -221,7 +221,37 @@
 
         {{-- add modal --}}
         <x-modal show="showAddModal" title="Tambah Pengaduan">
-            <form method="POST" action="{{ route('user.pengaduan.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('user.pengaduan.store') }}" enctype="multipart/form-data"
+                x-data="{
+                    previewFile: null,
+                    fileTooLarge: false,
+                    isImage: true,
+                    updatePreview(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            const fileType = file.type;
+                
+                            if (!this.fileTooLarge) {
+                                if (fileType.startsWith('image/')) {
+                                    this.previewFile = URL.createObjectURL(file);
+                                    this.isImage = true;
+                                } else {
+                                    this.previewFile = file.name;
+                                    this.isImage = false;
+                                }
+                            } else {
+                                this.previewFile = null;
+                            }
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                            event.preventDefault();
+                        }
+                    }
+                }" @submit="handleSubmit($event)">
                 @csrf
 
                 <div class="grid grid-cols-1 gap-4 mb-4">
@@ -230,23 +260,42 @@
 
                     {{-- Judul --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Judul Pengaduan</label>
-                        <input type="text" name="judul_pengaduan" class="w-full border rounded px-3 py-2 text-sm"
-                            placeholder="Masukkan judul" required>
+                        <label class="text-sm font-medium text-gray-700">Judul Pengaduan<span
+                                class="text-red-600">*</span></label>
+                        <input type="text" name="judul_pengaduan"
+                            class="w-full border rounded-xl px-3 py-2 text-sm" placeholder="Masukkan judul" required>
                     </div>
 
                     {{-- Isi --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Isi Pengaduan</label>
-                        <textarea name="isi_pengaduan" class="w-full border rounded px-3 py-2 text-sm" rows="4"
+                        <label class="text-sm font-medium text-gray-700">Isi Pengaduan<span
+                                class="text-red-600">*</span></label>
+                        <textarea name="isi_pengaduan" class="w-full border rounded-xl px-3 py-2 text-sm" rows="4"
                             placeholder="Masukkan isi pengaduan" required></textarea>
                     </div>
 
                     {{-- Lampiran --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Lampiran</label>
-                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf"
-                            class="w-full border rounded px-3 py-2 text-sm">
+                        <label class="text-sm font-medium text-gray-700">Lampiran<span class="text-red-600">*</span>
+                            <small class="block text-xs text-gray-400 font-normal mb-2">(Format: jpg, jpeg, png, pdf.
+                                Maks 2Mb)</small></label>
+                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf" @change="updatePreview"
+                            class="w-full border rounded-xl px-3 py-2 text-sm">
+
+                        <!-- Tampilkan preview jika valid -->
+                        <template x-if="previewFile && isImage">
+                            <img :src="previewFile" alt="Preview"
+                                class="mt-2 h-40 object-contain rounded border" />
+                        </template>
+
+                        <template x-if="previewFile && !isImage">
+                            <p class="mt-2 text-sm text-gray-700">Lampiran file: <strong
+                                    x-text="previewFile"></strong></p>
+                        </template>
+
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
                     </div>
                 </div>
 
@@ -310,28 +359,82 @@
 
         {{-- edit modal --}}
         <x-modal show="showEditModal" title="Edit Pengaduan">
-            <form method="POST" action="{{ route('user.pengaduan.update') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('user.pengaduan.update') }}" enctype="multipart/form-data"
+                x-data="{
+                    previewFile: selectedPengaduan.lampiran ? '{{ asset('storage') }}/' + selectedPengaduan.lampiran : null,
+                    fileTooLarge: false,
+                    isImage: true,
+                    updatePreview(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            const fileType = file.type;
+                
+                            if (!this.fileTooLarge) {
+                                if (fileType.startsWith('image/')) {
+                                    this.previewFile = URL.createObjectURL(file);
+                                    this.isImage = true;
+                                } else {
+                                    this.previewFile = file.name;
+                                    this.isImage = false;
+                                }
+                            } else {
+                                this.previewFile = null;
+                            }
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                            event.preventDefault();
+                        }
+                    }
+                }" @submit="handleSubmit($event)">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="id_pengaduan" :value="selectedPengaduan.id_pengaduan">
 
                 <div class="space-y-4 text-sm text-gray-700">
                     <div>
-                        <label for="judul" class="font-semibold">Judul</label>
+                        <label for="judul" class="font-semibold">Judul<span class="text-red-600">*</span></label>
                         <input type="text" name="judul_pengaduan" x-model="selectedPengaduan.judul_pengaduan"
                             class="w-full border rounded px-3 py-2 mt-1" required>
                     </div>
 
                     <div>
-                        <label for="isi" class="font-semibold">Isi Pengaduan</label>
+                        <label for="isi" class="font-semibold">Isi Pengaduan<span
+                                class="text-red-600">*</span></label>
                         <textarea name="isi_pengaduan" x-model="selectedPengaduan.isi_pengaduan" class="w-full border rounded px-3 py-2 mt-1"
                             rows="4" required></textarea>
                     </div>
 
                     <div>
-                        <label class="font-semibold">Lampiran</label>
-                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf">
-                        <template x-if="selectedPengaduan.lampiran">
+                        <label class="font-semibold">Lampiran<span class="text-red-600">*</span>
+                            <small class="block text-xs text-gray-400 font-normal mb-2">(Format: jpg, jpeg, png, pdf.
+                                Maks 2Mb)</small>
+                        </label>
+
+                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf" @change="updatePreview"
+                            class="w-full border rounded px-3 py-2 mt-1 text-sm">
+
+                        <!-- Preview file baru -->
+                        <template x-if="previewFile && isImage">
+                            <img :src="previewFile" alt="Preview"
+                                class="mt-2 h-40 object-contain rounded border" />
+                        </template>
+
+                        <template x-if="previewFile && !isImage">
+                            <p class="mt-2 text-sm text-gray-700">Lampiran file: <strong
+                                    x-text="previewFile"></strong></p>
+                        </template>
+
+                        <!-- Jika file terlalu besar -->
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
+
+                        <!-- Lampiran lama (hanya jika tidak ada file baru) -->
+                        <template x-if="!previewFile && selectedPengaduan.lampiran">
                             <p class="text-xs mt-1 text-gray-500">Lampiran lama: <span
                                     x-text="selectedPengaduan.lampiran"></span></p>
                         </template>
