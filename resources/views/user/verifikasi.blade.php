@@ -15,7 +15,7 @@
                 </a>
 
                 <h2 class="text-3xl font-bold text-center text-gray-800">Verifikasi Akun</h2>
-                <p class="text-gray-600 text-center mb-6">Untuk mengakses fitur-fitur lengkap, silakan verifikasi akun
+                <p class="text-gray-600 text-center mb-6">Untuk mengakses fitur-fitur lengkap, silahkan verifikasi akun
                     Anda.</p>
                 <form x-data="{
                     changed: false,
