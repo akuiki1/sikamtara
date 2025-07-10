@@ -305,10 +305,31 @@
         {{-- Modal ajukan sekarang --}}
         <x-modal show="showAddModal">
 
-            <form method="POST"
+            <form x-data="{
+                formFile: null,
+                lampiranFile: null,
+            
+                checkFileSize(file) {
+                    return file && file.size <= 2 * 1024 * 1024; // Max 2MB
+                },
+            
+                handleSubmit(event) {
+                    if (!this.checkFileSize(this.formFile)) {
+                        alert('Ukuran file Formulir melebihi 2MB.');
+                        event.preventDefault();
+                        return;
+                    }
+                    if (!this.checkFileSize(this.lampiranFile)) {
+                        alert('Ukuran file Lampiran melebihi 2MB.');
+                        event.preventDefault();
+                        return;
+                    }
+                }
+            }" @submit.prevent="handleSubmit" method="POST"
                 :action="'{{ route('services.apply', ['id' => 'placeholder']) }}'.replace('placeholder', selectedAdministrasi
                     .id_administrasi)"
                 enctype="multipart/form-data">
+
                 @csrf
 
                 <!-- Header -->
@@ -353,7 +374,9 @@
 
                         <!-- Input File (Hidden) -->
                         <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
-                            class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
+                            class="hidden"
+                            @change="fileName = $refs.fileInput.files[0]?.name; formFile = $refs.fileInput.files[0]">
+
 
                         <!-- Baris Tombol & Info -->
                         <div class="flex items-center gap-4">
@@ -411,7 +434,8 @@
 
                         <!-- Input File (Hidden) -->
                         <input x-ref="fileInput" type="file" name="lampiran" accept=".pdf,.doc,.docx"
-                            class="hidden" @change="fileName = $refs.fileInput.files[0]?.name">
+                            class="hidden"
+                            @change="fileName = $refs.fileInput.files[0]?.name; lampiranFile = $refs.fileInput.files[0]">
 
                         <!-- Baris Tombol & Info -->
                         <div class="flex items-center gap-4">
