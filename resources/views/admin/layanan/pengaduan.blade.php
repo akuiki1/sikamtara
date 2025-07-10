@@ -229,7 +229,21 @@
 
         {{-- add modal --}}
         <x-modal show="showAddModal" title="Tambah Pengaduan">
-            <form method="POST" action="{{ route('admin.pengaduan.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.pengaduan.store') }}" enctype="multipart/form-data"
+                x-data="{
+                    fileTooLarge: false,
+                    validateFile(event) {
+                        const file = event.target.files[0];
+                        this.fileTooLarge = file && file.size > 2 * 1024 * 1024;
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file lampiran melebihi 2MB. Silakan unggah file yang lebih kecil.');
+                            event.preventDefault();
+                        }
+                    }
+                }" @submit="handleSubmit($event)">
+
                 @csrf
 
                 <div class="grid grid-cols-1 gap-4 mb-4">
@@ -238,22 +252,30 @@
 
                     {{-- Judul --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Judul Pengaduan</label>
+                        <label class="text-sm font-medium text-gray-700">Judul Pengaduan<span
+                                class="text-red-600">*</span></label>
                         <input type="text" name="judul_pengaduan" class="w-full border rounded px-3 py-2 text-sm"
                             placeholder="Masukkan judul" required>
                     </div>
 
                     {{-- Isi --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Isi Pengaduan</label>
+                        <label class="text-sm font-medium text-gray-700">Isi Pengaduan<span
+                                class="text-red-600">*</span></label>
                         <textarea name="isi_pengaduan" class="w-full border rounded px-3 py-2 text-sm" rows="4"
                             placeholder="Masukkan isi pengaduan" required></textarea>
                     </div>
 
                     {{-- Lampiran --}}
                     <div>
-                        <label class="text-sm font-medium text-gray-700">Lampiran</label>
-                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf" class="w-full border rounded px-3 py-2 text-sm">
+                        <label class="text-sm font-medium text-gray-700">Lampiran<span class="text-red-600">*</span>
+                            <small class="block text-gray-400 text-xs font-normal mb-2">(Format: jpg, jpeg, png, pdf.
+                                Maks 2Mb)</small></label>
+                        <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf"
+                            class="w-full border rounded px-3 py-2 text-sm" @change="validateFile($event)" required />
+                        <template x-if="fileTooLarge">
+                            <p class="text-xs text-red-600 mt-1">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
                     </div>
                 </div>
 
@@ -269,7 +291,7 @@
             <div class="space-y-4 text-sm text-gray-700">
                 <div>
                     <p class="font-semibold">Nama</p>
-                   <p x-text="selectedPengaduan.user.penduduk.nama"></p>
+                    <p x-text="selectedPengaduan.user.penduduk.nama"></p>
                 </div>
 
                 <div>
