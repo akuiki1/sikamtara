@@ -325,7 +325,7 @@
                         return;
                     }
                 }
-            }" @submit.prevent="handleSubmit" method="POST"
+            }" @submit="handleSubmit" method="POST"
                 :action="'{{ route('services.apply', ['id' => 'placeholder']) }}'.replace('placeholder', selectedAdministrasi
                     .id_administrasi)"
                 enctype="multipart/form-data">
