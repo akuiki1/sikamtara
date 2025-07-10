@@ -70,12 +70,14 @@ class AdministrasiController extends Controller
         $query = PengajuanAdministrasi::with('user', 'administrasi')
             ->where('id_user', Auth::id());
 
-        if ($request->has('search.riwayat')) {
-            $query->where('nama_administrasi', 'like', '%' . $request->search['riwayat'] . '%');
+        if ($request->filled('search.riwayat')) {
+            $query->whereHas('administrasi', function ($q) use ($request) {
+                $q->where('nama_administrasi', 'like', '%' . $request->input('search.riwayat') . '%');
+            });
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($request->filled('status_pengajuan')) {
+            $query->where('status_pengajuan', $request->status_pengajuan);
         }
 
         $riwayatAdministrasi = $query->paginate(8)->appends($request->query());
