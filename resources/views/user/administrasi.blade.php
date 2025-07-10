@@ -347,7 +347,7 @@
                     }" class="py-4">
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Formulir yang sudah diisi
+                            Formulir yang sudah diisi<span class="text-red-600">*</span>
                             <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
                         </label>
 
@@ -405,7 +405,7 @@
                     }" class="py-4">
 
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Lampirkan persyaratan
+                            Lampirkan persyaratan<span class="text-red-600">*</span>
                             <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
                         </label>
 
