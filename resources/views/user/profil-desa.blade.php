@@ -5,7 +5,7 @@
         </section>
 
         {{-- Sejarah Desa --}}
-        <section class="py-16 px-6 md:px-16 bg-gray-50">
+        <section id="sejarah" class="py-16 px-6 md:px-16 bg-gray-50">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Sejarah Desa</h2>
             <p class="text-gray-700 leading-relaxed max-w-3xl mx-auto text-justify">
                 {{ $sejarah ? $sejarah->sejarah : 'Sejarah desa belum tersedia.' }}
@@ -13,7 +13,7 @@
         </section>
 
         {{-- Visi & Misi --}}
-        <section class="py-16 px-6 md:px-16">
+        <section id="visimisi" class="py-16 px-6 md:px-16">
             <h2 class="text-2xl md:text-3xl font-semibold text-center mb-8">Visi & Misi</h2>
 
             @if ($visimisi)
@@ -43,7 +43,8 @@
             @endif
         </section>
 
-        <section class="py-20 px-6 md:px-16 bg-gray-50">
+        {{-- statistik wilayah --}}
+        <section id="statistik" class="py-20 px-6 md:px-16 bg-gray-50">
             <!-- Judul -->
             <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">Data Wilayah</h2>
 
@@ -109,7 +110,7 @@
         </section>
 
         {{-- Struktur Pemerintahan --}}
-        <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{
+        <section id="struktur" class="py-16 px-6 md:px-16 bg-gray-50" x-data="{
             showDetailModal: false,
             selectedStruktur: null
         }">
@@ -161,7 +162,7 @@
         </section>
 
         {{-- Program Pembangunan Desa --}}
-        <section class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showDetail: false, selectedProgram: null }">
+        <section id="pembangunan" class="py-16 px-6 md:px-16 bg-gray-50" x-data="{ showDetail: false, selectedProgram: null }">
             <h2 class="text-2xl md:text-3xl lg:text-4xl font-semibold text-center mb-8">Program Pembangunan Desa</h2>
 
             @if ($programs->isEmpty())

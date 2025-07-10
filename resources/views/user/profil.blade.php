@@ -5,6 +5,7 @@
 
         <section class="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-10">
             <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl px-10 py-10 transition-all duration-300">
+                {{-- tombol kembali --}}
                 <a href="{{ route('Beranda') }}" class="flex items-center text-gray-500 hover:underline mb-6">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -13,6 +14,7 @@
                     Beranda
                 </a>
 
+                {{-- header --}}
                 <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Edit Profil</h2>
                 <div class="flex justify-center">
                     @if (Auth::user()->status_verifikasi === 'Belum Terverifikasi')
@@ -38,6 +40,7 @@
                     @endif
                 </div>
 
+                {{-- form edit profil --}}
                 <form action="{{ route('profil.update') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-4">
                     @csrf
@@ -51,7 +54,15 @@
                                         class="w-28 h-28 rounded-full object-cover border border-gray-300 shadow-sm transition hover:scale-105" />
                                 </template>
                                 <input type="file" name="foto" accept="image/*"
-                                    @change="preview = URL.createObjectURL($event.target.files[0])"
+                                    @change="
+                                        if ($event.target.files[0].size > 2 * 1024 * 1024) {
+                                          alert('Ukuran gambar maksimal 2MB!');
+                                          $event.target.value = null;
+                                          preview = '{{ asset('img/default-avatar.jpg') }}';
+                                        } else {
+                                          preview = URL.createObjectURL($event.target.files[0]);
+                                        }
+                                    " 
                                     class="absolute inset-0 w-full h-full opacity-0 rounded-full" />
                                 <div class="absolute bottom-0 right-0 bg-blue-600 p-1 rounded-full shadow">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none"
@@ -231,6 +242,8 @@
                         </x-button>
                     </div>
                 </form>
+
+                {{-- data diri --}}
                 <div class="mt-10 border-t pt-6">
                     <div>
                         <h3 class="text-3xl font-semibold text-gray-800">Data Diri</h3>
