@@ -24,6 +24,7 @@
             match: true,
             show: false,
             fotoChanged: false,
+            fotoError: '',
             isChanged() {
                 return (
                     this.email !== this.originalEmail ||
@@ -40,12 +41,13 @@
                 this.editPassword = false;
                 this.preview = '{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}';
                 this.fotoChanged = false;
+                this.fotoError = '';
             }
         }" action="{{ route('admin.profil.update') }}" method="POST"
             enctype="multipart/form-data" class="space-y-8">
             @csrf
 
-            {{-- Foto Profil --}}
+            <!-- Foto Profil -->
             <div class="flex items-center gap-6">
                 <div>
                     <img :src="preview" alt="Foto Profil"
@@ -59,15 +61,23 @@
                             + Change Image
                             <input type="file" name="foto" class="hidden" accept=".jpg,.jpeg,.png,.gif"
                                 @change="
-                                    preview = URL.createObjectURL($event.target.files[0]);
-                                    fotoChanged = true;
-                                ">
+                            const file = $event.target.files[0];
+                            if (file) {
+                                preview = URL.createObjectURL(file);
+                                fotoChanged = true;
+                                if (file.size > 2 * 1024 * 1024) {
+                                    fotoError = 'Ukuran Terlalu besar. foto maksimal 2MB. silahkan pilih foto lain.';
+                                } else {
+                                    fotoError = '';
+                                }
+                            }
+                        ">
                         </label>
                     </label>
-                    <p class="text-xs text-gray-400">We support PNGs, JPEGs and GIFs under 2MB</p>
+                    <p class="text-xs text-gray-400">Format: jpg, jpeg, png. Maks 2Mb</p>
+                    <p x-show="fotoError" class="text-sm text-red-500" x-text="fotoError"></p>
                 </div>
             </div>
-
             {{-- Nama --}}
             <div>
                 <label for="nama" class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
@@ -218,7 +228,10 @@
             {{-- Tombol Simpan dan Batal --}}
             <div class="flex justify-end pt-4 gap-2" x-show="isChanged()">
                 <x-button variant="secondary" @click.prevent="resetChanges()">Batal</x-button>
-                <x-button type="submit" variant="primary">Simpan Perubahan</x-button>
+                <x-button type="submit" variant="primary" x-bind:disabled="fotoError"
+                    x-bind:class="fotoError ? 'opacity-50 cursor-not-allowed' : ''">
+                    Simpan Perubahan
+                </x-button>
             </div>
         </form>
     </div>
