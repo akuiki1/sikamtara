@@ -11,7 +11,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class DashboardController extends Controller
 {
-
     public function index(Request $request)
     {
         $laki = Penduduk::where('jenis_kelamin', 'Laki-laki')->count();
@@ -23,7 +22,7 @@ class DashboardController extends Controller
         $pengaduanMasuk = Pengaduan::whereIn('status', ['terkirim', 'diterima'])->count();
 
         $pengaduan = Pengaduan::with('user')
-            ->whereIn('status', ['baru', 'ditinjau'])
+            ->whereIn('status', ['terkirim', 'diterima'])
             ->latest()
             ->get();
 
