@@ -243,7 +243,7 @@
                     {{-- nik --}}
                     <div class="col-span-2">
                         <label for="nik" class="block text-sm font-medium">
-                            NIK
+                            NIK<span class="text-red-600">*</span>
                         </label>
                         <input list="daftarNik" name="nik" id="nik"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -257,7 +257,7 @@
 
                     {{-- username --}}
                     <div class="">
-                        <label for="nama" class="block text-sm font-medium">Nama</label>
+                        <label for="nama" class="block text-sm font-medium">Nama<span class="text-red-600">*</span></label>
                         <input type="text" placeholder="Nama" id="nama" name="nama"
                             x-model="selectedUser?.nama"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -265,7 +265,7 @@
 
                     {{-- email --}}
                     <div class="">
-                        <label for="email" class="block text-sm font-medium">Email</label>
+                        <label for="email" class="block text-sm font-medium">Email<span class="text-red-600">*</span></label>
                         <div class="relative">
                             <input x-model="email" type="email" placeholder="Email" name="email"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -282,7 +282,7 @@
 
                     {{-- password --}}
                     <div class="col-span-2">
-                        <label for="Password" class="block text-sm font-medium">Password</label>
+                        <label for="Password" class="block text-sm font-medium">Password<span class="text-red-600">*</span></label>
                         <div class="relative">
                             <input :type="showPassword ? 'text' : 'password'" x-model="selectedUser?.password"
                                 placeholder="Password" name="password"
@@ -313,7 +313,7 @@
 
                     {{-- konfirmasi password --}}
                     <div class="col-span-2">
-                        <label for="Password" class="block text-sm font-medium">Konfirmasi Password</label>
+                        <label for="Password" class="block text-sm font-medium">Konfirmasi Password<span class="text-red-600">*</span></label>
                         <div class="relative">
                             <input :type="showPassword2 ? 'text' : 'password'" x-model="selectedUser?.password"
                                 placeholder="Password" name="password_confirmation"
@@ -344,7 +344,7 @@
 
                     {{-- role --}}
                     <div>
-                        <label for="role" class="block text-sm font-medium">Role</label>
+                        <label for="role" class="block text-sm font-medium">Role<span class="text-red-600">*</span></label>
                         <select id="role" name="role" x-model="selectedUser?.role"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                             <option value="">Pilih Role</option>
@@ -355,7 +355,7 @@
 
                     {{-- status verifikasi --}}
                     <div>
-                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi</label>
+                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span class="text-red-600">*</span></label>
                         <select id="status_verifikasi" name="status_verifikasi"
                             x-model="selectedUser?.status_verifikasi"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -445,18 +445,18 @@
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="col-span-2">
-                        <label for="nik" class="block text-sm font-medium">NIK</label>
+                        <label for="nik" class="block text-sm font-medium">NIK<span class="text-red-600">*</span></label>
                         <input type="text" id="nik" name="nik" x-model="selectedUser.nik"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                     </div>
                     <div class="">
-                        <label for="nama" class="block text-sm font-medium">Username</label>
+                        <label for="nama" class="block text-sm font-medium">Username<span class="text-red-600">*</span></label>
                         <input type="text" placeholder="nama" id="nama" name="nama"
                             x-model="selectedUser.nama"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                     </div>
                     <div class="">
-                        <label for="email" class="block text-sm font-medium">Email</label>
+                        <label for="email" class="block text-sm font-medium">Email<span class="text-red-600">*</span></label>
                         <div class="relative">
                             <input x-model="selectedUser.email" type="email" placeholder="Email" name="email"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -472,7 +472,7 @@
                     </div>
 
                     <div>
-                        <label for="role" class="block text-sm font-medium">Role</label>
+                        <label for="role" class="block text-sm font-medium">Role<span class="text-red-600">*</span></label>
                         <select id="role" name="role" x-model="selectedUser.role"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                             <option value="">Pilih Role</option>
@@ -481,7 +481,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi</label>
+                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span class="text-red-600">*</span></label>
                         <select id="status_verifikasi" name="status_verifikasi"
                             x-model="selectedUser.status_verifikasi"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -491,7 +491,6 @@
                             <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
                         </select>
                     </div>
-
                 </div>
 
                 <div class="mt-6 flex justify-end gap-2">

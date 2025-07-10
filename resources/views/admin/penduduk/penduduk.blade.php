@@ -160,7 +160,7 @@
                         {{-- KK --}}
                         <div class="col-span-2">
                             <label for="kode_keluarga" class="block text-sm font-medium">
-                                Kode Keluarga
+                                Kode Keluarga<span class="text-red-600">*</span>
                             </label>
                             <input list="kodeKeluargaList" name="kode_keluarga" id="kode_keluarga"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -174,19 +174,19 @@
 
                         <!-- Nama -->
                         <div class="">
-                            <label for="nik" class="block text-sm font-medium">NIK</label>
+                            <label for="nik" class="block text-sm font-medium">NIK<span class="text-red-600">*</span></label>
                             <input type="text" id="nik" name="nik" x-model="selectedPenduduk?.nik"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div class="">
-                            <label for="nama" class="block text-sm font-medium">Nama</label>
+                            <label for="nama" class="block text-sm font-medium">Nama<span class="text-red-600">*</span></label>
                             <input type="text" id="nama" name="nama" x-model="selectedPenduduk?.nama"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
                         <!-- Jenis Kelamin -->
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
+                            <label class="block text-sm font-medium mb-1">Jenis Kelamin<span class="text-red-600">*</span></label>
                             <div class="flex gap-4">
                                 <label class="inline-flex items-center">
                                     <input type="radio" name="jenis_kelamin" value="Laki-laki"
@@ -203,13 +203,13 @@
 
                         <!-- Tempat & Tanggal Lahir -->
                         <div>
-                            <label for="tempat_lahir" class="block text-sm font-medium">Tempat Lahir</label>
+                            <label for="tempat_lahir" class="block text-sm font-medium">Tempat Lahir<span class="text-red-600">*</span></label>
                             <input type="text" id="tempat_lahir" name="tempat_lahir"
                                 x-model="selectedPenduduk?.tempat_lahir"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir</label>
+                            <label for="tanggal_lahir" class="block text-sm font-medium">Tanggal Lahir<span class="text-red-600">*</span></label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir"
                                 x-model="selectedPenduduk?.tanggal_lahir"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -217,12 +217,12 @@
 
                         <!-- Agama & Pendidikan -->
                         <div>
-                            <label for="agama" class="block text-sm font-medium">Agama</label>
+                            <label for="agama" class="block text-sm font-medium">Agama<span class="text-red-600">*</span></label>
                             <input type="text" id="agama" name="agama" x-model="selectedPenduduk?.agama"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="pendidikan" class="block text-sm font-medium">Pendidikan</label>
+                            <label for="pendidikan" class="block text-sm font-medium">Pendidikan<span class="text-red-600">*</span></label>
                             <select id="pendidikan" name="pendidikan" x-model="selectedPenduduk?.pendidikan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Pendidikan</option>
@@ -242,13 +242,13 @@
 
                         <!-- Pekerjaan & Status Perkawinan -->
                         <div>
-                            <label for="pekerjaan" class="block text-sm font-medium">Pekerjaan</label>
+                            <label for="pekerjaan" class="block text-sm font-medium">Pekerjaan<span class="text-red-600">*</span></label>
                             <input type="text" id="pekerjaan" name="pekerjaan"
                                 x-model="selectedPenduduk?.pekerjaan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div class="">
-                            <label for="status_perkawinan" class="block text-sm font-medium">Status Kawin</label>
+                            <label for="status_perkawinan" class="block text-sm font-medium">Status Kawin<span class="text-red-600">*</span></label>
                             <select id="status_perkawinan" name="status_perkawinan"
                                 x-model="selectedPenduduk?.status_perkawinan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -264,13 +264,13 @@
 
                         <!-- Golongan Darah & Kewarganegaraan -->
                         <div>
-                            <label for="golongan_darah" class="block text-sm font-medium">Golongan Darah</label>
+                            <label for="golongan_darah" class="block text-sm font-medium">Golongan Darah<span class="text-red-600">*</span></label>
                             <input type="text" id="golongan_darah" name="golongan_darah"
                                 x-model="selectedPenduduk?.golongan_darah"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="kewarganegaraan" class="block text-sm font-medium">Kewarganegaraan</label>
+                            <label for="kewarganegaraan" class="block text-sm font-medium">Kewarganegaraan<span class="text-red-600">*</span></label>
                             <input type="text" id="kewarganegaraan" name="kewarganegaraan"
                                 x-model="selectedPenduduk?.kewarganegaraan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -278,7 +278,7 @@
 
                         <!-- Hubungan -->
                         <div>
-                            <label for="hubungan" class="block text-sm font-medium">Hubungan</label>
+                            <label for="hubungan" class="block text-sm font-medium">Hubungan<span class="text-red-600">*</span></label>
                             <select x-model="selectedPenduduk?.hubungan" id="hubungan" name="hubungan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Hubungan Keluarga</option>
@@ -295,7 +295,7 @@
 
                         <!-- Status Tinggal -->
                         <div class="col-span-2">
-                            <label for="status_tinggal" class="block text-sm font-medium">Status Tinggal</label>
+                            <label for="status_tinggal" class="block text-sm font-medium">Status Tinggal<span class="text-red-600">*</span></label>
                             <select id="status_tinggal" name="status_tinggal"
                                 x-model="selectedPenduduk?.status_tinggal"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -330,7 +330,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="col-span-2">
                             <label for="kode_keluarga" class="block text-sm font-medium">
-                                Kode Keluarga
+                                Kode Keluarga<span class="text-red-600">*</span>
                             </label>
                             <input list="kodeKeluargaList" name="kode_keluarga" id="kode_keluarga"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -345,17 +345,17 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">NIK</label>
+                            <label class="block text-xs text-gray-500 mb-1">NIK<span class="text-red-600">*</span></label>
                             <input type="text" id="nik" name="nik" x-model="selectedPenduduk.nik"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Nama</label>
+                            <label class="block text-xs text-gray-500 mb-1">Nama<span class="text-red-600">*</span></label>
                             <input type="text" id="nama" name="nama" x-model="selectedPenduduk.nama"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div class="col-span-2">
-                            <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
+                            <label class="block text-sm font-medium mb-1">Jenis Kelamin<span class="text-red-600">*</span></label>
                             <div class="flex gap-4">
                                 <label class="inline-flex items-center">
                                     <input type="radio" name="jenis_kelamin" value="Laki-laki"
@@ -370,7 +370,7 @@
                             </div>
                         </div>
                         <div class="col-span-full">
-                            <label for="hubungan" class="block text-sm text-gray-500 mb-1">Hubungan</label>
+                            <label for="hubungan" class="block text-sm text-gray-500 mb-1">Hubungan<span class="text-red-600">*</span></label>
                             <select id="hubungan" name="hubungan" x-model="selectedPenduduk.hubungan"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                                 <option value="">Pilih Hubungan Keluarga</option>
@@ -385,24 +385,24 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Tempat Lahir</label>
+                            <label class="block text-xs text-gray-500 mb-1">Tempat Lahir<span class="text-red-600">*</span></label>
                             <input type="text" id="tempat_lahir" name="tempat_lahir"
                                 x-model="selectedPenduduk.tempat_lahir"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Tanggal Lahir</label>
+                            <label class="block text-xs text-gray-500 mb-1">Tanggal Lahir<span class="text-red-600">*</span></label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir"
                                 x-model="selectedPenduduk.tanggal_lahir"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Agama</label>
+                            <label class="block text-xs text-gray-500 mb-1">Agama<span class="text-red-600">*</span></label>
                             <input type="text" id="agama" name="agama" x-model="selectedPenduduk.agama"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Pendidikan</label>
+                            <label class="block text-xs text-gray-500 mb-1">Pendidikan<span class="text-red-600">*</span></label>
                             <select type="text" id="pendidikan" name="pendidikan"
                                 x-model="selectedPenduduk.pendidikan" class="w-full border rounded px-3 py-2 text-sm">
                                 <option value="">Pilih Pendidikan</option>
@@ -420,31 +420,31 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Pekerjaan</label>
+                            <label class="block text-xs text-gray-500 mb-1">Pekerjaan<span class="text-red-600">*</span></label>
                             <input type="text" id="pekerjaan" name="pekerjaan"
                                 x-model="selectedPenduduk.pekerjaan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Status Perkawinan</label>
+                            <label class="block text-xs text-gray-500 mb-1">Status Perkawinan<span class="text-red-600">*</span></label>
                             <input type="text" id="status_perkawinan" name="status_perkawinan"
                                 x-model="selectedPenduduk.status_perkawinan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Golongan Darah</label>
+                            <label class="block text-xs text-gray-500 mb-1">Golongan Darah<span class="text-red-600">*</span></label>
                             <input type="text" id="golongan_darah" name="golongan_darah"
                                 x-model="selectedPenduduk.golongan_darah"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Kewarganegaraan</label>
+                            <label class="block text-xs text-gray-500 mb-1">Kewarganegaraan<span class="text-red-600">*</span></label>
                             <input type="text" id="kewarganegaraan" name="kewarganegaraan"
                                 x-model="selectedPenduduk.kewarganegaraan"
                                 class="w-full border rounded px-3 py-2 text-sm" />
                         </div>
                         <div class="col-span-full">
-                            <label class="block text-xs text-gray-500 mb-1">Status Tinggal</label>
+                            <label class="block text-xs text-gray-500 mb-1">Status Tinggal<span class="text-red-600">*</span></label>
                             <select type="text" id="status_tinggal" name="status_tinggal"
                                 x-model="selectedPenduduk.status_tinggal"
                                 class="w-full border rounded px-3 py-2 text-sm">
