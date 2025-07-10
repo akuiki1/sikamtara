@@ -660,7 +660,7 @@
                                     <template x-if="item.status_pengajuan === 'selesai' && item.surat_final">
                                         <a :href="`{{ route('surat.final.download', '') }}/${item.id_pengajuan_administrasi}`"
                                             target="_blank"
-                                            class="inline-block mt-2 text-white bg-green-600 hover:bg-green-700 rounded-full text-xs px-3 py-1 hover:scale-105">
+                                            class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out hover:scale-105 bg-green-400 hover:bg-green-500 text-white text-xs px-2 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2">
                                             Unduh Surat Final
                                         </a>
                                     </template>
@@ -687,7 +687,7 @@
             <div class="space-y-6">
                 <!-- Tombol Unduh -->
                 <div class="">
-                    <a :href="'/storage/' + selectedPengajuanAdministrasi.surat_final" download
+                    <a :href="'/storage/' + selectedPengajuanAdministrasi.form" download
                         class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2 hover:scale-105">
                         <!-- Icon Download -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -695,7 +695,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
                         </svg>
-                        Unduh surat&nbsp;<span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
+                        Unduh formulir&nbsp;<span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
                     </a>
                 </div>
                 <!-- Deskripsi -->
@@ -718,7 +718,7 @@
             </div>
             <div class="my-4">
                 <h2 class="mb-1 text-gray-700 ">Form yang dikirim</h2>
-                <a :href="'/storage/' + selectedPengajuanAdministrasi.form" download
+                <a :href="`{{ asset('storage') }}/${selectedPengajuanAdministrasi.form}`" target="_blank"
                     class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2 hover:scale-105">
                     <!-- Icon Download -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -726,12 +726,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
                     </svg>
-                    &nbsp;<span x-text="selectedPengajuanAdministrasi.form"></span>
+                    &nbsp;<span x-text="selectedPengajuanAdministrasi.form_name"></span>
                 </a>
             </div>
             <div class="">
                 <h2 class="mb-1 text-gray-700 ">Lampiran yang dikirim</h2>
-                <a :href="'/storage/' + selectedPengajuanAdministrasi.lampiran" download
+                <a :href="`{{ asset('storage') }}/${selectedPengajuanAdministrasi.lampiran}`" target="_blank"
                     class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2 hover:scale-105">
                     <!-- Icon Download -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -739,7 +739,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
                     </svg>
-                    &nbsp;<span x-text="selectedPengajuanAdministrasi.lampiran"></span>
+                    &nbsp;<span x-text="selectedPengajuanAdministrasi.lampiran_name"></span>
                 </a>
             </div>
 

@@ -82,17 +82,23 @@ class AdministrasiController extends Controller
 
         $transformed = collect($riwayatAdministrasi->items())->map(function ($item) {
             return [
-                'id_pengajuan_administrasi'     => $item->id_pengajuan_administrasi,
-                'nama_administrasi'   => $item->administrasi->nama_administrasi,
-                'id_user'           => $item->id_user,
-                'tanggal_pengajuan'      => \Carbon\Carbon::parse($item->tanggal_pengajuan)->diffForHumans(),
-                'form'         => Str::limit(Str::after(basename($item->form), '_'), 35),
-                'lampiran'         => Str::limit(Str::after(basename($item->lampiran), '_'), 35),
-                'status_pengajuan'           => $item->status_pengajuan,
-                'surat_final'      => $item->surat_final,
-                'updated_at'      => \Carbon\Carbon::parse($item->updated_at)->diffForHumans(),
+                'id_pengajuan_administrasi' => $item->id_pengajuan_administrasi,
+                'nama_administrasi' => $item->administrasi->nama_administrasi,
+                'id_user' => $item->id_user,
+                'tanggal_pengajuan' => \Carbon\Carbon::parse($item->tanggal_pengajuan)->diffForHumans(),
+                'form' => $item->form, // ASLI
+                'lampiran' => $item->lampiran, // ASLI
+                'surat_final' => $item->surat_final, // ASLI
+                'status_pengajuan' => $item->status_pengajuan,
+                'updated_at' => \Carbon\Carbon::parse($item->updated_at)->diffForHumans(),
+
+                // Ini khusus hanya untuk ditampilkan di UI, bukan untuk path
+                'form_name' => Str::limit(Str::after(basename($item->form), '_'), 35),
+                'lampiran_name' => Str::limit(Str::after(basename($item->lampiran), '_'), 35),
+                'surat_final_name' => Str::limit(Str::after(basename($item->surat_final), '_'), 35),
             ];
         });
+
 
         $jumlahLayanan = PengajuanAdministrasi::where('id_user', Auth::id())->count();
 
@@ -153,7 +159,7 @@ class AdministrasiController extends Controller
 
             // Simpan data ke DB
             PengajuanAdministrasi::create([
-                'id_user' => $user->id,
+                'id_user' => $user->id_user,
                 'id_administrasi' => $id_administrasi,
                 'form' => $formPath,
                 'lampiran' => $lampiranPath,

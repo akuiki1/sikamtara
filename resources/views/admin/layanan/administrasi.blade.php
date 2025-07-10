@@ -212,7 +212,7 @@
                             event.preventDefault();
                         }
                     }
-                }" @submit.prevent="handleSubmit($event)"
+                }" @submit="handleSubmit($event)"
                     action="{{ route('adminadministrasi.store') }}" method="POST" enctype="multipart/form-data">
 
                     @csrf
@@ -634,7 +634,7 @@
                                                 </svg>
                                                 <span
                                                     class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
-                                                    Unduh Formulir
+                                                    Lihat Formulir
                                                 </span>
                                             </div>
                                             <span
@@ -656,7 +656,7 @@
                                                 </svg>
                                                 <span
                                                     class="text-sm font-medium text-indigo-700 group-hover:text-indigo-900">
-                                                    Unduh Lampiran
+                                                    Lihat Lampiran
                                                 </span>
                                             </div>
                                             <span
