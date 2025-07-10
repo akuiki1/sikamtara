@@ -76,24 +76,24 @@ class AdminPendudukController extends Controller
         try {
             $validated = $request->validate([
                 'nik' => 'required|numeric|unique:penduduk,nik',
-                'nama' => 'nullable|string|max:255',
-                'jenis_kelamin' => 'nullable|in:Laki-laki,Perempuan',
-                'tempat_lahir' => 'nullable|string|max:100',
-                'tanggal_lahir' => 'nullable|date',
-                'agama' => 'nullable|string|max:50',
-                'pendidikan' => 'nullable|string|max:100',
-                'pekerjaan' => 'nullable|string|max:100',
-                'status_perkawinan' => 'nullable|string|max:50',
-                'golongan_darah' => 'nullable|string|max:10',
-                'kewarganegaraan' => 'nullable|string|max:100',
-                'hubungan' => 'nullable|string|max:50',
-                'kode_keluarga' => 'required|string|size:16',
-                'status_tinggal' => 'nullable|string|max:50',
+                'nama' => 'required|string|max:255',
+                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+                'tempat_lahir' => 'required|string|max:100',
+                'tanggal_lahir' => 'required|date',
+                'agama' => 'required|string|max:50',
+                'pendidikan' => 'required|string|max:100',
+                'pekerjaan' => 'required|string|max:100',
+                'status_perkawinan' => 'required|string|max:50',
+                'golongan_darah' => 'required|string|max:10',
+                'kewarganegaraan' => 'required|string|max:100',
+                'hubungan' => 'required|string|max:50',
+                'kode_keluarga' => 'required|string|size:16|exists:keluarga,kode_keluarga',
+                'status_tinggal' => 'required|string|max:50',
             ]);
 
             Penduduk::create($validated);
 
-            return redirect()->back()->with('success', 'Kode keluarga berhasil ditambahkan!');
+            return redirect()->back()->with('success', 'Data penduduk berhasil ditambahkan!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
