@@ -29,7 +29,7 @@
                 return (
                     this.email !== this.originalEmail ||
                     this.nama !== this.originalNama ||
-                    this.editPassword ||
+                    (this.editing && this.password.length >= 8 && this.password === this.confirm) ||
                     this.fotoChanged
                 );
             },
@@ -228,8 +228,9 @@
             {{-- Tombol Simpan dan Batal --}}
             <div class="flex justify-end pt-4 gap-2" x-show="isChanged()">
                 <x-button variant="secondary" @click.prevent="resetChanges()">Batal</x-button>
-                <x-button type="submit" variant="primary" x-bind:disabled="fotoError"
-                    x-bind:class="fotoError ? 'opacity-50 cursor-not-allowed' : ''">
+                <x-button type="submit" variant="primary"
+                    x-bind:disabled="fotoError || (editing && (!valid || !match))"
+                    x-bind:class="(fotoError || (editing && (!valid || !match))) ? 'opacity-50 cursor-not-allowed' : ''">
                     Simpan Perubahan
                 </x-button>
             </div>
