@@ -205,22 +205,40 @@
             <form action="{{ route('adminberita.store') }}" method="POST" enctype="multipart/form-data"
                 class="space-y-8" x-data="{
                     previewCover: null,
+                    fileTooLarge: false,
                     updatePreview(e) {
                         const file = e.target.files[0];
                         if (file) {
-                            this.previewCover = URL.createObjectURL(file);
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            if (!this.fileTooLarge) {
+                                this.previewCover = URL.createObjectURL(file);
+                            } else {
+                                this.previewCover = null;
+                            }
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran file gambar melebihi 2MB. Silakan pilih file yang lebih kecil.');
+                            event.preventDefault();
                         }
                     }
-                }">
+                }" @submit="handleSubmit($event)">
                 @csrf
 
                 {{-- Baris 1: Gambar + Judul --}}
                 <div>
-                    <label for="gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Cover</label>
+                    <label for="gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Berita<span
+                            class="text-red-600">*</span></label>
                     <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
                         <input type="file" name="gambar_cover" id="gambar_cover" accept="image/*"
-                            @change="updatePreview"
-                            class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+                            @change="updatePreview" required
+                            class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0" />
+
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
+
                         <template x-if="previewCover">
                             <img :src="previewCover" alt="Preview"
                                 class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
@@ -229,7 +247,8 @@
                 </div>
 
                 <div>
-                    <label for="judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita</label>
+                    <label for="judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita<span
+                            class="text-red-600">*</span></label>
                     <input type="text" name="judul_berita" id="judul_berita"
                         class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
                         placeholder="Masukkan judul berita" required />
@@ -238,7 +257,8 @@
 
                 {{-- Isi Berita --}}
                 <div>
-                    <label for="isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita</label>
+                    <label for="isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita<span
+                            class="text-red-600">*</span></label>
                     <textarea name="isi_berita" id="isi_berita" rows="6"
                         class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                         placeholder="Tulis isi berita di sini..." required></textarea>
@@ -247,7 +267,8 @@
                 {{-- Baris 2: Tanggal + Status --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label for="status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <label for="status" class="text-sm text-gray-600 mb-1 block">Status<span
+                                class="text-red-600">*</span></label>
                         <select name="status" id="status"
                             class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             <option value="draft">Draft</option>
@@ -258,7 +279,8 @@
 
                     {{-- Penulis --}}
                     <div>
-                        <label for="penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        <label for="penulis" class="text-sm text-gray-600 mb-1 block">Penulis<span
+                                class="text-red-600">*</span></label>
                         @auth
                             <input type="hidden" name="penulis" value="{{ Auth::user()->id_user }}">
                             <input type="text" disabled value="{{ Auth::user()->nama }}"
@@ -327,24 +349,45 @@
         <x-modal show="showEditModal" title="Edit Berita">
             <form :action="'/admin/berita/' + selectedBerita.id_berita" method="POST" enctype="multipart/form-data"
                 class="space-y-8" x-data="{
-                    previewCover: selectedBerita.gambar_cover ? '{{ asset('storage') }}/' + selectedBerita.gambar_cover : null,
+                    previewCover: null,
+                    fileTooLarge: false,
                     updatePreview(e) {
                         const file = e.target.files[0];
                         if (file) {
-                            this.previewCover = URL.createObjectURL(file);
+                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                            if (!this.fileTooLarge) {
+                                this.previewCover = URL.createObjectURL(file);
+                            } else {
+                                this.previewCover = null;
+                            }
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge) {
+                            alert('Ukuran gambar melebihi 2MB. Silakan pilih gambar yang lebih kecil.');
+                            event.preventDefault();
                         }
                     }
-                }">
+                }" x-init="$watch('selectedBerita', value => {
+                    previewCover = value?.gambar_cover ? '/storage/' + value.gambar_cover : null;
+                })" @submit="handleSubmit($event)">
+
                 @csrf
                 @method('PUT')
 
                 {{-- Baris 1: Gambar + Judul --}}
                 <div>
-                    <label for="edit_gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Cover</label>
+                    <label for="edit_gambar_cover" class="text-sm text-gray-600 mb-1 block">Gambar Cover<span
+                            class="text-red-600">*</span></label>
                     <div class="border border-gray-200 rounded-xl p-3 transition hover:border-gray-400">
                         <input type="file" name="gambar_cover" id="edit_gambar_cover" accept="image/*"
-                            @change="updatePreview"
+                            @change="updatePreview" required
                             class="block w-full text-sm text-gray-800 focus:outline-none focus:ring-0">
+
+                        <template x-if="fileTooLarge">
+                            <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                        </template>
+
                         <template x-if="previewCover">
                             <img :src="previewCover" alt="Preview"
                                 class="mt-3 w-full h-44 object-cover rounded-lg border border-gray-200 shadow-sm" />
@@ -352,7 +395,8 @@
                     </div>
                 </div>
                 <div>
-                    <label for="edit_judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita</label>
+                    <label for="edit_judul_berita" class="text-sm text-gray-600 mb-1 block">Judul Berita<span
+                            class="text-red-600">*</span></label>
                     <input type="text" name="judul_berita" id="edit_judul_berita"
                         x-model="selectedBerita.judul_berita"
                         class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"
@@ -361,7 +405,8 @@
 
                 {{-- Isi Berita --}}
                 <div>
-                    <label for="edit_isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita</label>
+                    <label for="edit_isi_berita" class="text-sm text-gray-600 mb-1 block">Isi Berita<span
+                            class="text-red-600">*</span></label>
                     <textarea name="isi_berita" id="edit_isi_berita" rows="6" x-text="selectedBerita.isi_berita_full"
                         class="w-full rounded-xl border border-gray-200 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none transition resize-none"
                         placeholder="Tulis isi berita di sini..." required></textarea>
@@ -370,7 +415,8 @@
                 {{-- Baris 2: Tanggal + Status --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label for="edit_status" class="text-sm text-gray-600 mb-1 block">Status</label>
+                        <label for="edit_status" class="text-sm text-gray-600 mb-1 block">Status<span
+                                class="text-red-600">*</span></label>
                         <select name="status" id="edit_status" x-model="selectedBerita.status"
                             class="w-full rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             <option value="draft">Draft</option>
@@ -379,7 +425,8 @@
                         </select>
                     </div>
                     <div>
-                        <label for="edit_penulis" class="text-sm text-gray-600 mb-1 block">Penulis</label>
+                        <label for="edit_penulis" class="text-sm text-gray-600 mb-1 block">Penulis<span
+                                class="text-red-600">*</span></label>
                         <input type="text" id="edit_penulis" x-model="selectedBerita.penulis"
                             class="rounded-xl border border-gray-200 px-4 py-2 text-gray-900 bg-gray-100 cursor-not-allowed"
                             readonly />
@@ -412,6 +459,5 @@
                 </div>
             </form>
         </x-modal>
-
     </div>
 </x-admin-layout>

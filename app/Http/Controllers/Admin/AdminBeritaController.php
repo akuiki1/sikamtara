@@ -75,10 +75,9 @@ class AdminBeritaController extends Controller
             $validated = $request->validate([
                 'judul_berita' => 'required|string|max:255',
                 'isi_berita' => 'required|string',
-                'gambar_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'gambar_cover' => 'required|image|mimes:jpg,jpeg,png|max:2048',
                 'penulis' => 'required|exists:users,id_user',
                 'status' => 'required|in:draft,published,archived',
-                'tags' => 'nullable|string|max:255',
             ]);
 
             // Handle upload gambar
@@ -129,16 +128,36 @@ class AdminBeritaController extends Controller
         try {
             $berita = Berita::where('id_berita', $id)->firstOrFail();
 
-            // Ambil semua data yang mau diupdate
-            $data = $request->all();
+            // Validasi data
+            $validated = $request->validate([
+                'judul_berita' => 'required|string|max:255',
+                'isi_berita' => 'required|string',
+                'gambar_cover' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'status' => 'required|in:draft,published,archived',
+            ]);
 
-            // Kalau status diubah jadi "published", set tanggal_publish ke sekarang
-            if ($request->status === 'published') {
-                $data['tanggal_publish'] = Carbon::now();
+            // Upload gambar baru jika ada
+            if ($request->hasFile('gambar_cover')) {
+                $file = $request->file('gambar_cover');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('gambar_berita', $filename, 'public');
+
+                // (Opsional) Hapus gambar lama jika perlu
+                // Storage::disk('public')->delete($berita->gambar_cover);
+
+                $validated['gambar_cover'] = $path;
+            } else {
+                // Jika tidak upload gambar baru, gunakan gambar lama
+                $validated['gambar_cover'] = $berita->gambar_cover;
             }
 
-            // Update data ke database
-            $berita->update($data);
+            // Atur tanggal publish jika status = published
+            if ($validated['status'] === 'published' && !$berita->tanggal_publish) {
+                $validated['tanggal_publish'] = Carbon::now();
+            }
+
+            // Update berita
+            $berita->update($validated);
 
             $searchKeyword = Str::limit(strip_tags($berita->judul_berita), 50);
 
