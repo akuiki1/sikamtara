@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
-use App\Models\penduduk;
+use App\Models\Penduduk;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -94,7 +94,7 @@ class AuthController extends Controller
         ]);
 
         // Cek apakah NIK ada di tabel penduduk
-        $nikTerdaftar = penduduk::where('nik', $request->nik)->exists();
+        $nikTerdaftar = Penduduk::where('nik', $request->nik)->exists();
 
         if (! $nikTerdaftar) {
             return back()->withInput()->with('error', 'NIK anda belum terdaftar! Silakan hubungi admin desa.');

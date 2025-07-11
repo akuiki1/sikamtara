@@ -86,9 +86,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('/admin/struktur/create', [AdminProfilDesaController::class, 'strukturCreate'])->name('admin.struktur.create');
     Route::put('/struktur/{id}/update', [AdminProfilDesaController::class, 'strukturUpdate'])->name('admin.struktur.update');
     Route::delete('/struktur/{id}/delete', [AdminProfilDesaController::class, 'strukturDestroy'])->name('admin.struktur.delete');
-    Route::post('/admin/program/store', [AdminProfilDesaController::class, 'pembangunanStore'])->name('admin.program.store');
-    Route::put('/admin/program/{id}/update', [AdminProfilDesaController::class, 'pembangunanUpdate'])->name('admin.program.update');
-    Route::delete('/admin/program/{id}/destroy', [AdminProfilDesaController::class, 'pembangunanDestroy'])->name('admin.program.destroy');
+    Route::post('/program/store', [AdminProfilDesaController::class, 'pembangunanStore'])->name('admin.program.store');
+    Route::put('/program/{program}', [AdminProfilDesaController::class, 'pembangunanUpdate'])->name('admin.program.update');
+    Route::delete('/program/{id}/destroy', [AdminProfilDesaController::class, 'pembangunanDestroy'])->name('admin.program.destroy');
 
     // halaman kelola layanan admin
     Route::get('/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');

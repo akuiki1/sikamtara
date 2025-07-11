@@ -15,35 +15,56 @@
                 </a>
 
                 <h2 class="text-3xl font-bold text-center text-gray-800">Verifikasi Akun</h2>
-                <p class="text-gray-600 text-center mb-6">Untuk mengakses fitur-fitur lengkap, silahkan verifikasi akun
-                    Anda.</p>
+                <p class="text-gray-600 text-center mb-6">
+                    Untuk mengakses fitur-fitur lengkap, silahkan verifikasi akun Anda.
+                </p>
+
                 <form x-data="{
                     changed: false,
                     previewKtp: '{{ $verifikasi?->foto_ktp ? asset('storage/' . $verifikasi->foto_ktp) : '' }}',
                     previewSelfie: '{{ $verifikasi?->selfie_ktp ? asset('storage/' . $verifikasi->selfie_ktp) : '' }}',
                     previewKk: '{{ $verifikasi?->foto_kk ? asset('storage/' . $verifikasi->foto_kk) : '' }}',
-                    handlePreview(event, type) {
+                    fileTooLarge: {
+                        foto_ktp: false,
+                        selfie_ktp: false,
+                        foto_kk: false
+                    },
+                    handlePreview(event, previewKey) {
                         const file = event.target.files[0];
                         if (!file) return;
-                        const reader = new FileReader();
-                        reader.onload = e => {
-                            this[type] = e.target.result;
-                            this.changed = true;
-                        };
-                        reader.readAsDataURL(file);
+                
+                        this.fileTooLarge[previewKey] = file.size > 2 * 1024 * 1024;
+                
+                        if (this.fileTooLarge[previewKey]) {
+                            this[previewKey] = null;
+                            alert('Ukuran file ' + previewKey.replace('_', ' ') + ' terlalu besar. Maksimal 2MB.');
+                        } else {
+                            const reader = new FileReader();
+                            reader.onload = e => {
+                                this[previewKey] = e.target.result;
+                                this.changed = true;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    },
+                    handleSubmit(event) {
+                        if (this.fileTooLarge.foto_ktp || this.fileTooLarge.selfie_ktp || this.fileTooLarge.foto_kk) {
+                            alert('Ada file yang terlalu besar. Maksimal ukuran file adalah 2MB.');
+                            event.preventDefault();
+                        }
                     }
-                }" method="POST" action="{{ route('profil.verifikasi.store') }}"
-                    enctype="multipart/form-data" class="w-full flex flex-col items-center justify-center gap-6 px-4">
+                }" @submit="handleSubmit" method="POST"
+                    action="{{ route('profil.verifikasi.store') }}" enctype="multipart/form-data"
+                    class="w-full flex flex-col items-center justify-center gap-6 px-4">
                     @csrf
 
-                    {{-- Container Upload --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl justify-items-center">
                         <template
                             x-for="input in [
-            { id: 'foto_ktp', label: 'Foto KTP', preview: 'previewKtp' },
-            { id: 'selfie_ktp', label: 'Selfie dengan KTP', preview: 'previewSelfie' },
-            { id: 'foto_kk', label: 'Foto Kartu Keluarga (KK)', preview: 'previewKk' }
-        ]">
+                    { id: 'foto_ktp', label: 'Foto KTP', preview: 'previewKtp' },
+                    { id: 'selfie_ktp', label: 'Selfie dengan KTP', preview: 'previewSelfie' },
+                    { id: 'foto_kk', label: 'Foto Kartu Keluarga (KK)', preview: 'previewKk' }
+                ]">
                             <div class="text-center w-fit" :key="input.id">
                                 <label class="block text-sm font-medium text-gray-700 mb-2"
                                     x-text="input.label"></label>
@@ -56,13 +77,13 @@
                                         'flex items-center justify-center bg-gray-50 border border-dashed border-gray-400'
                                     ]">
 
-                                    <!-- If image exists -->
+                                    <!-- Preview jika ada -->
                                     <template x-if="$data[input.preview]">
                                         <img :src="$data[input.preview]" alt="Preview"
                                             class="w-full h-full object-cover">
                                     </template>
 
-                                    <!-- If no image -->
+                                    <!-- Jika belum ada -->
                                     <template x-if="!$data[input.preview]">
                                         <div class="text-center text-gray-500">
                                             <svg class="mx-auto w-10 h-10" fill="none" stroke="currentColor"
@@ -74,7 +95,6 @@
                                         </div>
                                     </template>
 
-                                    <!-- Overlay saat hover -->
                                     <div
                                         class="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                                         <span class="text-sm font-semibold">Ubah</span>
@@ -83,11 +103,15 @@
 
                                 <input type="file" :id="input.id" :name="input.id" accept="image/*"
                                     class="hidden" @change="handlePreview($event, input.preview)">
+
+                                <!-- Notifikasi error ukuran -->
+                                <template x-if="fileTooLarge[input.id]">
+                                    <p class="text-red-600 text-xs mt-2">Ukuran file terlalu besar (maks. 2MB)</p>
+                                </template>
                             </div>
                         </template>
                     </div>
 
-                    {{-- Tombol Submit --}}
                     <div class="text-center mt-6" x-show="changed" x-transition>
                         <x-button type="submit">
                             Kirim Verifikasi

@@ -61,7 +61,7 @@ class AdminAdministrasiController extends Controller
         // $penulis = User::select('id_user')->get();
         $layananDiproses = $this->layananDiproses();
         $layananMasuk = $this->layananMasuk();
-        $layananRiwayat = $this->layananRiwayat();
+        $layananRiwayat = $this->layananRiwayat($request);
         $jumlahLayanan = Administrasi::count();
         $jumlahMasuk = PengajuanAdministrasi::whereIn('status_pengajuan', ['baru', 'ditinjau'])->count();
         $jumlahSiapTtd = PengajuanAdministrasi::where('status_pengajuan', 'diproses')->count();
@@ -157,11 +157,22 @@ class AdminAdministrasiController extends Controller
         return back()->with('success', 'Surat final berhasil diunggah.');
     }
 
-    public function layananRiwayat()
+    public function layananRiwayat(Request $request)
     {
-        return PengajuanAdministrasi::with(['user', 'administrasi'])
-            ->whereIn('status_pengajuan', ['ditolak', 'selesai'])
-            ->orderByDesc('tanggal_pengajuan')
+        $query = PengajuanAdministrasi::with(['user.penduduk', 'administrasi'])
+            ->whereIn('status_pengajuan', ['ditolak', 'selesai']);
+
+        if ($request->filled('search_riwayat')) {
+            $query->whereHas('administrasi', function ($q) use ($request) {
+                $q->where('nama_administrasi', 'like', '%' . $request->search_riwayat . '%');
+            });
+        }
+
+        if ($request->filled('status_pengajuan')) {
+            $query->where('status_pengajuan', $request->status_pengajuan);
+        }
+
+        return $query->orderByDesc('tanggal_pengajuan')
             ->get()
             ->map(function ($item) {
                 return [
@@ -195,7 +206,6 @@ class AdminAdministrasiController extends Controller
         }
     }
 
-
     public function hapusLayanan($id)
     {
         $pengajuan = PengajuanAdministrasi::findOrFail($id);
@@ -207,16 +217,6 @@ class AdminAdministrasiController extends Controller
         $pengajuan->delete();
 
         return response()->json(['message' => 'Berhasil dihapus']);
-    }
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -248,22 +248,6 @@ class AdminAdministrasiController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
@@ -290,8 +274,6 @@ class AdminAdministrasiController extends Controller
             return redirect()->route('adminadministrasi.index')->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
-
-
 
     /**
      * Remove the specified resource from storage.

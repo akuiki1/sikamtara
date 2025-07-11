@@ -361,7 +361,7 @@
         <x-modal show="showEditModal" title="Edit Pengaduan">
             <form method="POST" action="{{ route('user.pengaduan.update') }}" enctype="multipart/form-data"
                 x-data="{
-                    previewFile: selectedPengaduan.lampiran ? '{{ asset('storage') }}/' + selectedPengaduan.lampiran : null,
+                    previewFile: null,
                     fileTooLarge: false,
                     isImage: true,
                     updatePreview(event) {
@@ -389,7 +389,19 @@
                             event.preventDefault();
                         }
                     }
-                }" @submit="handleSubmit($event)">
+                }" x-init="// Set preview awal jika ada lampiran lama
+                (() => {
+                    if (selectedPengaduan.lampiran) {
+                        const fileName = selectedPengaduan.lampiran.toLowerCase();
+                        if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png')) {
+                            previewFile = '{{ asset('storage') }}/' + selectedPengaduan.lampiran;
+                            isImage = true;
+                        } else {
+                            previewFile = selectedPengaduan.lampiran;
+                            isImage = false;
+                        }
+                    }
+                })()" @submit="handleSubmit($event)">
                 @csrf
                 @method('PUT')
                 <input type="hidden" name="id_pengaduan" :value="selectedPengaduan.id_pengaduan">
@@ -410,8 +422,9 @@
 
                     <div>
                         <label class="font-semibold">Lampiran<span class="text-red-600">*</span>
-                            <small class="block text-xs text-gray-400 font-normal mb-2">(Format: jpg, jpeg, png, pdf.
-                                Maks 2Mb)</small>
+                            <small class="block text-xs text-gray-400 font-normal mb-2">
+                                (Format: jpg, jpeg, png, pdf. Maks 2Mb)
+                            </small>
                         </label>
 
                         <input type="file" name="lampiran" accept=".jpg,.jpeg,.png,.pdf" @change="updatePreview"
@@ -428,15 +441,15 @@
                                     x-text="previewFile"></strong></p>
                         </template>
 
-                        <!-- Jika file terlalu besar -->
                         <template x-if="fileTooLarge">
                             <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
                         </template>
 
-                        <!-- Lampiran lama (hanya jika tidak ada file baru) -->
+                        <!-- Lampiran lama jika belum diubah -->
                         <template x-if="!previewFile && selectedPengaduan.lampiran">
-                            <p class="text-xs mt-1 text-gray-500">Lampiran lama: <span
-                                    x-text="selectedPengaduan.lampiran"></span></p>
+                            <p class="text-xs mt-1 text-gray-500">
+                                Lampiran lama: <span x-text="selectedPengaduan.lampiran"></span>
+                            </p>
                         </template>
                     </div>
                 </div>

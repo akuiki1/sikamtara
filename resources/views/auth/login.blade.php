@@ -30,12 +30,6 @@
 
         <!-- Forms Container -->
         <div class="flex w-full md:w-1/2 p-8 relative z-10 flex-col justify-center">
-            @if (session()->has('success'))
-                <div class="alert alert-success alert-dimissible fade show" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
             <div class="p-8 rounded w-full max-w-md" x-show="true" x-transition.duration.700ms>
 
                 <h2 class="text-3xl font-bold text-blue-700 mb-6 text-center">Login</h2>

@@ -25,7 +25,7 @@
                         class="w-full h-auto rounded-lg shadow-md mt-4">
                 </div>
                 <div class="border p-6 rounded-lg shadow-md">
-                    <h1 class="text-gray-800 font-semibold text-xl">Foto KTP</h1>
+                    <h1 class="text-gray-800 font-semibold text-xl">Foto KK</h1>
                     <img src="{{ asset('storage/' . $verifikasi->foto_kk) }}" alt=""
                         class="w-full h-auto rounded-lg shadow-md mt-4">
                 </div>

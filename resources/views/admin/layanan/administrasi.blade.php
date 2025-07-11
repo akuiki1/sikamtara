@@ -819,10 +819,10 @@
                     </div>
 
                     {{-- Filter & Search --}}
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
                         {{-- Search --}}
                         <form method="GET" class="relative w-full md:w-80">
-                            <input type="text" name="search" value="{{ request('search') }}"
+                            <input type="text" name="search_riwayat" value="{{ request('search_riwayat') }}"
                                 class="pl-10 pr-24 py-2 w-full rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                                 placeholder="Cari layanan..." />
                             <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
@@ -836,7 +836,6 @@
                                 Cari
                             </button>
                         </form>
-
                         {{-- Filter Dropdown --}}
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open"
@@ -853,14 +852,15 @@
                             <div x-show="open" @click.outside="open = false" x-transition
                                 class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg ring-1 ring-black ring-opacity-10 z-50 p-4 space-y-4">
                                 <form method="GET" class="space-y-4">
-                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                    <input type="hidden" name="search_riwayat"
+                                        value="{{ request('search_riwayat') }}">
 
                                     <div>
                                         <label for="status_pengajuan"
                                             class="block text-sm font-medium text-gray-700">Status
                                             Pengajuan</label>
-                                        <select id="status" name="status"
-                                            class="mt-1 block w-full rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+                                        <select id="status_pengajuan" name="status_pengajuan"
+                                            class="mt-1 block w-full rounded-xl border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
                                             <option value="">Semua Status</option>
                                             <option value="selesai"
                                                 {{ request('status_pengajuan') == 'selesai' ? 'selected' : '' }}>
@@ -875,8 +875,13 @@
                                 </form>
                             </div>
                         </div>
-
                         {{-- Clear Filter --}}
+                        @if (request()->has('search_riwayat') || request()->has('status_pengajuan'))
+                            <a href="{{ url()->current() }}"
+                                class="px-3 py-2 text-sm bg-gray-200 hover:bg-gray-400 text-gray-600 rounded-xl">
+                                Tampilkan Semua
+                            </a>
+                        @endif
                     </div>
 
                     {{-- Body --}}
@@ -1040,7 +1045,9 @@
                                                 class="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-100 rounded-lg hover:bg-indigo-100 transition group">
                                                 <div class="flex items-center gap-3">
                                                     <!-- Icon -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600" viewBox="0 0 24 24">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="w-5 h-5 text-indigo-500 group-hover:text-indigo-600"
+                                                        viewBox="0 0 24 24">
                                                         <path fill="currentColor"
                                                             d="M20 8.94a1.31 1.31 0 0 0-.06-.27v-.09a1.07 1.07 0 0 0-.19-.28l-6-6a1.07 1.07 0 0 0-.28-.19h-.09L13.06 2H7a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8.94Zm-6-3.53L16.59 8H14ZM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5v5a1 1 0 0 0 1 1h5Z" />
                                                     </svg>
