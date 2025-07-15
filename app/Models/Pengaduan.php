@@ -30,4 +30,15 @@ class Pengaduan extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+    /**
+     * Relasi ke status terakhir
+     */
+    public function statusTerakhir()
+    {
+        return $this->hasOne(RiwayatStatusPengaduan::class, 'id_pengaduan')->latestOfMany('tanggal_perubahan');
+    }
+    public function statuses()
+    {
+        return $this->hasMany(RiwayatStatusPengaduan::class, 'id_pengaduan');
+    }
 }

@@ -178,7 +178,7 @@
                             <td class="p-2 text-left">{{ $pengaduan->user->penduduk->nama ?? '-' }}</td>
                             <td class="p-2 text-left">{{ Str::limit($pengaduan->judul_pengaduan, 50) }}</td>
                             <td class="p-2 text-center w-32">{{ $pengaduan->created_at->format('d M Y') }}</td>
-                            <td class="p-2 text-center w-24">{{ $pengaduan->status }}</td>
+                            <td class="p-2 text-center w-24">{{ $pengaduan->statusTerakhir->status }}</td>
                             <td class="p-2 text-left space-x-1 w-52">
                                 <x-button
                                     @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showDetailModal = true"
@@ -187,7 +187,7 @@
                                 </x-button>
 
 
-                                @if ($pengaduan->status === 'terkirim')
+                                @if ($pengaduan->statusTerakhir->status === 'terkirim')
                                     <x-button
                                         @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showAccModal = true"
                                         size="sm" variant="primary">
@@ -198,15 +198,15 @@
                                         size="sm" variant="danger">
                                         Tolak
                                     </x-button>
-                                @elseif ($pengaduan->status === 'diterima')
+                                @elseif ($pengaduan->statusTerakhir->status === 'diterima')
                                     <x-button
                                         @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showProsesModal = true"
                                         size="sm" variant="warning">Proses</x-button>
-                                @elseif ($pengaduan->status === 'diproses')
+                                @elseif ($pengaduan->statusTerakhir->status === 'diproses')
                                     <x-button
                                         @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showSelesaikanModal = true"
                                         size="sm" variant="success">Selesaikan</x-button>
-                                @elseif ($pengaduan->status === 'ditolak')
+                                @elseif ($pengaduan->statusTerakhir->status === 'ditolak')
                                     <x-button
                                         @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showDeleteModal = true"
                                         size="sm" variant="danger">Hapus</x-button>
@@ -311,7 +311,7 @@
 
                 <div>
                     <p class="font-semibold">Status</p>
-                    <p class="capitalize" x-text="selectedPengaduan.status"></p>
+                    <p class="capitalize" x-text="selectedPengaduan.status_terakhir?.status"></p>
                 </div>
 
                 <div x-show="selectedPengaduan.lampiran">

@@ -19,10 +19,14 @@ class DashboardController extends Controller
 
         $akunTerverifikasi = User::where('status_verifikasi', 'Terverifikasi')->count();
         $layananMenunggu = PengajuanAdministrasi::whereIn('status_pengajuan', ['baru', 'ditinjau'])->count();
-        $pengaduanMasuk = Pengaduan::whereIn('status', ['terkirim', 'diterima'])->count();
+        $pengaduanMasuk = Pengaduan::whereHas('statusTerakhir', function ($q) {
+            $q->whereIn('status', ['terkirim', 'diterima']);
+        })->count();
 
-        $pengaduan = Pengaduan::with('user')
-            ->whereIn('status', ['terkirim', 'diterima'])
+        $pengaduan = Pengaduan::with(['user.penduduk', 'statusTerakhir'])
+            ->whereHas('statusTerakhir', function ($q) {
+                $q->whereIn('status', ['terkirim', 'diterima']);
+            })
             ->latest()
             ->get();
 

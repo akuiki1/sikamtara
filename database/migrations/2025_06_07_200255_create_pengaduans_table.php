@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('judul_pengaduan');
             $table->text('isi_pengaduan');
             $table->string('lampiran');
-            $table->enum('status', ['terkirim', 'diterima', 'diproses', 'ditolak', 'selesai']);
             $table->timestamps();
         });
     }

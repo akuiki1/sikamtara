@@ -7,17 +7,28 @@ use App\Models\Pengaduan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\RiwayatStatusPengaduan;
 
 class AdminPengaduanController extends Controller
 {
+
     public function index(Request $request)
     {
         $total = Pengaduan::count();
-        $terkirim = Pengaduan::where('status', 'terkirim')->count();
-        $diproses = Pengaduan::whereIn('status', ['diterima', 'diproses'])->count();
-        $ditutup = Pengaduan::whereIn('status', ['selesai', 'ditolak'])->count();
 
-        $query = Pengaduan::with('user.penduduk');
+        $terkirim = Pengaduan::whereHas('statusTerakhir', function ($q) {
+            $q->where('status', 'terkirim');
+        })->count();
+
+        $diproses = Pengaduan::whereHas('statusTerakhir', function ($q) {
+            $q->whereIn('status', ['diterima', 'diproses']);
+        })->count();
+
+        $ditutup = Pengaduan::whereHas('statusTerakhir', function ($q) {
+            $q->whereIn('status', ['selesai', 'ditolak']);
+        })->count();
+
+        $query = Pengaduan::with(['user.penduduk', 'statusTerakhir']);
 
         if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
@@ -27,18 +38,19 @@ class AdminPengaduanController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->whereHas('statusTerakhir', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
         }
 
         $pengaduans = $query->latest()->paginate(20)->appends(request()->query());
 
-        // Buat array JSON untuk Alpine
         $pengaduanJs = collect($pengaduans->items())->map(function ($item) {
             return [
                 'id_pengaduan' => $item->id_pengaduan,
                 'judul_pengaduan' => $item->judul_pengaduan,
                 'isi_pengaduan' => $item->isi_pengaduan,
-                'status' => $item->status,
+                'status' => $item->statusTerakhir->status ?? 'tidak diketahui',
                 'created_at' => $item->created_at->toDateTimeString(),
                 'nama' => $item->user->penduduk->nama ?? '-',
                 'lampiran' => $item->lampiran,
@@ -71,11 +83,14 @@ class AdminPengaduanController extends Controller
                 $path = $request->file('lampiran')->store('lampiran_pengaduan', 'public');
             }
 
-            Pengaduan::create([
+            $pengaduan = Pengaduan::create([
                 'id_user' => $request->id_user,
                 'judul_pengaduan' => $request->judul_pengaduan,
                 'isi_pengaduan' => $request->isi_pengaduan,
                 'lampiran' => $path ?? '',
+            ]);
+
+            $pengaduan->statuses()->create([
                 'status' => 'terkirim',
             ]);
 
@@ -92,20 +107,21 @@ class AdminPengaduanController extends Controller
             'id_pengaduan' => 'required|exists:pengaduans,id_pengaduan',
         ]);
 
-        $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
+        $pengaduan = Pengaduan::with('statusTerakhir')->findOrFail($request->id_pengaduan);
 
-        if ($pengaduan->status !== 'terkirim') {
+        if ($pengaduan->statusTerakhir->status !== 'terkirim') {
             return back()->with('error', 'Hanya pengaduan dengan status "terkirim" yang dapat diterima.');
         }
 
         try {
-            $pengaduan->status = 'diterima';
-            $pengaduan->save();
+            $pengaduan->statuses()->create([
+                'status' => 'diterima',
+            ]);
 
             return back()->with('success', 'Pengaduan berhasil diterima.');
         } catch (\Exception $e) {
             Log::error('Gagal menerima pengaduan: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat menerima pengaduan.');
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -115,15 +131,16 @@ class AdminPengaduanController extends Controller
             'id_pengaduan' => 'required|exists:pengaduans,id_pengaduan',
         ]);
 
-        $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
+        $pengaduan = Pengaduan::with('statusTerakhir')->findOrFail($request->id_pengaduan);
 
-        if (!in_array($pengaduan->status, ['terkirim', 'diterima'])) {
+        if (!in_array($pengaduan->statusTerakhir->status, ['terkirim', 'diterima'])) {
             return back()->with('error', 'Pengaduan hanya bisa ditolak jika berstatus "terkirim" atau "diterima".');
         }
 
         try {
-            $pengaduan->status = 'ditolak';
-            $pengaduan->save();
+            $pengaduan->statuses()->create([
+                'status' => 'ditolak',
+            ]);
 
             return back()->with('success', 'Pengaduan berhasil ditolak.');
         } catch (\Exception $e) {
@@ -138,15 +155,16 @@ class AdminPengaduanController extends Controller
             'id_pengaduan' => 'required|exists:pengaduans,id_pengaduan',
         ]);
 
-        $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
+        $pengaduan = Pengaduan::with('statusTerakhir')->findOrFail($request->id_pengaduan);
 
-        if ($pengaduan->status !== 'diterima') {
+        if ($pengaduan->statusTerakhir->status !== 'diterima') {
             return back()->with('error', 'Pengaduan hanya bisa diproses jika berstatus "diterima".');
         }
 
         try {
-            $pengaduan->status = 'diproses';
-            $pengaduan->save();
+            $pengaduan->statuses()->create([
+                'status' => 'diproses',
+            ]);
 
             return back()->with('success', 'Pengaduan berhasil diproses.');
         } catch (\Exception $e) {
@@ -161,15 +179,16 @@ class AdminPengaduanController extends Controller
             'id_pengaduan' => 'required|exists:pengaduans,id_pengaduan',
         ]);
 
-        $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
+        $pengaduan = Pengaduan::with('statusTerakhir')->findOrFail($request->id_pengaduan);
 
-        if ($pengaduan->status !== 'diproses') {
+        if ($pengaduan->statusTerakhir->status !== 'diproses') {
             return back()->with('error', 'Pengaduan hanya bisa diselesaikan jika berstatus "diproses".');
         }
 
         try {
-            $pengaduan->status = 'selesai';
-            $pengaduan->save();
+            $pengaduan->statuses()->create([
+                'status' => 'selesai',
+            ]);
 
             return back()->with('success', 'Pengaduan berhasil diselesaikan.');
         } catch (\Exception $e) {
@@ -182,20 +201,18 @@ class AdminPengaduanController extends Controller
     {
         $request->validate(['id_pengaduan' => 'required|exists:pengaduans,id_pengaduan']);
 
-        $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
+        $pengaduan = Pengaduan::with('statusTerakhir')->findOrFail($request->id_pengaduan);
 
-
-        if ($pengaduan->status !== 'ditolak') {
+        if ($pengaduan->statusTerakhir->status !== 'ditolak') {
             return back()->with('error', 'Hanya pengaduan yang ditolak yang bisa dihapus.');
         }
 
-        $pengaduan->delete();
-
         try {
-            $pengaduan->delete();
+            $pengaduan->delete(); 
             return back()->with('success', 'Pengaduan berhasil dihapus.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menghapus pengaduan: ' . $e->getMessage());
+            Log::error('Gagal menghapus pengaduan: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat menghapus pengaduan.');
         }
     }
 }

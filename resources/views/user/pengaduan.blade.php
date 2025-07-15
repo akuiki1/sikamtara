@@ -181,7 +181,7 @@
                         <tr>
                             <td class="p-2 text-left">{{ Str::limit($pengaduan->judul_pengaduan, 50) }}</td>
                             <td class="p-2 text-center">{{ $pengaduan->created_at->diffForHumans() }}</td>
-                            <td class="p-2 text-center">{{ $pengaduan->status }}</td>
+                            <td class="p-2 text-center">{{ $pengaduan->statusTerakhir->status }}</td>
                             <td class="p-2 text-center gap-4">
                                 <x-button
                                     @click="selectedPengaduan = {{ json_encode($pengaduan) }}; showDetailModal = true"
@@ -331,7 +331,7 @@
 
                 <div>
                     <p class="font-semibold">Status</p>
-                    <p class="capitalize" x-text="selectedPengaduan.status"></p>
+                    <p class="capitalize" x-text="selectedPengaduan.status_terakhir?.status ?? '-'"></p>
                 </div>
 
                 <div x-show="selectedPengaduan.lampiran">

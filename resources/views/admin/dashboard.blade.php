@@ -108,7 +108,7 @@
                                 class="text-indigo-600 hover:underline">Lihat detail</a>
                         @elseif ($item instanceof \App\Models\Pengaduan)
                             Pengaduan dari {{ $item->user->penduduk->nama ?? 'Warga' }}
-                            <span class="text-gray-500">[{{ ucfirst($item->status) }}]</span>
+                            <span class="text-gray-500">[{{ ucfirst($item->statusTerakhir->status ?? 'Belum Ada Status') }}]</span>
                             · <a href="{{ route('admin.pengaduan.index') . '#pengajuanMasuk' }}"
                                 class="text-indigo-600 hover:underline">Lihat detail</a>
                         @endif

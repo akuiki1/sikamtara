@@ -3,27 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
+use App\Models\RiwayatStatusPengaduan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class PengaduanController extends Controller
 {
-
     public function index(Request $request)
     {
         $userId = Auth::id();
 
-        $query = Pengaduan::with('user.penduduk')
+        $query = Pengaduan::with(['user.penduduk', 'statusTerakhir'])
             ->where('id_user', $userId);
 
-        // Statistik milik user
-        $total = Pengaduan::where('id_user', $userId)->count();
-        $terkirim = Pengaduan::where('id_user', $userId)->where('status', 'terkirim')->count();
-        $diproses = Pengaduan::where('id_user', $userId)->whereIn('status', ['diterima', 'diproses'])->count();
-        $ditutup = Pengaduan::where('id_user', $userId)->whereIn('status', ['selesai', 'ditolak'])->count();
+        // Statistik berdasarkan status terakhir
+        $allPengaduanIds = Pengaduan::where('id_user', $userId)->pluck('id_pengaduan');
+
+        $riwayatTerakhir = RiwayatStatusPengaduan::whereIn('id_pengaduan', $allPengaduanIds)
+            ->select('id_pengaduan', 'status', 'tanggal_perubahan')
+            ->orderBy('tanggal_perubahan', 'desc')
+            ->get()
+            ->groupBy('id_pengaduan')
+            ->map(function ($group) {
+                return $group->first()->status;
+            });
+
+        $total = $riwayatTerakhir->count();
+        $terkirim = $riwayatTerakhir->filter(fn($s) => $s === 'terkirim')->count();
+        $diproses = $riwayatTerakhir->filter(fn($s) => in_array($s, ['diterima', 'diproses']))->count();
+        $ditutup = $riwayatTerakhir->filter(fn($s) => in_array($s, ['selesai', 'ditolak']))->count();
 
         // Filter pencarian
         if ($request->filled('search')) {
@@ -34,7 +44,9 @@ class PengaduanController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->whereHas('statusTerakhir', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
         }
 
         $pengaduans = $query->latest()->paginate(20)->appends(request()->query());
@@ -45,7 +57,7 @@ class PengaduanController extends Controller
                 'id_pengaduan' => $item->id_pengaduan,
                 'judul_pengaduan' => $item->judul_pengaduan,
                 'isi_pengaduan' => $item->isi_pengaduan,
-                'status' => $item->status,
+                'status' => $item->statusTerakhir->status ?? 'Belum Ada Status',
                 'created_at' => $item->created_at->toDateTimeString(),
                 'nama' => $item->user->penduduk->nama ?? '-',
                 'lampiran' => $item->lampiran,
@@ -67,7 +79,6 @@ class PengaduanController extends Controller
     {
         $user = Auth::user();
 
-        // Cek apakah user sudah terverifikasi
         if ($user->status_verifikasi !== 'Terverifikasi') {
             return back()->with('error', 'Akun Anda belum terverifikasi. Silakan verifikasi terlebih dahulu untuk mengirim pengaduan.');
         }
@@ -88,12 +99,19 @@ class PengaduanController extends Controller
                 $path = $request->file('lampiran')->storeAs('lampiran_pengaduan', $safeName, 'public');
             }
 
-            Pengaduan::create([
+            $pengaduan = Pengaduan::create([
                 'id_user' => $user->id_user,
                 'judul_pengaduan' => $request->judul_pengaduan,
                 'isi_pengaduan' => $request->isi_pengaduan,
                 'lampiran' => $path ?? '',
+            ]);
+
+            RiwayatStatusPengaduan::create([
+                'id_pengaduan' => $pengaduan->id_pengaduan,
                 'status' => 'terkirim',
+                'tanggal_perubahan' => now(),
+                'keterangan' => 'Pengaduan dikirim oleh pengguna.',
+                'diubah_oleh' => $user->id_user,
             ]);
 
             return back()->with('success', 'Pengaduan berhasil ditambahkan.');
@@ -102,7 +120,6 @@ class PengaduanController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menambahkan pengaduan.');
         }
     }
-
 
     public function update(Request $request)
     {
@@ -121,7 +138,6 @@ class PengaduanController extends Controller
         $pengaduan->isi_pengaduan = $request->isi_pengaduan;
 
         if ($request->hasFile('lampiran')) {
-            // Hapus lampiran lama
             if ($pengaduan->lampiran && Storage::exists($pengaduan->lampiran)) {
                 Storage::delete($pengaduan->lampiran);
             }
@@ -140,8 +156,6 @@ class PengaduanController extends Controller
         $request->validate(['id_pengaduan' => 'required|exists:pengaduans,id_pengaduan']);
 
         $pengaduan = Pengaduan::findOrFail($request->id_pengaduan);
-
-        $pengaduan->delete();
 
         try {
             $pengaduan->delete();
