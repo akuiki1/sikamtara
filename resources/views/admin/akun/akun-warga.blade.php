@@ -260,7 +260,7 @@
 
                     {{-- username --}}
                     <div class="">
-                        <label for="nama" class="block text-sm font-medium">Nama<span class="text-red-600">*</span></label>
+                        <label for="nama" class="block text-sm font-medium">Username<span class="text-red-600">*</span></label>
                         <input type="text" placeholder="Nama" id="nama" name="nama"
                             x-model="selectedUser?.nama"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
@@ -414,7 +414,7 @@
                 </div>
                 <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                     <p class="text-xs text-gray-500">Username</p>
-                    <p class="font-medium text-gray-800 break-words" x-text="selectedUser.nama"></p>
+                    <p class="font-medium text-gray-800 break-words" x-text="selectedUser.username"></p>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
                     <p class="text-xs text-gray-500">Password</p>

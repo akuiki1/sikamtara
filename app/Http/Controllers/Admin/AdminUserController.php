@@ -12,61 +12,6 @@ class AdminUserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profileindex(Request $request)
-    {
-        $query = User::with('penduduk');
-
-        // Pencarian berdasarkan email atau nama penduduk
-        if ($request->has('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('email', 'like', '%' . $request->search . '%')
-                    ->orWhereHas('penduduk', function ($p) use ($request) {
-                        $p->where('nama', 'like', '%' . $request->search . '%');
-                    });
-            });
-        }
-
-        // Filter berdasarkan role
-        if ($request->filled('role')) {
-            $query->where('role', $request->role);
-        }
-
-        // Filter berdasarkan status_verifikasi
-        if ($request->filled('status')) {
-            $query->where('status_verifikasi', $request->status);
-        }
-
-        // Pagination dengan query string tetap
-        $user = $query->paginate(10)->appends($request->query());
-
-        // Data untuk JavaScript (Alpine)
-        $transformed = collect($user->items())->map(function ($item) {
-            return [
-                'id_user'           => $item->id_user,
-                'email'             => $item->email,
-                'status_verifikasi' => $item->status_verifikasi,
-                'role'              => $item->role,
-                'foto'              => $item->foto,
-                'nama'              => $item->penduduk ? $item->penduduk->nama : null,
-                'nik'               => $item->nik,
-                'nama'          => $item->nama,
-                'password'          => $item->password,
-            ];
-        });
-
-        $daftarNik = Penduduk::select('nik')->get();
-
-        return view('admin.akun.profil', [
-            'user'      => $user,
-            'userJs'    => $transformed,
-            'search'    => $request->search,
-            'filter'    => $request->filter,
-            'daftarNik' => $daftarNik,
-            'role'      => $request->role,
-            'status'    => $request->status,
-        ]);
-    }
-
     public function index(Request $request)
     {
         $query = User::with(['penduduk', 'verifikasi']);
@@ -104,7 +49,7 @@ class AdminUserController extends Controller
                 'foto'              => $item->foto,
                 'nama'              => $item->penduduk ? $item->penduduk->nama : null,
                 'nik'               => $item->nik,
-                'nama'          => $item->nama,
+                'username'          => $item->nama,
                 'password'          => $item->password,
                 'id_verifikasi'     => $item->verifikasi?->id,
             ];
@@ -122,7 +67,6 @@ class AdminUserController extends Controller
             'status'    => $request->status,
         ]);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -149,7 +93,6 @@ class AdminUserController extends Controller
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
-
 
     /**
      * Update the specified resource in storage.
