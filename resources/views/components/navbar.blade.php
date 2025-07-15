@@ -107,7 +107,7 @@
                         class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 p-4">
 
                         <!-- Profil Ringkas -->
-                        <div class="flex flex-col border-b border-gray-200 mb-4 pb-4 relative">
+                        <a href="{{ route('profil.edit') }}" class="flex flex-col border-b border-gray-200 mb-4 pb-4 relative">
                             <!-- Foto profil -->
                             <div class="flex justify-center mb-2">
                                 <img src="{{ optional(Auth::user())->foto ? asset('storage/' . Auth::user()->foto) : asset('img/default-avatar.jpg') }}"
@@ -117,7 +117,7 @@
                             <!-- Nama dan Email -->
                             <h3 class="text-lg font-semibold text-gray-800 text-center">{{ Auth::user()->nama }}</h3>
                             <p class="text-sm text-gray-600 text-center truncate">{{ Auth::user()->email }}</p>
-                        </div>
+                        </a>
 
                         <div class="mb-3">
                             <!-- Edit Profil -->

@@ -33,11 +33,22 @@
                         const file = event.target.files[0];
                         if (!file) return;
                 
+                        const fileName = file.name.toLowerCase();
+                        const isHeic = fileName.endsWith('.heic') || file.type === 'image/heic';
+                
+                        if (isHeic) {
+                            alert('Format file .heic tidak didukung. Harap ubah ke format JPG, PNG, atau WEBP sebelum mengunggah.');
+                            this[previewKey] = null;
+                            event.target.value = '';
+                            return;
+                        }
+                
                         this.fileTooLarge[previewKey] = file.size > 2 * 1024 * 1024;
                 
                         if (this.fileTooLarge[previewKey]) {
                             this[previewKey] = null;
                             alert('Ukuran file ' + previewKey.replace('_', ' ') + ' terlalu besar. Maksimal 2MB.');
+                            event.target.value = '';
                         } else {
                             const reader = new FileReader();
                             reader.onload = e => {
@@ -101,8 +112,9 @@
                                     </div>
                                 </label>
 
-                                <input type="file" :id="input.id" :name="input.id" accept="image/*"
-                                    class="hidden" @change="handlePreview($event, input.preview)">
+                                <input type="file" :id="input.id" :name="input.id"
+                                    accept=".jpg,.jpeg,.png,.webp" class="hidden"
+                                    @change="handlePreview($event, input.preview)">
 
                                 <!-- Notifikasi error ukuran -->
                                 <template x-if="fileTooLarge[input.id]">
