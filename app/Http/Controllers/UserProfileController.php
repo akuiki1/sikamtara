@@ -76,6 +76,7 @@ class UserProfileController extends Controller
             'verifikasi' => $verifikasi,
         ]);
     }
+    
 
     public function verifikasiStore(Request $request)
     {

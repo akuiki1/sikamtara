@@ -42,7 +42,7 @@ class AdminProfileController extends Controller
                     Storage::delete('public/' . $user->foto);
                 }
 
-                $fotoPath = $request->file('foto')->store('foto', 'public');
+                $fotoPath = $request->file('foto')->store('foto-profil', 'public');
                 $user->foto = $fotoPath;
             }
 
