@@ -240,38 +240,90 @@
 
         {{-- modal tambah --}}
         <x-modal show="showAddModal" title="Tambah Akun Baru">
-            <form action="{{ route('user.store') }}" method="POST">
+            <form action="{{ route('user.store') }}" method="POST" x-data="{
+                nik: '',
+                email: '',
+                password: '',
+                password_confirmation: '',
+                isValidNIK: null,
+                showPassword: false,
+                showPassword2: false,
+            
+                validasiNIK() {
+                    this.isValidNIK = /^\d{16}$/.test(this.nik);
+                },
+            
+                get isPasswordConfirmed() {
+                    return this.password === this.password_confirmation;
+                },
+            
+                get isValidPassword() {
+                    return this.password.length >= 8;
+                },
+            
+                get isValidEmail() {
+                    return /^[^@]+@[^@]+\.[^@]+$/.test(this.email);
+                }
+            }"
+                @submit.prevent="validasiNIK(); if (!isValidNIK || !isPasswordConfirmed || !isValidPassword || !isValidEmail) return; $el.submit();">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {{-- nik --}}
+
+                    <!-- NIK -->
                     <div class="col-span-2">
-                        <label for="nik" class="block text-sm font-medium">
-                            NIK<span class="text-red-600">*</span>
-                        </label>
-                        <input list="daftarNik" name="nik" id="nik"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Ketik atau pilih NIK" required>
+                        <label for="nik" class="block text-sm font-medium">NIK<span
+                                class="text-red-600">*</span></label>
+                        <input list="daftarNik" name="nik" id="nik" x-model="nik"
+                            x-on:input="validasiNIK()" maxlength="16"
+                            class="w-full px-3 py-2 border rounded-md shadow-sm text-sm focus:outline-none focus:ring-2"
+                            :class="{
+                                'border-gray-300 focus:ring-blue-500 focus:border-blue-500': isValidNIK === null,
+                                'border-red-500 ring-red-500 focus:border-red-500': isValidNIK === false,
+                                'border-green-500 ring-green-500 focus:border-green-500': isValidNIK === true
+                            }"
+                            placeholder="Ketik atau pilih NIK" required pattern="\d{16}"
+                            title="NIK harus terdiri dari 16 digit angka">
                         <datalist id="daftarNik">
                             @foreach ($daftarNik as $nik)
                                 <option value="{{ $nik->nik }}"></option>
                             @endforeach
                         </datalist>
+                        <p class="text-xs mt-1 flex items-center gap-1" x-show="nik.length > 0"
+                            :class="isValidNIK ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValidNIK" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="isValidNIK === false" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="isValidNIK ? 'NIK valid.' : 'NIK harus terdiri dari 16 digit angka.'"></span>
+                        </p>
                     </div>
 
-                    {{-- username --}}
-                    <div class="">
-                        <label for="nama" class="block text-sm font-medium">Username<span class="text-red-600">*</span></label>
+                    <!-- Username -->
+                    <div>
+                        <label for="nama" class="block text-sm font-medium">Username<span
+                                class="text-red-600">*</span></label>
                         <input type="text" placeholder="Nama" id="nama" name="nama"
-                            x-model="selectedUser?.nama"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                     </div>
 
-                    {{-- email --}}
-                    <div class="">
-                        <label for="email" class="block text-sm font-medium">Email<span class="text-red-600">*</span></label>
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium">Email<span
+                                class="text-red-600">*</span></label>
                         <div class="relative">
-                            <input x-model="email" type="email" placeholder="Email" name="email"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            <input x-model="email" type="email" placeholder="Email" name="email" required
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                                :class="{
+                                    'border-green-500 ring-green-500': email.length > 0 && isValidEmail,
+                                    'border-red-500 ring-red-500': email.length > 0 && !isValidEmail
+                                }">
                             <button type="button" @click="email=''" x-show="email.length > 0"
                                 class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -281,25 +333,30 @@
                                 </svg>
                             </button>
                         </div>
+                        <p class="text-xs mt-1" x-show="email.length > 0"
+                            :class="isValidEmail ? 'text-green-500' : 'text-red-500'">
+                            <span x-text="isValidEmail ? 'Email valid.' : 'Format email tidak valid.'"></span>
+                        </p>
                     </div>
 
-                    {{-- password --}}
+                    <!-- Password -->
                     <div class="col-span-2">
-                        <label for="Password" class="block text-sm font-medium">Password<span class="text-red-600">*</span></label>
+                        <label for="password" class="block text-sm font-medium">Password<span
+                                class="text-red-600">*</span></label>
                         <div class="relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="selectedUser?.password"
-                                placeholder="Password" name="password"
+                            <input :type="showPassword ? 'text' : 'password'" x-model="password"
+                                placeholder="Password" name="password" required
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500 pr-10">
                             <button type="button" @click="showPassword = !showPassword"
                                 class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <template x-if="!showPassword">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path d="m15 18-.722-3.25" />
+                                        <path d="M15 18l-.722-3.25" />
                                         <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                        <path d="m20 15-1.726-2.05" />
-                                        <path d="m4 15 1.726-2.05" />
-                                        <path d="m9 18 .722-3.25" />
+                                        <path d="M20 15l-1.726-2.05" />
+                                        <path d="M4 15l1.726-2.05" />
+                                        <path d="M9 18l.722-3.25" />
                                     </svg>
                                 </template>
                                 <template x-if="showPassword">
@@ -312,25 +369,37 @@
                                 </template>
                             </button>
                         </div>
+                        <p class="text-xs mt-1" x-show="password.length > 0"
+                            :class="isValidPassword ? 'text-green-500' : 'text-red-500'">
+                            <span
+                                x-text="isValidPassword ? 'Password cukup kuat.' : 'Password minimal 8 karakter.'"></span>
+                        </p>
                     </div>
 
-                    {{-- konfirmasi password --}}
+                    <!-- Konfirmasi Password -->
                     <div class="col-span-2">
-                        <label for="Password" class="block text-sm font-medium">Konfirmasi Password<span class="text-red-600">*</span></label>
+                        <label for="password_confirmation" class="block text-sm font-medium">Konfirmasi Password<span
+                                class="text-red-600">*</span></label>
                         <div class="relative">
-                            <input :type="showPassword2 ? 'text' : 'password'" x-model="selectedUser?.password"
-                                placeholder="Password" name="password_confirmation"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500 pr-10">
+                            <input :type="showPassword2 ? 'text' : 'password'" x-model="password_confirmation"
+                                placeholder="Konfirmasi Password" name="password_confirmation" required
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500 pr-10"
+                                :class="{
+                                    'border-green-500 ring-green-500': password_confirmation.length > 0 &&
+                                        isPasswordConfirmed,
+                                    'border-red-500 ring-red-500': password_confirmation.length > 0 && !
+                                        isPasswordConfirmed
+                                }">
                             <button type="button" @click="showPassword2 = !showPassword2"
                                 class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600">
                                 <template x-if="!showPassword2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path d="m15 18-.722-3.25" />
+                                        <path d="M15 18l-.722-3.25" />
                                         <path d="M2 8a10.645 10.645 0 0 0 20 0" />
-                                        <path d="m20 15-1.726-2.05" />
-                                        <path d="m4 15 1.726-2.05" />
-                                        <path d="m9 18 .722-3.25" />
+                                        <path d="M20 15l-1.726-2.05" />
+                                        <path d="M4 15l1.726-2.05" />
+                                        <path d="M9 18l.722-3.25" />
                                     </svg>
                                 </template>
                                 <template x-if="showPassword2">
@@ -343,39 +412,45 @@
                                 </template>
                             </button>
                         </div>
+                        <p class="text-xs mt-1" x-show="password_confirmation.length > 0"
+                            :class="isPasswordConfirmed ? 'text-green-500' : 'text-red-500'">
+                            <span x-text="isPasswordConfirmed ? 'Password cocok.' : 'Password tidak cocok.'"></span>
+                        </p>
                     </div>
 
-                    {{-- role --}}
+                    <!-- Role -->
                     <div>
-                        <label for="role" class="block text-sm font-medium">Role<span class="text-red-600">*</span></label>
-                        <select id="role" name="role" x-model="selectedUser?.role"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
-                            <option value="">Pilih Role</option>
+                        <label for="role" class="block text-sm font-medium">Role<span
+                                class="text-red-600">*</span></label>
+                        <select id="role" name="role"
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
 
-                    {{-- status verifikasi --}}
+                    <!-- Status Verifikasi -->
                     <div>
-                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span class="text-red-600">*</span></label>
+                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span
+                                class="text-red-600">*</span></label>
                         <select id="status_verifikasi" name="status_verifikasi"
-                            x-model="selectedUser?.status_verifikasi"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
-                            <option value="">Pilih Status Akun</option>
-                            <option value="Terverifikasi">Terverifikasi</option>
-                            <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                             <option value="Belum Terverifikasi">Belum Terverifikasi</option>
+                            <option value="Menunggu Verifikasi">Menunggu Verifikasi</option>
+                            <option value="Terverifikasi">Terverifikasi</option>
                         </select>
                     </div>
-
                 </div>
 
-                {{-- button --}}
+                <!-- Buttons -->
                 <div class="mt-6 flex justify-end gap-2">
-                    <x-button type="button" @click="{{ 'showAddModal' }} = false"
-                        variant="secondary">Batal</x-button>
-                    <x-button type="submit">Simpan</x-button>
+                    <x-button type="button" @click="showAddModal = false" variant="secondary">Batal</x-button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+                        x-bind:disabled="isValidNIK === false || !isPasswordConfirmed || !isValidPassword || !isValidEmail">
+                        Simpan
+                    </button>
                 </div>
             </form>
         </x-modal>
@@ -444,26 +519,75 @@
 
         {{-- modal edit --}}
         <x-modal show="showEditModal" title="Edit Akun">
-            <form :action="`{{ url('/admin/akun-warga/update') }}/${selectedUser.id_user}`" method="POST">
+            <form :action="`{{ url('/admin/akun-warga/update') }}/${selectedUser.id_user}`" method="POST"
+                x-data="{
+                    isValidNIK: null,
+                    isValidEmail: null,
+                
+                    validasiNIK() {
+                        this.isValidNIK = /^\d{16}$/.test(selectedUser.nik || '');
+                    },
+                    validasiEmail() {
+                        this.isValidEmail = /^[^@]+@[^@]+\.[^@]+$/.test(selectedUser.email || '');
+                    }
+                }"
+                @submit.prevent="validasiNIK(); validasiEmail(); if (!isValidNIK || !isValidEmail) return; $el.submit();">
                 @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- NIK -->
                     <div class="col-span-2">
-                        <label for="nik" class="block text-sm font-medium">NIK<span class="text-red-600">*</span></label>
+                        <label for="nik" class="block text-sm font-medium">NIK<span
+                                class="text-red-600">*</span></label>
                         <input type="text" id="nik" name="nik" x-model="selectedUser.nik"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            x-on:input="validasiNIK()" maxlength="16"
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring"
+                            :class="{
+                                'border-gray-300 focus:ring-blue-500 focus:border-blue-500': isValidNIK === null,
+                                'border-red-500 ring-red-500 focus:border-red-500': isValidNIK === false,
+                                'border-green-500 ring-green-500 focus:border-green-500': isValidNIK === true
+                            }">
+                        <p class="text-xs mt-1 flex items-center gap-1"
+                            x-show="selectedUser.nik && selectedUser.nik.length > 0"
+                            :class="isValidNIK ? 'text-green-500' : 'text-red-500'">
+                            <svg x-show="isValidNIK" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            <svg x-show="isValidNIK === false" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            <span x-text="isValidNIK ? 'NIK valid.' : 'NIK harus terdiri dari 16 digit angka.'"></span>
+                        </p>
                     </div>
-                    <div class="">
-                        <label for="nama" class="block text-sm font-medium">Username<span class="text-red-600">*</span></label>
-                        <input type="text" placeholder="nama" id="nama" name="nama"
+
+                    <!-- Username -->
+                    <div>
+                        <label for="nama" class="block text-sm font-medium">Username<span
+                                class="text-red-600">*</span></label>
+                        <input type="text" id="nama" name="nama" placeholder="Nama"
                             x-model="selectedUser.nama"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                     </div>
-                    <div class="">
-                        <label for="email" class="block text-sm font-medium">Email<span class="text-red-600">*</span></label>
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium">Email<span
+                                class="text-red-600">*</span></label>
                         <div class="relative">
-                            <input x-model="selectedUser.email" type="email" placeholder="Email" name="email"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
-                            <button type="button" @click="email=''" x-show="email.length > 0"
+                            <input x-model="selectedUser.email" type="email" id="email" name="email"
+                                x-on:input="validasiEmail()"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring"
+                                :class="{
+                                    'border-green-500 ring-green-500': selectedUser.email && isValidEmail,
+                                    'border-red-500 ring-red-500': selectedUser.email && !isValidEmail
+                                }"
+                                required>
+                            <button type="button" @click="selectedUser.email=''"
+                                x-show="selectedUser.email && selectedUser.email.length > 0"
                                 class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -472,22 +596,33 @@
                                 </svg>
                             </button>
                         </div>
+                        <p class="text-xs mt-1" x-show="selectedUser.email && selectedUser.email.length > 0"
+                            :class="isValidEmail ? 'text-green-500' : 'text-red-500'">
+                            <span x-text="isValidEmail ? 'Email valid.' : 'Format email tidak valid.'"></span>
+                        </p>
                     </div>
 
+                    <!-- Role -->
                     <div>
-                        <label for="role" class="block text-sm font-medium">Role<span class="text-red-600">*</span></label>
+                        <label for="role" class="block text-sm font-medium">Role<span
+                                class="text-red-600">*</span></label>
                         <select id="role" name="role" x-model="selectedUser.role"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                             <option value="">Pilih Role</option>
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
+
+                    <!-- Status Verifikasi -->
                     <div>
-                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span class="text-red-600">*</span></label>
+                        <label for="status_verifikasi" class="block text-sm font-medium">Status Verifikasi<span
+                                class="text-red-600">*</span></label>
                         <select id="status_verifikasi" name="status_verifikasi"
                             x-model="selectedUser.status_verifikasi"
-                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                            required>
                             <option value="">Pilih Status Akun</option>
                             <option value="Terverifikasi">Terverifikasi</option>
                             <option value="Belum Terverifikasi">Belum Terverifikasi</option>
@@ -496,10 +631,13 @@
                     </div>
                 </div>
 
+                <!-- Tombol -->
                 <div class="mt-6 flex justify-end gap-2">
-                    <x-button type="button" @click="{{ 'showEditModal' }} = false"
-                        variant="secondary">Batal</x-button>
-                    <x-button type="submit">Simpan</x-button>
+                    <x-button type="button" @click="showEditModal = false" variant="secondary">Batal</x-button>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md disabled:opacity-50"
+                        :disabled="isValidNIK === false || isValidEmail === false">
+                        Simpan
+                    </button>
                 </div>
             </form>
         </x-modal>
