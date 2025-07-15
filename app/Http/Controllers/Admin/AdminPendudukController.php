@@ -74,22 +74,28 @@ class AdminPendudukController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'nik' => 'required|numeric|unique:penduduk,nik',
-                'nama' => 'required|string|max:255',
-                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-                'tempat_lahir' => 'required|string|max:100',
-                'tanggal_lahir' => 'required|date',
-                'agama' => 'required|string|max:50',
-                'pendidikan' => 'required|string|max:100',
-                'pekerjaan' => 'required|string|max:100',
-                'status_perkawinan' => 'required|string|max:50',
-                'golongan_darah' => 'required|string|max:10',
-                'kewarganegaraan' => 'required|string|max:100',
-                'hubungan' => 'required|string|max:50',
-                'kode_keluarga' => 'required|string|size:16|exists:keluarga,kode_keluarga',
-                'status_tinggal' => 'required|string|max:50',
-            ]);
+            $validated = $request->validate(
+                [
+                    'nik' => 'required|numeric|unique:penduduk,nik',
+                    'nama' => 'required|string|max:255',
+                    'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+                    'tempat_lahir' => 'required|string|max:100',
+                    'tanggal_lahir' => 'required|date',
+                    'agama' => 'required|string|max:50',
+                    'pendidikan' => 'required|string|max:100',
+                    'pekerjaan' => 'required|string|max:100',
+                    'status_perkawinan' => 'required|string|max:50',
+                    'golongan_darah' => 'required|string|max:10',
+                    'kewarganegaraan' => 'required|string|max:100',
+                    'hubungan' => 'required|string|max:50',
+                    'kode_keluarga' => 'required|string|size:16|exists:keluarga,kode_keluarga',
+                    'status_tinggal' => 'required|string|max:50',
+                ],
+                [
+                    'nik.unique' => 'NIK sudah terdaftar. Mohon masukkan NIK yang lain.',
+                    'kode_keluarga.exists' => 'KK tidak ditemukan. Pastikan KK yang dimasukkan sudah terdaftar.',
+                ]
+            );
 
             Penduduk::create($validated);
 
@@ -98,6 +104,7 @@ class AdminPendudukController extends Controller
             return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
+
 
     /**
      * Display the specified resource.

@@ -45,7 +45,7 @@ class AdminKeluargaController extends Controller
                 }),
             ];
         });
-        
+
 
         return view('admin.penduduk.keluarga', [
             'keluarga'      => $keluarga,
@@ -69,13 +69,18 @@ class AdminKeluargaController extends Controller
     public function store(Request $request)
     {
         try {
-            $validated = $request->validate([
-                'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga',
-                'nik_kepala_keluarga' => 'required|digits:16',
-                'alamat' => 'required|string',
-                'rt' => 'required|digits:3',
-                'rw' => 'required|digits:3',
-            ]);
+            $validated = $request->validate(
+                [
+                    'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga',
+                    'nik_kepala_keluarga' => 'required|digits:16',
+                    'alamat' => 'required|string',
+                    'rt' => 'required|digits:3',
+                    'rw' => 'required|digits:3',
+                ],
+                [
+                    'kode_keluarga.unique' => 'Kode Keluarga sudah terdaftar. Mohon gunakan kode yang lain.',
+                ]
+            );
 
             Keluarga::create($validated);
 

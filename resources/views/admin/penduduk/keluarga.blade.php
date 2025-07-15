@@ -49,8 +49,13 @@
                 </form>
 
                 <a href="{{ url()->current() }}"
-                   class="bg-gray-200 hover:bg-gray-300 text-indigo-500 w-auto p-2 rounded-full text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    class="bg-gray-200 hover:bg-gray-300 text-indigo-500 w-auto p-2 rounded-full text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
                 </a>
             </div>
             {{-- Button tambah Keluarga --}}
@@ -81,7 +86,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-50" x-show="filteredKeluarga.length > 0">
                     <template x-for="item in filteredKeluarga" :key="item.kode_keluarga">
-                         <tr class="even:bg-gray-50 hover:bg-gray-100">
+                        <tr class="even:bg-gray-50 hover:bg-gray-100">
                             <td class="px-4 py-3 text-gray-800 font-medium" x-text="item.kode_keluarga"></td>
                             <td class="px-4 py-3 text-gray-600" x-text="item.kepala_keluarga"></td>
                             <td class="px-4 py-3 text-gray-600"
@@ -110,8 +115,9 @@
                                 </button>
                                 <button @click="selectedKeluarga = item; showDeleteModal = true"
                                     class="text-red-600 hover:text-red-800 hover:bg-gray-200 rounded-full">
-                                    <svg class="w-[20px] h-[20px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <svg class="w-[20px] h-[20px]" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="1"
                                             d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
@@ -137,38 +143,77 @@
             class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Tambah Keluarga</h2>
-                <form action="{{ route('keluarga.store') }}" method="POST">
+
+                <form x-data="{
+                    kodeKeluarga: '',
+                    nikKepala: '',
+                    alamat: '',
+                    rt: '',
+                    rw: '',
+                    isValidKodeKeluarga: true,
+                    isValidNikKepala: true,
+                    validateKodeKeluarga() {
+                        this.isValidKodeKeluarga = /^\d{16}$/.test(this.kodeKeluarga);
+                    },
+                    validateNikKepalaKeluarga() {
+                        this.isValidNikKepala = /^\d{16}$/.test(this.nikKepala);
+                    }
+                }" @input="validateKodeKeluarga(); validateNikKepalaKeluarga()"
+                    action="{{ route('keluarga.store') }}" method="POST">
                     @csrf
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <!-- Kode Keluarga & Alamat -->
+                        <!-- Kode Keluarga -->
                         <div>
-                            <label for="kode_keluarga" class="block text-sm font-medium">Kode Keluarga<span class="text-red-600">*</span></label>
-                            <input type="text" id="kode_keluarga" name="kode_keluarga"
-                                x-model="selectedKeluarga?.kode_keluarga"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                            <label for="kode_keluarga" class="block text-sm font-medium">
+                                Kode Keluarga<span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" id="kode_keluarga" name="kode_keluarga" x-model="kodeKeluarga"
+                                maxlength="16"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                                :class="!isValidKodeKeluarga && kodeKeluarga.length > 0 ? 'border-red-500 ring-red-500' : ''">
+                            <p class="text-xs mt-1" x-show="kodeKeluarga.length > 0"
+                                :class="isValidKodeKeluarga ? 'text-green-500' : 'text-red-500'">
+                                <span x-text="isValidKodeKeluarga ? 'KK valid' : 'KK harus 16 digit angka'"></span>
+                            </p>
                         </div>
+
+                        <!-- NIK Kepala Keluarga -->
                         <div>
-                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">NIK Kepala
-                                Keluarga<span class="text-red-600">*</span></label>
+                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">
+                                NIK Kepala Keluarga<span class="text-red-600">*</span>
+                            </label>
                             <input type="text" id="nik_kepala_keluarga" name="nik_kepala_keluarga"
-                                x-model="selectedKeluarga?.nik_kepala_keluarga"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                x-model="nikKepala" maxlength="16"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                                :class="!isValidNikKepala && nikKepala.length > 0 ? 'border-red-500 ring-red-500' : ''">
+                            <p class="text-xs mt-1" x-show="nikKepala.length > 0"
+                                :class="isValidNikKepala ? 'text-green-500' : 'text-red-500'">
+                                <span x-text="isValidNikKepala ? 'NIK valid' : 'NIK harus 16 digit angka'"></span>
+                            </p>
                         </div>
-                        <div>
-                            <label for="alamat" class="block text-sm font-medium">Alamat<span class="text-red-600">*</span></label>
-                            <input type="text" id="alamat" x-model="selectedKeluarga?.alamat" name="alamat"
+
+                        <!-- Alamat -->
+                        <div class="md:col-span-2">
+                            <label for="alamat" class="block text-sm font-medium">Alamat<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="alamat" name="alamat" x-model="alamat"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
-                        <!-- RT & RW -->
+                        <!-- RT -->
                         <div>
-                            <label for="rt" class="block text-sm font-medium">RT<span class="text-red-600">*</span></label>
-                            <input type="text" id="rt" x-model="selectedKeluarga?.rt" name="rt"
+                            <label for="rt" class="block text-sm font-medium">RT<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="rt" name="rt" x-model="rt" maxlength="3"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
+
+                        <!-- RW -->
                         <div>
-                            <label for="rw" class="block text-sm font-medium">RW<span class="text-red-600">*</span></label>
-                            <input type="text" id="rw" x-model="selectedKeluarga?.rw" name="rw"
+                            <label for="rw" class="block text-sm font-medium">RW<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="rw" name="rw" x-model="rw" maxlength="3"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                     </div>
@@ -177,7 +222,8 @@
                     <div class="mt-6 flex justify-end gap-2">
                         <button type="button" @click="showAddModal = false"
                             class="px-4 py-2 bg-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-300">Batal</button>
-                        <button type="submit"
+                        <button type="submit" :disabled="!isValidKodeKeluarga || !isValidNikKepala"
+                            :class="(!isValidKodeKeluarga || !isValidNikKepala) ? 'opacity-50 cursor-not-allowed' : ''"
                             class="px-4 py-2 bg-blue-600 rounded-md text-sm text-white hover:bg-blue-700">Simpan</button>
                     </div>
                 </form>
@@ -258,46 +304,87 @@
                 class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6 space-y-4">
                 <h2 class="text-xl sm:text-2xl font-bold text-center text-gray-800 border-b pb-2">Edit Data Keluarga
                 </h2>
-                <form :action="'/admin/keluarga/' + selectedKeluarga.kode_keluarga" method="POST" class="space-y-4">
+
+                <form :action="'/admin/keluarga/' + selectedKeluarga.kode_keluarga" method="POST" class="space-y-4"
+                    x-data="{
+                        isValidKodeKeluarga: true,
+                        isValidNikKepala: true,
+                        validateKodeKeluarga() {
+                            this.isValidKodeKeluarga = /^\d{16}$/.test(selectedKeluarga?.kode_keluarga || '');
+                        },
+                        validateNikKepalaKeluarga() {
+                            this.isValidNikKepala = /^\d{16}$/.test(selectedKeluarga?.nik_kepala_keluarga || '');
+                        }
+                    }" @input="validateKodeKeluarga(); validateNikKepalaKeluarga()">
                     @csrf
                     @method('PUT')
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <!-- Kode Keluarga & Alamat -->
+                        <!-- Kode Keluarga -->
                         <div>
-                            <label for="kode_keluarga" class="block text-sm font-medium">Kode Keluarga<span class="text-red-600">*</span></label>
+                            <label for="kode_keluarga" class="block text-sm font-medium">
+                                Kode Keluarga<span class="text-red-600">*</span>
+                            </label>
                             <input type="text" id="kode_keluarga" name="kode_keluarga"
-                                x-model="selectedKeluarga?.kode_keluarga"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                x-model="selectedKeluarga.kode_keluarga" maxlength="16"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                                :class="!isValidKodeKeluarga && selectedKeluarga.kode_keluarga?.length > 0 ?
+                                    'border-red-500 ring-red-500' : ''">
+                            <p class="text-xs mt-1" x-show="selectedKeluarga.kode_keluarga?.length > 0"
+                                :class="isValidKodeKeluarga ? 'text-green-500' : 'text-red-500'">
+                                <span x-text="isValidKodeKeluarga ? 'KK valid' : 'KK harus 16 digit angka'"></span>
+                            </p>
                         </div>
+
+                        <!-- NIK Kepala Keluarga -->
                         <div>
-                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">NIK Kepala
-                                Keluarga<span class="text-red-600">*</span></label>
+                            <label for="nik_kepala_keluarga" class="block text-sm font-medium">
+                                NIK Kepala Keluarga<span class="text-red-600">*</span>
+                            </label>
                             <input type="text" id="nik_kepala_keluarga" name="nik_kepala_keluarga"
-                                x-model="selectedKeluarga?.nik_kepala_keluarga"
-                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
+                                x-model="selectedKeluarga.nik_kepala_keluarga" maxlength="16"
+                                class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
+                                :class="!isValidNikKepala && selectedKeluarga.nik_kepala_keluarga?.length > 0 ?
+                                    'border-red-500 ring-red-500' : ''">
+                            <p class="text-xs mt-1" x-show="selectedKeluarga.nik_kepala_keluarga?.length > 0"
+                                :class="isValidNikKepala ? 'text-green-500' : 'text-red-500'">
+                                <span x-text="isValidNikKepala ? 'NIK valid' : 'NIK harus 16 digit angka'"></span>
+                            </p>
                         </div>
-                        <div>
-                            <label for="alamat" class="block text-sm font-medium">Alamat<span class="text-red-600">*</span></label>
-                            <input type="text" id="alamat" x-model="selectedKeluarga?.alamat" name="alamat"
+
+                        <!-- Alamat -->
+                        <div class="md:col-span-2">
+                            <label for="alamat" class="block text-sm font-medium">Alamat<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="alamat" name="alamat" x-model="selectedKeluarga.alamat"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
 
-                        <!-- RT & RW -->
+                        <!-- RT -->
                         <div>
-                            <label for="rt" class="block text-sm font-medium">RT<span class="text-red-600">*</span></label>
-                            <input type="text" id="rt" x-model="selectedKeluarga?.rt" name="rt"
+                            <label for="rt" class="block text-sm font-medium">RT<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="rt" name="rt" x-model="selectedKeluarga.rt"
+                                maxlength="3"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
+
+                        <!-- RW -->
                         <div>
-                            <label for="rw" class="block text-sm font-medium">RW<span class="text-red-600">*</span></label>
-                            <input type="text" id="rw" x-model="selectedKeluarga?.rw" name="rw"
+                            <label for="rw" class="block text-sm font-medium">RW<span
+                                    class="text-red-600">*</span></label>
+                            <input type="text" id="rw" name="rw" x-model="selectedKeluarga.rw"
+                                maxlength="3"
                                 class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500">
                         </div>
                     </div>
+
+                    <!-- Tombol Aksi -->
                     <div class="text-center pt-4 space-x-2">
                         <button type="button" @click="showEditModal = false"
                             class="px-6 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition">Batal</button>
-                        <button type="submit"
+                        <button type="submit" :disabled="!isValidKodeKeluarga || !isValidNikKepala"
+                            :class="(!isValidKodeKeluarga || !isValidNikKepala) ? 'opacity-50 cursor-not-allowed' : ''"
                             class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Simpan</button>
                     </div>
                 </form>
@@ -313,7 +400,8 @@
                     <strong x-text="selectedKeluarga.kode_keluarga"></strong>?
                 </p>
 
-                <form :action="`/admin/keluarga/${selectedKeluarga.kode_keluarga}`" method="POST" x-ref="deleteForm">
+                <form :action="`/admin/keluarga/${selectedKeluarga.kode_keluarga}`" method="POST"
+                    x-ref="deleteForm">
                     @csrf
                     @method('DELETE')
 
