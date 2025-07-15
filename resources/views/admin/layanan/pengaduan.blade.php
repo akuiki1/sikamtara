@@ -175,7 +175,7 @@
                 <x-slot name="body">
                     @forelse($pengaduans as $pengaduan)
                         <tr>
-                            <td class="p-2 text-left">{{ $pengaduan->user->nama ?? '-' }}</td>
+                            <td class="p-2 text-left">{{ $pengaduan->user->penduduk->nama ?? '-' }}</td>
                             <td class="p-2 text-left">{{ Str::limit($pengaduan->judul_pengaduan, 50) }}</td>
                             <td class="p-2 text-center w-32">{{ $pengaduan->created_at->format('d M Y') }}</td>
                             <td class="p-2 text-center w-24">{{ $pengaduan->status }}</td>

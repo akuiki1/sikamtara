@@ -160,6 +160,7 @@
                 </tr>
             </x-slot>
             <x-slot name="body">
+                {{-- user = 0 --}}
                 <template x-if="filteredUser.length === 0">
                     <tr>
                         <td colspan="5" class="text-center text-gray-500 py-6">
@@ -167,6 +168,8 @@
                         </td>
                     </tr>
                 </template>
+
+                {{-- user < 0 --}}
                 <template x-for="item in filteredUser" :key="item.id_user">
                     <tr class="even:bg-gray-50 hover:bg-gray-100">
                         <td class="px-4 py-3 text-gray-800 font-medium">
