@@ -639,6 +639,14 @@
                                     <!-- Tombol aksi seperti Lihat / Edit -->
                                     <x-button @click="selectedPengajuanAdministrasi = item; showDetailModal = true"
                                         size="sm">Detail</x-button>
+                                    <template x-if="item.status_pengajuan === 'baru'">
+                                        <x-button @click="selectedPengajuanAdministrasi = item; showEditModal = true"
+                                            size="sm" variant="warning">Edit</x-button>
+                                    </template>
+                                    <template x-if="item.status_pengajuan === 'ditolak'">
+                                        <x-button @click="selectedPengajuanAdministrasi = item; showDeleteModal = true"
+                                            size="sm" variant="danger">Hapus</x-button>
+                                    </template>
                                     <template x-if="item.status_pengajuan === 'selesai' && item.surat_final">
                                         <a :href="`{{ route('surat.final.download', '') }}/${item.id_pengajuan_administrasi}`"
                                             target="_blank"
@@ -733,6 +741,30 @@
             </div>
         </x-modal>
 
+        {{-- modal hapus --}}
+        <x-modal show="showDeleteModal">
+            <div class="mb-6 space-y-1">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    Hapus Pengajuan <span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
+                </h2>
+                <p class="text-sm text-gray-500">Apakah anda yakin ingin menghapus pengajuan ini? Tindakan ini tidak
+                    dapat dibatalkan.</p>
+            </div>
+            <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                <x-button type="button" @click="showDeleteModal = false" variant="secondary" size="md">
+                    Batal
+                </x-button>
+                <form method="POST"
+                    :action="'{{ route('services.delete', ['id' => 'placeholder']) }}'.replace('placeholder',
+                        selectedPengajuanAdministrasi.id_pengajuan_administrasi)">
+                    @csrf
+                    @method('DELETE')
+                    <x-button type="submit" variant="danger" size="md">
+                        Hapus Pengajuan
+                    </x-button>
+                </form>
+            </div>
+        </x-modal>
     </section>
 
     <script>

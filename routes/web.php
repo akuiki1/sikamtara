@@ -58,9 +58,13 @@ Route::get('informasi/berita/detail', function () {
 Route::get('/informasi/kependudukan', [PendudukController::class, 'index'])->name('user.kependudukan');
 Route::get('/informasi/apbdes', [KeuanganController::class, 'index'])->name('user.keuangan');
 
+// halaman user
 Route::middleware(['auth', 'role:user'])->prefix('user')->group(function () {
     Route::get('/layanan/administrasi', [AdministrasiController::class, 'index'])->name('administrasi');
     Route::post('layanan/administrasi/{id}', [AdministrasiController::class, 'apply'])->name('services.apply');
+    Route::put('layanan/administrasi/{id}', [AdministrasiController::class, 'update'])->name('services.update');
+    Route::delete('layanan/administrasi/{id}', [AdministrasiController::class, 'destroy'])->name('services.delete');
+
     Route::get('layanan/administrasi/surat-final/{id}', [AdministrasiController::class, 'downloadSuratFinal'])->name('surat.final.download');
 
     Route::get('/layanan/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan');
