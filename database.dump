@@ -1,0 +1,944 @@
+-- MySQL dump 10.13  Distrib 8.0.18, for Win64 (x86_64)
+--
+-- Host: localhost    Database: sikamtara
+-- ------------------------------------------------------
+-- Server version	8.4.3
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `administrasis`
+--
+
+DROP TABLE IF EXISTS `administrasis`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `administrasis` (
+  `id_administrasi` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nama_administrasi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `persyaratan` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `form` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_administrasi`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `administrasis`
+--
+
+LOCK TABLES `administrasis` WRITE;
+/*!40000 ALTER TABLE `administrasis` DISABLE KEYS */;
+INSERT INTO `administrasis` VALUES (1,'Penerbitan Beasiswa','Voluptate ipsa vel ipsum minus aut ducimus distinctio voluptatem sed doloribus ipsa ex molestias.','- Surat pengantar desa\n- Bukti pembayaran PBB\n- Fotokopi Ijazah terakhir','form_administrasi/1984622341_212-Formulir Permohonan-420-3-08-20230514.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57'),(2,'Penerbitan Beasiswa','Tempora facere dolorem incidunt doloremque aspernatur accusantium fugiat alias nam.','- Fotokopi akta kelahiran\n- KTP orang tua\n- Kartu Keluarga','form_administrasi/1623456222_205-Formulir Layanan-113-2-09-20230901.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57'),(3,'Pendaftaran Domisili','Corrupti ut magnam et blanditiis corrupti non.','- Surat pengantar desa\n- Bukti pembayaran PBB\n- Fotokopi Ijazah terakhir','form_administrasi/1984622341_212-Formulir Permohonan-420-3-08-20230514.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57'),(4,'Surat Keterangan KTP','Sed tempora qui voluptas consequuntur corporis qui accusantium fuga.','- Surat pengantar desa\n- Bukti pembayaran PBB\n- Fotokopi Ijazah terakhir','form_administrasi/1748852852_189-Article Text-592-1-10-20230807.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57'),(5,'Permohonan Usaha','Non veritatis dolorem minus possimus cum sit adipisci corrupti.','- Surat pengantar desa\n- Bukti pembayaran PBB\n- Fotokopi Ijazah terakhir','form_administrasi/1984622341_212-Formulir Permohonan-420-3-08-20230514.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57');
+/*!40000 ALTER TABLE `administrasis` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `belanja`
+--
+
+DROP TABLE IF EXISTS `belanja`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `belanja` (
+  `id_belanja` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_belanja`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `belanja`
+--
+
+LOCK TABLES `belanja` WRITE;
+/*!40000 ALTER TABLE `belanja` DISABLE KEYS */;
+/*!40000 ALTER TABLE `belanja` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `beritas`
+--
+
+DROP TABLE IF EXISTS `beritas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `beritas` (
+  `id_berita` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `judul_berita` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `isi_berita` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gambar_cover` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal_publish` timestamp NULL DEFAULT NULL,
+  `penulis` bigint unsigned NOT NULL,
+  `status` enum('draft','published','archived') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_berita`),
+  KEY `beritas_penulis_foreign` (`penulis`),
+  CONSTRAINT `beritas_penulis_foreign` FOREIGN KEY (`penulis`) REFERENCES `users` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `beritas`
+--
+
+LOCK TABLES `beritas` WRITE;
+/*!40000 ALTER TABLE `beritas` DISABLE KEYS */;
+/*!40000 ALTER TABLE `beritas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cache`
+--
+
+DROP TABLE IF EXISTS `cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cache` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cache`
+--
+
+LOCK TABLES `cache` WRITE;
+/*!40000 ALTER TABLE `cache` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cache` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cache_locks`
+--
+
+DROP TABLE IF EXISTS `cache_locks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cache_locks`
+--
+
+LOCK TABLES `cache_locks` WRITE;
+/*!40000 ALTER TABLE `cache_locks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cache_locks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `failed_jobs`
+--
+
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `failed_jobs`
+--
+
+LOCK TABLES `failed_jobs` WRITE;
+/*!40000 ALTER TABLE `failed_jobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `failed_jobs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `job_batches`
+--
+
+DROP TABLE IF EXISTS `job_batches`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_batches` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_batches`
+--
+
+LOCK TABLES `job_batches` WRITE;
+/*!40000 ALTER TABLE `job_batches` DISABLE KEYS */;
+/*!40000 ALTER TABLE `job_batches` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `jobs`
+--
+
+DROP TABLE IF EXISTS `jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint unsigned NOT NULL,
+  `reserved_at` int unsigned DEFAULT NULL,
+  `available_at` int unsigned NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `jobs`
+--
+
+LOCK TABLES `jobs` WRITE;
+/*!40000 ALTER TABLE `jobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `jobs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `keluarga`
+--
+
+DROP TABLE IF EXISTS `keluarga`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `keluarga` (
+  `kode_keluarga` char(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nik_kepala_keluarga` char(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `alamat` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rt` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rw` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`kode_keluarga`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `keluarga`
+--
+
+LOCK TABLES `keluarga` WRITE;
+/*!40000 ALTER TABLE `keluarga` DISABLE KEYS */;
+INSERT INTO `keluarga` VALUES ('0857720316462722','4159828553982348','758 Nolan Villages\nProhaskaville, LA 69369-2356','6','1','2025-07-15 08:25:55','2025-07-15 08:25:55');
+/*!40000 ALTER TABLE `keluarga` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `luas_wilayah`
+--
+
+DROP TABLE IF EXISTS `luas_wilayah`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `luas_wilayah` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `luas` decimal(10,2) NOT NULL COMMENT 'Luas wilayah dalam satuan Hektar (Km)',
+  `satuan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Km' COMMENT 'Satuan luas wilayah, default adalah Kilometer (Km)',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `luas_wilayah`
+--
+
+LOCK TABLES `luas_wilayah` WRITE;
+/*!40000 ALTER TABLE `luas_wilayah` DISABLE KEYS */;
+/*!40000 ALTER TABLE `luas_wilayah` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `migrations`
+--
+
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `migrations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `migrations`
+--
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` VALUES (1,'0001_01_01_000001_create_cache_table',1),(2,'0001_01_01_000002_create_jobs_table',1),(3,'2025_05_06_075659_create_keluarga_table',1),(4,'2025_05_06_075730_create_penduduk_table',1),(5,'2025_05_06_080000_create_users_table',1),(6,'2025_05_06_081000_create_beritas_table',1),(7,'2025_05_06_081100_create_pengumuman_table',1),(8,'2025_05_07_191444_create_profil_desas_table',1),(9,'2025_06_01_203319_create_administrasis_table',1),(10,'2025_06_01_203745_create_pengajuan_administrasis_table',1),(11,'2025_06_06_133930_create_sejarah_table',1),(12,'2025_06_06_151744_create_visimisi_table',1),(13,'2025_06_07_194219_create_struktur_pemerintahan_table',1),(14,'2025_06_07_200255_create_pengaduans_table',1),(15,'2025_06_21_123804_create_tahun_anggaran',1),(16,'2025_06_21_123820_create_belanja',1),(17,'2025_06_21_123848_create_rincian_belanja',1),(18,'2025_06_21_124059_create_pembiayaan',1),(19,'2025_06_21_124113_create_pendapatan',1),(20,'2025_07_03_192537_create_program_pembangunan_desa_table',1),(21,'2025_07_03_193920_create_rw_table',1),(22,'2025_07_03_193921_create_rt_table',1),(23,'2025_07_03_195156_create_luas_wilayah_table',1),(24,'2025_07_04_112651_create_verifikasi_table',1),(25,'2025_07_15_161337_create_riwayat_status_pengaduan_table',1);
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `password_reset_tokens`
+--
+
+DROP TABLE IF EXISTS `password_reset_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `password_reset_tokens`
+--
+
+LOCK TABLES `password_reset_tokens` WRITE;
+/*!40000 ALTER TABLE `password_reset_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `password_reset_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pembiayaan`
+--
+
+DROP TABLE IF EXISTS `pembiayaan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pembiayaan` (
+  `id_pembiayaan` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_tahun_anggaran` bigint unsigned NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis` enum('penerimaan','pengeluaran') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `anggaran` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `realisasi` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `selisih` decimal(20,2) GENERATED ALWAYS AS ((`anggaran` - `realisasi`)) STORED,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_pembiayaan`),
+  KEY `pembiayaan_id_tahun_anggaran_foreign` (`id_tahun_anggaran`),
+  CONSTRAINT `pembiayaan_id_tahun_anggaran_foreign` FOREIGN KEY (`id_tahun_anggaran`) REFERENCES `tahun_anggaran` (`id_tahun_anggaran`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pembiayaan`
+--
+
+LOCK TABLES `pembiayaan` WRITE;
+/*!40000 ALTER TABLE `pembiayaan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pembiayaan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pendapatan`
+--
+
+DROP TABLE IF EXISTS `pendapatan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pendapatan` (
+  `id_pendapatan` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_tahun_anggaran` bigint unsigned NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `anggaran` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `realisasi` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `selisih` decimal(20,2) GENERATED ALWAYS AS ((`anggaran` - `realisasi`)) STORED,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_pendapatan`),
+  KEY `pendapatan_id_tahun_anggaran_foreign` (`id_tahun_anggaran`),
+  CONSTRAINT `pendapatan_id_tahun_anggaran_foreign` FOREIGN KEY (`id_tahun_anggaran`) REFERENCES `tahun_anggaran` (`id_tahun_anggaran`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pendapatan`
+--
+
+LOCK TABLES `pendapatan` WRITE;
+/*!40000 ALTER TABLE `pendapatan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pendapatan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `penduduk`
+--
+
+DROP TABLE IF EXISTS `penduduk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `penduduk` (
+  `nik` char(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis_kelamin` enum('Laki-laki','Perempuan') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tempat_lahir` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
+  `agama` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pendidikan` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pekerjaan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status_perkawinan` enum('Belum Kawin','Kawin','Cerai Hidup','Cerai Mati','Kawin Tercatat','Kawin Tidak Tercatat') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `golongan_darah` varchar(3) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `kewarganegaraan` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'WNI',
+  `hubungan` enum('Kepala Keluarga','Suami','Istri','Anak','Menantu','Orang tua','Mertua','Pembantu') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `kode_keluarga` char(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status_tinggal` enum('Tetap','Pindah','Meninggal') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tetap',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`nik`),
+  KEY `penduduk_kode_keluarga_foreign` (`kode_keluarga`),
+  CONSTRAINT `penduduk_kode_keluarga_foreign` FOREIGN KEY (`kode_keluarga`) REFERENCES `keluarga` (`kode_keluarga`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `penduduk`
+--
+
+LOCK TABLES `penduduk` WRITE;
+/*!40000 ALTER TABLE `penduduk` DISABLE KEYS */;
+INSERT INTO `penduduk` VALUES ('1766186764714443','Pamela Schinner','Laki-laki','Sidneymouth','1973-12-26','Islam','SMA','Biological Scientist','Cerai Hidup','B','WNI','Orang tua','0857720316462722','Pindah','2025-07-15 08:25:55','2025-07-15 08:25:55'),('7278755450049262','Dameon Bednar','Perempuan','Luciousfurt','1975-11-25','Hindu','SMP','Personnel Recruiter','Kawin Tercatat','O','WNI','Menantu','0857720316462722','Meninggal','2025-07-15 08:25:55','2025-07-15 08:25:55'),('7299200853242924','Allen Tremblay','Perempuan','West Glennieside','1979-11-04','Hindu','SMA','Electronic Masking System Operator','Belum Kawin','AB','WNI','Menantu','0857720316462722','Tetap','2025-07-15 08:25:55','2025-07-15 08:25:55'),('7559326187970347','Dr. Melyna Bogan','Perempuan','Rodrickstad','1985-08-15','Budha','SMP','Fraud Investigator','Kawin Tercatat','AB','WNI','Orang tua','0857720316462722','Pindah','2025-07-15 08:25:55','2025-07-15 08:25:55'),('9303539419176696','Gideon Ortiz III','Laki-laki','North Alec','2005-02-14','Budha','SMA','Tractor-Trailer Truck Driver','Kawin Tidak Tercatat','O','WNI','Kepala Keluarga','0857720316462722','Pindah','2025-07-15 08:25:55','2025-07-15 08:25:55');
+/*!40000 ALTER TABLE `penduduk` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pengaduans`
+--
+
+DROP TABLE IF EXISTS `pengaduans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pengaduans` (
+  `id_pengaduan` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` bigint unsigned NOT NULL,
+  `judul_pengaduan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `isi_pengaduan` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lampiran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_pengaduan`),
+  KEY `pengaduans_id_user_foreign` (`id_user`),
+  CONSTRAINT `pengaduans_id_user_foreign` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pengaduans`
+--
+
+LOCK TABLES `pengaduans` WRITE;
+/*!40000 ALTER TABLE `pengaduans` DISABLE KEYS */;
+INSERT INTO `pengaduans` VALUES (1,2,'aa','1','lampiran_pengaduan/1752596938_1752570588_Transkrip Iki.pdf','2025-07-15 08:29:00','2025-07-15 08:29:00');
+/*!40000 ALTER TABLE `pengaduans` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pengajuan_administrasis`
+--
+
+DROP TABLE IF EXISTS `pengajuan_administrasis`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pengajuan_administrasis` (
+  `id_pengajuan_administrasi` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_administrasi` bigint unsigned NOT NULL,
+  `id_user` bigint unsigned NOT NULL,
+  `tanggal_pengajuan` timestamp NOT NULL,
+  `form` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lampiran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status_pengajuan` enum('baru','ditinjau','diproses','ditolak','selesai') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `surat_final` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_pengajuan_administrasi`),
+  KEY `pengajuan_administrasis_id_administrasi_foreign` (`id_administrasi`),
+  KEY `pengajuan_administrasis_id_user_foreign` (`id_user`),
+  CONSTRAINT `pengajuan_administrasis_id_administrasi_foreign` FOREIGN KEY (`id_administrasi`) REFERENCES `administrasis` (`id_administrasi`),
+  CONSTRAINT `pengajuan_administrasis_id_user_foreign` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pengajuan_administrasis`
+--
+
+LOCK TABLES `pengajuan_administrasis` WRITE;
+/*!40000 ALTER TABLE `pengajuan_administrasis` DISABLE KEYS */;
+INSERT INTO `pengajuan_administrasis` VALUES (2,5,3,'2025-04-16 23:04:05','ipsa.pdf','nisi.pdf','baru',NULL,'2025-07-15 08:25:57','2025-07-15 08:25:57'),(3,2,3,'2025-04-15 02:40:24','quia.pdf','libero.pdf','ditolak','et.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57'),(4,5,3,'2025-04-13 11:30:38','aut.pdf','laboriosam.pdf','ditolak',NULL,'2025-07-15 08:25:57','2025-07-15 08:25:57'),(5,1,4,'2025-03-01 06:02:54','ea.pdf','voluptatem.pdf','ditinjau','voluptatum.pdf','2025-07-15 08:25:57','2025-07-15 08:25:57');
+/*!40000 ALTER TABLE `pengajuan_administrasis` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pengumuman`
+--
+
+DROP TABLE IF EXISTS `pengumuman`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pengumuman` (
+  `id_pengumuman` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `judul_pengumuman` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `isi_pengumuman` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_lampiran` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tanggal_publish` timestamp NULL DEFAULT NULL,
+  `penulis` bigint unsigned NOT NULL,
+  `status` enum('draft','published','archived') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'draft',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_pengumuman`),
+  KEY `pengumuman_penulis_foreign` (`penulis`),
+  CONSTRAINT `pengumuman_penulis_foreign` FOREIGN KEY (`penulis`) REFERENCES `users` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pengumuman`
+--
+
+LOCK TABLES `pengumuman` WRITE;
+/*!40000 ALTER TABLE `pengumuman` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pengumuman` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `profil_desa`
+--
+
+DROP TABLE IF EXISTS `profil_desa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `profil_desa` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `visi` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `misi` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `profil_desa`
+--
+
+LOCK TABLES `profil_desa` WRITE;
+/*!40000 ALTER TABLE `profil_desa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `profil_desa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `program_pembangunan_desa`
+--
+
+DROP TABLE IF EXISTS `program_pembangunan_desa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `program_pembangunan_desa` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nama_program` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `jenis_program` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lokasi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal_mulai` date NOT NULL,
+  `tanggal_selesai` date DEFAULT NULL,
+  `anggaran` bigint NOT NULL,
+  `sumber_dana` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `penanggung_jawab` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` enum('perencanaan','pelaksanaan','selesai','batal') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'perencanaan',
+  `deskripsi` text COLLATE utf8mb4_unicode_ci,
+  `foto_dokumentasi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `program_pembangunan_desa`
+--
+
+LOCK TABLES `program_pembangunan_desa` WRITE;
+/*!40000 ALTER TABLE `program_pembangunan_desa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `program_pembangunan_desa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rincian_belanja`
+--
+
+DROP TABLE IF EXISTS `rincian_belanja`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rincian_belanja` (
+  `id_rincian_belanja` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_belanja` bigint unsigned NOT NULL,
+  `id_tahun_anggaran` bigint unsigned NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `anggaran` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `realisasi` decimal(20,2) NOT NULL DEFAULT '0.00',
+  `selisih` decimal(20,2) GENERATED ALWAYS AS ((`anggaran` - `realisasi`)) STORED,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_rincian_belanja`),
+  KEY `rincian_belanja_id_belanja_foreign` (`id_belanja`),
+  KEY `rincian_belanja_id_tahun_anggaran_foreign` (`id_tahun_anggaran`),
+  CONSTRAINT `rincian_belanja_id_belanja_foreign` FOREIGN KEY (`id_belanja`) REFERENCES `belanja` (`id_belanja`) ON DELETE CASCADE,
+  CONSTRAINT `rincian_belanja_id_tahun_anggaran_foreign` FOREIGN KEY (`id_tahun_anggaran`) REFERENCES `tahun_anggaran` (`id_tahun_anggaran`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rincian_belanja`
+--
+
+LOCK TABLES `rincian_belanja` WRITE;
+/*!40000 ALTER TABLE `rincian_belanja` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rincian_belanja` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `riwayat_status_pengaduan`
+--
+
+DROP TABLE IF EXISTS `riwayat_status_pengaduan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `riwayat_status_pengaduan` (
+  `id_riwayat_status_pengaduan` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_pengaduan` bigint unsigned NOT NULL,
+  `status` enum('terkirim','diterima','diproses','ditolak','selesai') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal_perubahan` datetime NOT NULL,
+  `keterangan` text COLLATE utf8mb4_unicode_ci,
+  `diubah_oleh` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_riwayat_status_pengaduan`),
+  KEY `riwayat_status_pengaduan_id_pengaduan_foreign` (`id_pengaduan`),
+  KEY `riwayat_status_pengaduan_diubah_oleh_foreign` (`diubah_oleh`),
+  CONSTRAINT `riwayat_status_pengaduan_diubah_oleh_foreign` FOREIGN KEY (`diubah_oleh`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
+  CONSTRAINT `riwayat_status_pengaduan_id_pengaduan_foreign` FOREIGN KEY (`id_pengaduan`) REFERENCES `pengaduans` (`id_pengaduan`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `riwayat_status_pengaduan`
+--
+
+LOCK TABLES `riwayat_status_pengaduan` WRITE;
+/*!40000 ALTER TABLE `riwayat_status_pengaduan` DISABLE KEYS */;
+INSERT INTO `riwayat_status_pengaduan` VALUES (1,1,'terkirim','2025-07-15 16:29:00','Pengaduan dikirim oleh pengguna.',2,'2025-07-15 08:29:00','2025-07-15 08:29:00'),(2,1,'diterima','2025-07-15 17:27:03',NULL,1,'2025-07-15 09:27:03','2025-07-15 09:27:03'),(3,1,'diproses','2025-07-15 17:27:50',NULL,1,'2025-07-15 09:27:50','2025-07-15 09:27:50'),(4,1,'selesai','2025-07-15 17:27:54',NULL,1,'2025-07-15 09:27:54','2025-07-15 09:27:54');
+/*!40000 ALTER TABLE `riwayat_status_pengaduan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rt`
+--
+
+DROP TABLE IF EXISTS `rt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rt` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_rw` bigint unsigned NOT NULL,
+  `rt` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rt_id_rw_foreign` (`id_rw`),
+  CONSTRAINT `rt_id_rw_foreign` FOREIGN KEY (`id_rw`) REFERENCES `rw` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rt`
+--
+
+LOCK TABLES `rt` WRITE;
+/*!40000 ALTER TABLE `rt` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rw`
+--
+
+DROP TABLE IF EXISTS `rw`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rw` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `rw` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rw`
+--
+
+LOCK TABLES `rw` WRITE;
+/*!40000 ALTER TABLE `rw` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rw` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sejarah`
+--
+
+DROP TABLE IF EXISTS `sejarah`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sejarah` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `sejarah` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sejarah`
+--
+
+LOCK TABLES `sejarah` WRITE;
+/*!40000 ALTER TABLE `sejarah` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sejarah` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sessions` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sessions_user_id_index` (`user_id`),
+  KEY `sessions_last_activity_index` (`last_activity`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+INSERT INTO `sessions` VALUES ('yVU0lTT1kRtoSP5mbcmJ5jRhvFK0zjgfusCLHOTW',2,'127.0.0.1','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36','YTo0OntzOjY6Il90b2tlbiI7czo0MDoiRHZOOWFOdmE5ZG1sNEh4b3lXdTNyTVlaZVVxUGJETjAwUnpDMEVlRiI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDc6Imh0dHA6Ly9zaWthbXRhcmEudGVzdC91c2VyL2xheWFuYW4vYWRtaW5pc3RyYXNpIjt9czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9',1752647791);
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `struktur_pemerintahan`
+--
+
+DROP TABLE IF EXISTS `struktur_pemerintahan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `struktur_pemerintahan` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` bigint unsigned NOT NULL,
+  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `deskripsi` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `struktur_pemerintahan_id_user_foreign` (`id_user`),
+  CONSTRAINT `struktur_pemerintahan_id_user_foreign` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `struktur_pemerintahan`
+--
+
+LOCK TABLES `struktur_pemerintahan` WRITE;
+/*!40000 ALTER TABLE `struktur_pemerintahan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `struktur_pemerintahan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tahun_anggaran`
+--
+
+DROP TABLE IF EXISTS `tahun_anggaran`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tahun_anggaran` (
+  `id_tahun_anggaran` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `tahun` year NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_tahun_anggaran`),
+  UNIQUE KEY `tahun_anggaran_tahun_unique` (`tahun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tahun_anggaran`
+--
+
+LOCK TABLES `tahun_anggaran` WRITE;
+/*!40000 ALTER TABLE `tahun_anggaran` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tahun_anggaran` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id_user` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nik` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` enum('admin','user') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
+  `foto` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status_verifikasi` enum('Belum Terverifikasi','Menunggu Verifikasi','Terverifikasi') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Belum Terverifikasi',
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  KEY `users_nik_foreign` (`nik`),
+  CONSTRAINT `users_nik_foreign` FOREIGN KEY (`nik`) REFERENCES `penduduk` (`nik`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'Gwen Lowe V','1766186764714443','admin@admin.com','$2y$12$18nw1YVCOI9UP0meGdUogeDkTUFYnv1eIqXhNnnyAtO9Tm2y.3bGC','admin','https://via.placeholder.com/640x480.png/000088?text=people+ullam','Belum Terverifikasi','DLLQOEKyif','2025-07-15 08:25:56','2025-07-15 08:25:56'),(2,'Leopold Vandervort','7299200853242924','user@user.com','$2y$12$jSfZHeQWyt1lGYdKKE6WjOOQUZWxSI2mQAP5jWYVuiLiTzfI8.quu','user','https://via.placeholder.com/640x480.png/00cc11?text=people+sit','Terverifikasi','IRtTesfPM0','2025-07-15 08:25:56','2025-07-15 08:25:56'),(3,'Blaze Koss','7559326187970347','stracke.jared@example.org','$2y$12$NdXwposooE.2CmC9wfo4suTV..MAmMJvzJykP9HkcSdescUXZl1Te','user','https://via.placeholder.com/640x480.png/00ddff?text=people+est','Belum Terverifikasi','XRpJ0xQuxr','2025-07-15 08:25:56','2025-07-15 08:25:56'),(4,'Johnson McClure','7278755450049262','hwintheiser@example.net','$2y$12$XWukgnG2ucDYtEJTlrRWs.oE27dWFvvdS8KW/r42r84SqFCy3lRgC','user','https://via.placeholder.com/640x480.png/006677?text=people+quasi','Terverifikasi','NlOlPqFKLt','2025-07-15 08:25:56','2025-07-15 08:25:56'),(5,'Carlee Beier','9303539419176696','fisher.emma@example.org','$2y$12$zNDFUChn707VCIhwnP7TDObSHLBXmAFfWup6CfwZeax9V.aGbfC9S','user','https://via.placeholder.com/640x480.png/00cc22?text=people+aliquam','Belum Terverifikasi','e4udF80gcm','2025-07-15 08:25:57','2025-07-15 08:25:57');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `verifikasi`
+--
+
+DROP TABLE IF EXISTS `verifikasi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `verifikasi` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` bigint unsigned NOT NULL,
+  `foto_ktp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `selfie_ktp` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `foto_kk` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `verifikasi_id_user_foreign` (`id_user`),
+  CONSTRAINT `verifikasi_id_user_foreign` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `verifikasi`
+--
+
+LOCK TABLES `verifikasi` WRITE;
+/*!40000 ALTER TABLE `verifikasi` DISABLE KEYS */;
+/*!40000 ALTER TABLE `verifikasi` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `visimisi`
+--
+
+DROP TABLE IF EXISTS `visimisi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visimisi` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `visi` text COLLATE utf8mb4_unicode_ci,
+  `misi` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visimisi`
+--
+
+LOCK TABLES `visimisi` WRITE;
+/*!40000 ALTER TABLE `visimisi` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visimisi` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'sikamtara'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-07-16 16:20:58
