@@ -497,6 +497,8 @@
         search: '{{ request('search_riwayat') }}',
         filterStatus: '',
         showDetailModal: false,
+        showEditModal: false,
+        showDeleteModal: false,
         selectedPengajuanAdministrasi: null,
         pengajuanAdministrasi: @js($pengajuanAdministrasi),
         get filteredAdministrasi() {
@@ -640,8 +642,14 @@
                                     <x-button @click="selectedPengajuanAdministrasi = item; showDetailModal = true"
                                         size="sm">Detail</x-button>
                                     <template x-if="item.status_pengajuan === 'baru'">
-                                        <x-button @click="selectedPengajuanAdministrasi = item; showEditModal = true"
-                                            size="sm" variant="warning">Edit</x-button>
+                                        <div>
+                                            <x-button
+                                                @click="selectedPengajuanAdministrasi = item; showEditModal = true"
+                                                size="sm" variant="warning">Edit</x-button>
+                                            <x-button
+                                                @click="selectedPengajuanAdministrasi = item; showDeleteModal = true"
+                                                size="sm" variant="danger">Hapus</x-button>
+                                        </div>
                                     </template>
                                     <template x-if="item.status_pengajuan === 'ditolak'">
                                         <x-button @click="selectedPengajuanAdministrasi = item; showDeleteModal = true"
@@ -743,27 +751,74 @@
 
         {{-- modal hapus --}}
         <x-modal show="showDeleteModal">
-            <div class="mb-6 space-y-1">
-                <h2 class="text-2xl font-bold text-gray-900">
-                    Hapus Pengajuan <span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
+            <div class="mb-4">
+                <h2 class="text-xl font-bold text-gray-900">
+                    Hapus Pengajuan
                 </h2>
-                <p class="text-sm text-gray-500">Apakah anda yakin ingin menghapus pengajuan ini? Tindakan ini tidak
-                    dapat dibatalkan.</p>
+                <p class="text-sm text-gray-500">
+                    Apakah kamu yakin ingin menghapus layanan "<span
+                        x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>"?
+                    Tindakan ini tidak dapat dibatalkan.
+                </p>
             </div>
+
+            <!-- Tombol Aksi -->
             <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
                 <x-button type="button" @click="showDeleteModal = false" variant="secondary" size="md">
                     Batal
                 </x-button>
-                <form method="POST"
-                    :action="'{{ route('services.delete', ['id' => 'placeholder']) }}'.replace('placeholder',
-                        selectedPengajuanAdministrasi.id_pengajuan_administrasi)">
+                <form  x-bind:action="'{{ rtrim(route('pengajuan.destroy', ''), '/') }}/' + selectedPengajuanAdministrasi
+                    .id_pengajuan_administrasi" method="POST">
                     @csrf
                     @method('DELETE')
-                    <x-button type="submit" variant="danger" size="md">
-                        Hapus Pengajuan
-                    </x-button>
+                    <x-button type="submit" variant="danger" size="md">Hapus</x-button>
                 </form>
             </div>
+        </x-modal>
+
+        {{-- modal edit --}}
+        <x-modal show="showEditModal">
+            <form method="POST"
+                x-bind:action="'{{ rtrim(route('pengajuan.update', ''), '/') }}/' + selectedPengajuanAdministrasi
+                    .id_pengajuan_administrasi"
+                 enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="mb-6 space-y-1">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        Edit Pengajuan: <span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
+                    </h2>
+                    <p class="text-sm text-gray-500">Perbarui formulir dan lampiran Anda jika diperlukan.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Formulir <small
+                                class="block text-gray-400 text-xs font-light">Format: Pdf, Doc, Docx. Maks
+                                2Mb</small></label>
+                        <input type="file" name="form" accept=".pdf,.doc,.docx"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" />
+                        <p class="text-xs text-gray-400">File sebelumnya: <span
+                                x-text="selectedPengajuanAdministrasi.form_name"></span></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Lampiran <small
+                                class="block text-gray-400 text-xs font-light">Format: Pdf, Doc, Docx. Maks
+                                2Mb</small></label>
+                        <input type="file" name="lampiran" accept=".pdf,.doc,.docx"
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" />
+                        <p class="text-xs text-gray-400">File sebelumnya: <span
+                                x-text="selectedPengajuanAdministrasi.lampiran_name"></span></p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                    <x-button type="button" @click="showEditModal = false" variant="secondary"
+                        size="md">Batal</x-button>
+                    <x-button type="submit" variant="primary" size="md">Simpan Perubahan</x-button>
+                </div>
+            </form>
         </x-modal>
     </section>
 

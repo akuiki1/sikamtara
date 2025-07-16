@@ -175,6 +175,65 @@ class AdministrasiController extends Controller
         }
     }
 
+    public function update(Request $request, $id_pengajuan)
+    {
+        $request->validate([
+            'form' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        try {
+            $pengajuan = PengajuanAdministrasi::findOrFail($id_pengajuan);
+
+            // Ganti file form jika diunggah
+            if ($request->hasFile('form')) {
+                $formFile = $request->file('form');
+                $formFilename = time() . '_' . $formFile->getClientOriginalName();
+                $formPath = $formFile->storeAs('formulir', $formFilename, 'public');
+                $pengajuan->form = $formPath;
+            }
+
+            // Ganti lampiran jika diunggah
+            if ($request->hasFile('lampiran')) {
+                $lampiranFile = $request->file('lampiran');
+                $lampiranFilename = time() . '_' . $lampiranFile->getClientOriginalName();
+                $lampiranPath = $lampiranFile->storeAs('lampiran', $lampiranFilename, 'public');
+                $pengajuan->lampiran = $lampiranPath;
+            }
+
+            $pengajuan->updated_at = now();
+            $pengajuan->save();
+
+            return redirect()->back()->with('success', 'Pengajuan berhasil diperbarui!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui pengajuan: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $pengajuan = PengajuanAdministrasi::findOrFail($id);
+
+            // Hapus file form jika ada
+            if ($pengajuan->form && Storage::disk('public')->exists($pengajuan->form)) {
+                Storage::disk('public')->delete($pengajuan->form);
+            }
+
+            // Hapus file lampiran jika ada
+            if ($pengajuan->lampiran && Storage::disk('public')->exists($pengajuan->lampiran)) {
+                Storage::disk('public')->delete($pengajuan->lampiran);
+            }
+
+            // Hapus record dari database
+            $pengajuan->delete();
+
+            return redirect()->back()->with('success', 'Pengajuan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus pengajuan: ' . $e->getMessage());
+        }
+    }
+
     public function downloadSuratFinal($id)
     {
         $pengajuan = PengajuanAdministrasi::with(['user', 'administrasi'])->findOrFail($id);
