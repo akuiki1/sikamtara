@@ -767,8 +767,10 @@
                 <x-button type="button" @click="showDeleteModal = false" variant="secondary" size="md">
                     Batal
                 </x-button>
-                <form  x-bind:action="'{{ rtrim(route('pengajuan.destroy', ''), '/') }}/' + selectedPengajuanAdministrasi
-                    .id_pengajuan_administrasi" method="POST">
+                <form
+                    x-bind:action="'{{ rtrim(route('pengajuan.destroy', ''), '/') }}/' + selectedPengajuanAdministrasi
+                        .id_pengajuan_administrasi"
+                    method="POST">
                     @csrf
                     @method('DELETE')
                     <x-button type="submit" variant="danger" size="md">Hapus</x-button>
@@ -778,12 +780,13 @@
 
         {{-- modal edit --}}
         <x-modal show="showEditModal">
-            <form method="POST"
+            <form method="POST" x-data="fileValidationForm"
                 x-bind:action="'{{ rtrim(route('pengajuan.update', ''), '/') }}/' + selectedPengajuanAdministrasi
                     .id_pengajuan_administrasi"
-                 enctype="multipart/form-data">
+                enctype="multipart/form-data" @submit.prevent="validateBeforeSubmit($el)">
                 @csrf
                 @method('PUT')
+
                 <div class="mb-6 space-y-1">
                     <h2 class="text-2xl font-bold text-gray-900">
                         Edit Pengajuan: <span x-text="selectedPengajuanAdministrasi.nama_administrasi"></span>
@@ -791,23 +794,37 @@
                     <p class="text-sm text-gray-500">Perbarui formulir dan lampiran Anda jika diperlukan.</p>
                 </div>
 
-                <div class="space-y-4">
+                <div class="space-y-6">
+                    <!-- Formulir -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Formulir <small
-                                class="block text-gray-400 text-xs font-light">Format: Pdf, Doc, Docx. Maks
-                                2Mb</small></label>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Formulir
+                            <small class="block text-gray-400 text-xs">Format: PDF, DOC, DOCX. Maks 2MB.</small>
+                        </label>
                         <input type="file" name="form" accept=".pdf,.doc,.docx"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" />
+                            @change="validateFile($event, 'form')"
+                            class="mt-1 block w-full border rounded-md shadow-sm"
+                            :class="!validForm ? 'border-red-500' : 'border-gray-300'" />
+                        <template x-if="!validForm">
+                            <p class="text-xs text-red-500 mt-1">File tidak valid atau melebihi 2MB.</p>
+                        </template>
                         <p class="text-xs text-gray-400">File sebelumnya: <span
                                 x-text="selectedPengajuanAdministrasi.form_name"></span></p>
                     </div>
 
+                    <!-- Lampiran -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Lampiran <small
-                                class="block text-gray-400 text-xs font-light">Format: Pdf, Doc, Docx. Maks
-                                2Mb</small></label>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Lampiran
+                            <small class="block text-gray-400 text-xs">Format: PDF, DOC, DOCX. Maks 2MB.</small>
+                        </label>
                         <input type="file" name="lampiran" accept=".pdf,.doc,.docx"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" />
+                            @change="validateFile($event, 'lampiran')"
+                            class="mt-1 block w-full border rounded-md shadow-sm"
+                            :class="!validLampiran ? 'border-red-500' : 'border-gray-300'" />
+                        <template x-if="!validLampiran">
+                            <p class="text-xs text-red-500 mt-1">File tidak valid atau melebihi 2MB.</p>
+                        </template>
                         <p class="text-xs text-gray-400">File sebelumnya: <span
                                 x-text="selectedPengajuanAdministrasi.lampiran_name"></span></p>
                     </div>
@@ -820,6 +837,8 @@
                 </div>
             </form>
         </x-modal>
+
+
     </section>
 
     <script>
@@ -832,6 +851,41 @@
             }).join('\n');
             textarea.value = formatted;
         }
+    </script>
+
+
+    {{-- script validasi edit form --}}
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('fileValidationForm', () => ({
+                validForm: true,
+                validLampiran: true,
+
+                validateFile(event, type) {
+                    const file = event.target.files[0];
+                    const allowedTypes = [
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    ];
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+
+                    const isValid = file ? allowedTypes.includes(file.type) && file.size <= maxSize :
+                        true;
+
+                    if (type === 'form') this.validForm = isValid;
+                    if (type === 'lampiran') this.validLampiran = isValid;
+                },
+
+                validateBeforeSubmit(formElement) {
+                    if (!this.validForm || !this.validLampiran) {
+                        // Optional: Add toast here
+                        return;
+                    }
+                    formElement.submit();
+                }
+            }));
+        });
     </script>
 
     </x-admin-layout>
