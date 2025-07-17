@@ -568,7 +568,7 @@
                         <label for="nama" class="block text-sm font-medium">Username<span
                                 class="text-red-600">*</span></label>
                         <input type="text" id="nama" name="nama" placeholder="Nama"
-                            x-model="selectedUser.nama"
+                            x-model="selectedUser.username"
                             class="w-full px-3 py-2 text-sm border rounded-md focus:ring focus:border-blue-500"
                             required>
                     </div>
