@@ -75,7 +75,7 @@ class AdminBeritaController extends Controller
             $validated = $request->validate([
                 'judul_berita' => 'required|string|max:255',
                 'isi_berita' => 'required|string',
-                'gambar_cover' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+                'gambar_cover' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
                 'penulis' => 'required|exists:users,id_user',
                 'status' => 'required|in:draft,published,archived',
             ]);
