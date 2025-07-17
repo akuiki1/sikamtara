@@ -408,338 +408,362 @@
                             @endif
                         </div>
                     @endforeach
+
+                    <!-- Modal Tambah Program -->
+                    <x-modal show="showAdd" title="Tambah Program Pembangunan">
+                        <form action="{{ route('admin.program.store') }}" method="POST"
+                            enctype="multipart/form-data" x-data="{
+                                previewFile: null,
+                                fileTooLarge: false,
+                                updatePreview(event) {
+                                    const file = event.target.files[0];
+                                    if (file) {
+                                        this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                                        if (!this.fileTooLarge) {
+                                            this.previewFile = URL.createObjectURL(file);
+                                        } else {
+                                            this.previewFile = null;
+                                        }
+                                    }
+                                },
+                                handleSubmit(event) {
+                                    if (this.fileTooLarge) {
+                                        alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                                        event.preventDefault();
+                                    }
+                                }
+                            }" @submit="handleSubmit($event)"
+                            class="space-y-4">
+                            @csrf
+
+                            {{-- Form Inputs --}}
+                            <div>
+                                <label for="nama_program" class="block text-sm font-medium text-gray-700">Nama
+                                    Program<span class="text-red-600">*</span></label>
+                                <input type="text" name="nama_program" id="nama_program" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label for="jenis_program" class="block text-sm font-medium text-gray-700">Jenis
+                                    Program<span class="text-red-600">*</span></label>
+                                <input type="text" name="jenis_program" id="jenis_program" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label for="lokasi" class="block text-sm font-medium text-gray-700">Lokasi<span
+                                        class="text-red-600">*</span></label>
+                                <input type="text" name="lokasi" id="lokasi" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal
+                                        Mulai<span class="text-red-600">*</span></label>
+                                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" required
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                                </div>
+                                <div>
+                                    <label for="tanggal_selesai"
+                                        class="block text-sm font-medium text-gray-700">Tanggal
+                                        Selesai</label>
+                                    <input type="date" name="tanggal_selesai" id="tanggal_selesai"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="anggaran" class="block text-sm font-medium text-gray-700">Anggaran
+                                    (Rp)<span class="text-red-600">*</span></label>
+                                <input type="number" name="anggaran" id="anggaran" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label for="sumber_dana" class="block text-sm font-medium text-gray-700">Sumber
+                                    Dana<span class="text-red-600">*</span></label>
+                                <input type="text" name="sumber_dana" id="sumber_dana" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label for="penanggung_jawab"
+                                    class="block text-sm font-medium text-gray-700">Penanggung
+                                    Jawab<span class="text-red-600">*</span></label>
+                                <input type="text" name="penanggung_jawab" id="penanggung_jawab" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700">Status<span
+                                        class="text-red-600">*</span></label>
+                                <select name="status" id="status" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                                    <option value="perencanaan">Perencanaan</option>
+                                    <option value="pelaksanaan">Pelaksanaan</option>
+                                    <option value="selesai">Selesai</option>
+                                    <option value="batal">Batal</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="deskripsi"
+                                    class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                <textarea name="deskripsi" id="deskripsi" rows="3"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
+                            </div>
+
+                            <div>
+                                <label for="foto_dokumentasi" class="block text-sm font-medium text-gray-700">Foto
+                                    Dokumentasi
+                                    <small class="block text-xs text-gray-400 font-normal">Hanya gambar. Maks
+                                        2MB.</small>
+                                </label>
+                                <input type="file" name="foto_dokumentasi" id="foto_dokumentasi" accept="image/*"
+                                    @change="updatePreview"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+
+                                <!-- Preview -->
+                                <template x-if="previewFile">
+                                    <img :src="previewFile" alt="Preview"
+                                        class="mt-2 h-40 object-contain rounded border">
+                                </template>
+
+                                <template x-if="fileTooLarge">
+                                    <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                                </template>
+                            </div>
+
+                            <div class="flex justify-end space-x-2 pt-4 border-t">
+                                <x-button type="button" @click="showAdd = false"
+                                    variant="secondary">Batal</x-button>
+                                <x-button type="submit">Simpan</x-button>
+                            </div>
+                        </form>
+                    </x-modal>
+
+                    <!-- Modal Detail Program -->
+                    <x-modal show="showDetail" title="Detail Program Pembangunan">
+                        <div class="">
+                            <template x-if="selectedProgram">
+                                <div class="space-y-4 text-left">
+                                    <!-- Judul -->
+                                    <div>
+                                        <h3 class="text-2xl font-semibold text-green-700"
+                                            x-text="selectedProgram.nama_program">
+                                        </h3>
+                                        <p class="text-sm text-gray-500"
+                                            x-text="`${selectedProgram.jenis_program} — ${selectedProgram.lokasi}`">
+                                        </p>
+                                    </div>
+
+                                    <!-- Info Utama -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                                        <p><span class="font-semibold text-gray-600">Periode:</span><br>
+                                            <span
+                                                x-text="`${new Date(selectedProgram.tanggal_mulai).toLocaleDateString()} - ${new Date(selectedProgram.tanggal_selesai).toLocaleDateString()}`"></span>
+                                        </p>
+                                        <p><span class="font-semibold text-gray-600">Anggaran:</span><br>
+                                            <span x-text="`Rp${selectedProgram.anggaran.toLocaleString()}`"></span>
+                                        </p>
+                                        <p><span class="font-semibold text-gray-600">Sumber Dana:</span><br>
+                                            <span x-text="selectedProgram.sumber_dana"></span>
+                                        </p>
+                                        <p><span class="font-semibold text-gray-600">Penanggung Jawab:</span><br>
+                                            <span x-text="selectedProgram.penanggung_jawab"></span>
+                                        </p>
+                                    </div>
+
+                                    <!-- Deskripsi -->
+                                    <div x-show="selectedProgram.deskripsi" class="text-sm text-gray-700">
+                                        <span class="font-semibold text-gray-600">Deskripsi:</span>
+                                        <p class="mt-1 leading-snug line-clamp-3 break-words"
+                                            x-text="selectedProgram.deskripsi">
+                                        </p>
+                                    </div>
+
+                                    <!-- Foto Dokumentasi -->
+                                    <template x-if="selectedProgram.foto_dokumentasi">
+                                        <div>
+                                            <img :src="`/storage/${selectedProgram.foto_dokumentasi}`"
+                                                alt="Foto Program"
+                                                class="w-full max-h-64 object-cover rounded-lg shadow mt-2 border">
+                                        </div>
+                                    </template>
+
+                                    <!-- Tombol Aksi -->
+                                    <div class="pt-4 border-t flex justify-end gap-3">
+                                        <x-button @click="showDetail = false" variant="secondary">Tutup</x-button>
+                                        <x-button @click="showEdit = true; showDetail = false"
+                                            variant="warning">Edit</x-button>
+                                        <x-button @click="showDelete = true; showDetail = false"
+                                            variant="danger">Hapus</x-button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </x-modal>
+
+                    <!-- Modal Edit Program -->
+                    <x-modal show="showEdit" title="Edit Program Pembangunan">
+                        <form :action="'{{ url('/admin/program') }}/' + selectedProgram.id" method="POST"
+                            enctype="multipart/form-data" x-data="{
+                                previewFile: null,
+                                fileTooLarge: false,
+                                updatePreview(event) {
+                                    const file = event.target.files[0];
+                                    if (file) {
+                                        this.fileTooLarge = file.size > 2 * 1024 * 1024;
+                                        if (!this.fileTooLarge) {
+                                            this.previewFile = URL.createObjectURL(file);
+                                        } else {
+                                            this.previewFile = null;
+                                        }
+                                    }
+                                },
+                                handleSubmit(event) {
+                                    if (this.fileTooLarge) {
+                                        alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                                        event.preventDefault();
+                                    }
+                                }
+                            }" @submit="handleSubmit($event)"
+                            class="space-y-4">
+                            @csrf
+                            @method('PUT')
+
+                            <input type="hidden" name="redirect_to"
+                                value="{{ route('profildesa.index') . '#program' }}">
+
+                            {{-- Nama Program --}}
+                            <div>
+                                <label for="edit_nama_program" class="block text-sm font-medium text-gray-700">Nama
+                                    Program</label>
+                                <input type="text" name="nama_program" id="edit_nama_program"
+                                    x-model="selectedProgram.nama_program"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            {{-- Jenis Program --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Jenis Program</label>
+                                <input type="text" name="jenis_program" x-model="selectedProgram.jenis_program"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+
+                            {{-- Lokasi --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Lokasi</label>
+                                <input type="text" name="lokasi" x-model="selectedProgram.lokasi"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+
+                            {{-- Tanggal --}}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                                    <input type="date" name="tanggal_mulai" :value="selectedProgram.tanggal_mulai"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
+                                    <input type="date" name="tanggal_selesai"
+                                        :value="selectedProgram.tanggal_selesai"
+                                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                </div>
+                            </div>
+
+                            {{-- Anggaran --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Anggaran (Rp)</label>
+                                <input type="number" name="anggaran" x-model="selectedProgram.anggaran"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+
+                            {{-- Sumber Dana --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Sumber Dana</label>
+                                <input type="text" name="sumber_dana" x-model="selectedProgram.sumber_dana"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+
+                            {{-- Penanggung Jawab --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Penanggung Jawab</label>
+                                <input type="text" name="penanggung_jawab"
+                                    x-model="selectedProgram.penanggung_jawab"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            </div>
+
+                            {{-- Status --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Status</label>
+                                <select name="status" x-model="selectedProgram.status"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                                    <option value="perencanaan">Perencanaan</option>
+                                    <option value="pelaksanaan">Pelaksanaan</option>
+                                    <option value="selesai">Selesai</option>
+                                    <option value="batal">Batal</option>
+                                </select>
+                            </div>
+
+                            {{-- Deskripsi --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                                <textarea name="deskripsi" rows="3" x-model="selectedProgram.deskripsi"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
+                            </div>
+
+                            {{-- Foto Dokumentasi --}}
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Ganti Foto (Opsional)
+                                    <small class="block text-xs text-gray-400 font-normal">Hanya gambar. Maks
+                                        2MB.</small>
+                                </label>
+                                <input type="file" name="foto_dokumentasi" accept="image/*"
+                                    @change="updatePreview"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+
+                                <template x-if="previewFile">
+                                    <img :src="previewFile" alt="Preview"
+                                        class="mt-2 h-40 object-contain rounded border">
+                                </template>
+
+                                <template x-if="fileTooLarge">
+                                    <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
+                                </template>
+                            </div>
+
+                            {{-- Tombol --}}
+                            <div class="flex justify-end space-x-2 pt-4 border-t">
+                                <x-button type="button" @click="showEdit = false"
+                                    variant="secondary">Batal</x-button>
+                                <x-button type="submit">Perbarui</x-button>
+                            </div>
+                        </form>
+                    </x-modal>
+
+                    <!-- Modal Konfirmasi Hapus -->
+                    <x-modal show="showDelete" title="Hapus Program Pembangunan">
+                        <form action="{{ route('admin.program.destroy', $program->id) }}" method="POST"
+                            class="space-y-4">
+                            @csrf
+                            @method('DELETE')
+
+                            <p>Apakah Anda yakin ingin menghapus program <strong>{{ $program->nama_program }}</strong>?
+                            </p>
+
+                            <div class="flex justify-end space-x-2 pt-4 border-t">
+                                <x-button type="button" @click="showDelete = false"
+                                    variant="secondary">Batal</x-button>
+                                <x-button type="submit" variant="danger">Hapus</x-button>
+                            </div>
+                        </form>
+                    </x-modal>
                 </div>
             </div>
         @endif
-
-        <!-- Modal Tambah Program -->
-        <x-modal show="showAdd" title="Tambah Program Pembangunan">
-            <form action="{{ route('admin.program.store') }}" method="POST" enctype="multipart/form-data"
-                x-data="{
-                    previewFile: null,
-                    fileTooLarge: false,
-                    updatePreview(event) {
-                        const file = event.target.files[0];
-                        if (file) {
-                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
-                            if (!this.fileTooLarge) {
-                                this.previewFile = URL.createObjectURL(file);
-                            } else {
-                                this.previewFile = null;
-                            }
-                        }
-                    },
-                    handleSubmit(event) {
-                        if (this.fileTooLarge) {
-                            alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                            event.preventDefault();
-                        }
-                    }
-                }" @submit="handleSubmit($event)" class="space-y-4">
-                @csrf
-
-                {{-- Form Inputs --}}
-                <div>
-                    <label for="nama_program" class="block text-sm font-medium text-gray-700">Nama Program<span
-                            class="text-red-600">*</span></label>
-                    <input type="text" name="nama_program" id="nama_program" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div>
-                    <label for="jenis_program" class="block text-sm font-medium text-gray-700">Jenis Program<span
-                            class="text-red-600">*</span></label>
-                    <input type="text" name="jenis_program" id="jenis_program" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div>
-                    <label for="lokasi" class="block text-sm font-medium text-gray-700">Lokasi<span
-                            class="text-red-600">*</span></label>
-                    <input type="text" name="lokasi" id="lokasi" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai<span
-                                class="text-red-600">*</span></label>
-                        <input type="date" name="tanggal_mulai" id="tanggal_mulai" required
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                    </div>
-                    <div>
-                        <label for="tanggal_selesai" class="block text-sm font-medium text-gray-700">Tanggal
-                            Selesai</label>
-                        <input type="date" name="tanggal_selesai" id="tanggal_selesai"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="anggaran" class="block text-sm font-medium text-gray-700">Anggaran (Rp)<span
-                            class="text-red-600">*</span></label>
-                    <input type="number" name="anggaran" id="anggaran" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div>
-                    <label for="sumber_dana" class="block text-sm font-medium text-gray-700">Sumber Dana<span
-                            class="text-red-600">*</span></label>
-                    <input type="text" name="sumber_dana" id="sumber_dana" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div>
-                    <label for="penanggung_jawab" class="block text-sm font-medium text-gray-700">Penanggung
-                        Jawab<span class="text-red-600">*</span></label>
-                    <input type="text" name="penanggung_jawab" id="penanggung_jawab" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700">Status<span
-                            class="text-red-600">*</span></label>
-                    <select name="status" id="status" required
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                        <option value="perencanaan">Perencanaan</option>
-                        <option value="pelaksanaan">Pelaksanaan</option>
-                        <option value="selesai">Selesai</option>
-                        <option value="batal">Batal</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="deskripsi" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                    <textarea name="deskripsi" id="deskripsi" rows="3"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"></textarea>
-                </div>
-
-                <div>
-                    <label for="foto_dokumentasi" class="block text-sm font-medium text-gray-700">Foto Dokumentasi
-                        <small class="block text-xs text-gray-400 font-normal">Hanya gambar. Maks 2MB.</small>
-                    </label>
-                    <input type="file" name="foto_dokumentasi" id="foto_dokumentasi" accept="image/*"
-                        @change="updatePreview"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-
-                    <!-- Preview -->
-                    <template x-if="previewFile">
-                        <img :src="previewFile" alt="Preview" class="mt-2 h-40 object-contain rounded border">
-                    </template>
-
-                    <template x-if="fileTooLarge">
-                        <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
-                    </template>
-                </div>
-
-                <div class="flex justify-end space-x-2 pt-4 border-t">
-                    <x-button type="button" @click="showAdd = false" variant="secondary">Batal</x-button>
-                    <x-button type="submit">Simpan</x-button>
-                </div>
-            </form>
-        </x-modal>
-
-        <!-- Modal Detail Program -->
-        <x-modal show="showDetail" title="Detail Program Pembangunan">
-            <div class="">
-                <template x-if="selectedProgram">
-                    <div class="space-y-4 text-left">
-                        <!-- Judul -->
-                        <div>
-                            <h3 class="text-2xl font-semibold text-green-700" x-text="selectedProgram.nama_program">
-                            </h3>
-                            <p class="text-sm text-gray-500"
-                                x-text="`${selectedProgram.jenis_program} — ${selectedProgram.lokasi}`"></p>
-                        </div>
-
-                        <!-- Info Utama -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                            <p><span class="font-semibold text-gray-600">Periode:</span><br>
-                                <span
-                                    x-text="`${new Date(selectedProgram.tanggal_mulai).toLocaleDateString()} - ${new Date(selectedProgram.tanggal_selesai).toLocaleDateString()}`"></span>
-                            </p>
-                            <p><span class="font-semibold text-gray-600">Anggaran:</span><br>
-                                <span x-text="`Rp${selectedProgram.anggaran.toLocaleString()}`"></span>
-                            </p>
-                            <p><span class="font-semibold text-gray-600">Sumber Dana:</span><br>
-                                <span x-text="selectedProgram.sumber_dana"></span>
-                            </p>
-                            <p><span class="font-semibold text-gray-600">Penanggung Jawab:</span><br>
-                                <span x-text="selectedProgram.penanggung_jawab"></span>
-                            </p>
-                        </div>
-
-                        <!-- Deskripsi -->
-                        <div x-show="selectedProgram.deskripsi" class="text-sm text-gray-700">
-                            <span class="font-semibold text-gray-600">Deskripsi:</span>
-                            <p class="mt-1 leading-snug line-clamp-3 break-words" x-text="selectedProgram.deskripsi">
-                            </p>
-                        </div>
-
-                        <!-- Foto Dokumentasi -->
-                        <template x-if="selectedProgram.foto_dokumentasi">
-                            <div>
-                                <img :src="`/storage/${selectedProgram.foto_dokumentasi}`" alt="Foto Program"
-                                    class="w-full max-h-64 object-cover rounded-lg shadow mt-2 border">
-                            </div>
-                        </template>
-
-                        <!-- Tombol Aksi -->
-                        <div class="pt-4 border-t flex justify-end gap-3">
-                            <x-button @click="showDetail = false" variant="secondary">Tutup</x-button>
-                            <x-button @click="showEdit = true; showDetail = false" variant="warning">Edit</x-button>
-                            <x-button @click="showDelete = true; showDetail = false" variant="danger">Hapus</x-button>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </x-modal>
-
-        <!-- Modal Edit Program -->
-        <x-modal show="showEdit" title="Edit Program Pembangunan">
-            <form :action="'{{ url('/admin/program') }}/' + selectedProgram.id" method="POST"
-                enctype="multipart/form-data" x-data="{
-                    previewFile: null,
-                    fileTooLarge: false,
-                    updatePreview(event) {
-                        const file = event.target.files[0];
-                        if (file) {
-                            this.fileTooLarge = file.size > 2 * 1024 * 1024;
-                            if (!this.fileTooLarge) {
-                                this.previewFile = URL.createObjectURL(file);
-                            } else {
-                                this.previewFile = null;
-                            }
-                        }
-                    },
-                    handleSubmit(event) {
-                        if (this.fileTooLarge) {
-                            alert('Ukuran file terlalu besar. Maksimal 2MB.');
-                            event.preventDefault();
-                        }
-                    }
-                }" @submit="handleSubmit($event)"
-                class="space-y-4">
-                @csrf
-                @method('PUT')
-
-                <input type="hidden" name="redirect_to" value="{{ route('profildesa.index') . '#program' }}">
-
-                {{-- Nama Program --}}
-                <div>
-                    <label for="edit_nama_program" class="block text-sm font-medium text-gray-700">Nama
-                        Program</label>
-                    <input type="text" name="nama_program" id="edit_nama_program"
-                        x-model="selectedProgram.nama_program"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
-                </div>
-
-                {{-- Jenis Program --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Jenis Program</label>
-                    <input type="text" name="jenis_program" x-model="selectedProgram.jenis_program"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                {{-- Lokasi --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Lokasi</label>
-                    <input type="text" name="lokasi" x-model="selectedProgram.lokasi"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                {{-- Tanggal --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                        <input type="date" name="tanggal_mulai" :value="selectedProgram.tanggal_mulai"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
-                        <input type="date" name="tanggal_selesai" :value="selectedProgram.tanggal_selesai"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                    </div>
-                </div>
-
-                {{-- Anggaran --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Anggaran (Rp)</label>
-                    <input type="number" name="anggaran" x-model="selectedProgram.anggaran"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                {{-- Sumber Dana --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Sumber Dana</label>
-                    <input type="text" name="sumber_dana" x-model="selectedProgram.sumber_dana"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                {{-- Penanggung Jawab --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Penanggung Jawab</label>
-                    <input type="text" name="penanggung_jawab" x-model="selectedProgram.penanggung_jawab"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-
-                {{-- Status --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Status</label>
-                    <select name="status" x-model="selectedProgram.status"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="perencanaan">Perencanaan</option>
-                        <option value="pelaksanaan">Pelaksanaan</option>
-                        <option value="selesai">Selesai</option>
-                        <option value="batal">Batal</option>
-                    </select>
-                </div>
-
-                {{-- Deskripsi --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3" x-model="selectedProgram.deskripsi"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
-                </div>
-
-                {{-- Foto Dokumentasi --}}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Ganti Foto (Opsional)
-                        <small class="block text-xs text-gray-400 font-normal">Hanya gambar. Maks 2MB.</small>
-                    </label>
-                    <input type="file" name="foto_dokumentasi" accept="image/*" @change="updatePreview"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-
-                    <template x-if="previewFile">
-                        <img :src="previewFile" alt="Preview" class="mt-2 h-40 object-contain rounded border">
-                    </template>
-
-                    <template x-if="fileTooLarge">
-                        <p class="text-sm text-red-600 mt-2">Ukuran file terlalu besar. Maksimal 2MB.</p>
-                    </template>
-                </div>
-
-                {{-- Tombol --}}
-                <div class="flex justify-end space-x-2 pt-4 border-t">
-                    <x-button type="button" @click="showEdit = false" variant="secondary">Batal</x-button>
-                    <x-button type="submit">Perbarui</x-button>
-                </div>
-            </form>
-        </x-modal>
-
-        <!-- Modal Konfirmasi Hapus -->
-        <x-modal show="showDelete" title="Hapus Program Pembangunan">
-            <form action="{{ route('admin.program.destroy', $program->id) }}" method="POST" class="space-y-4">
-                @csrf
-                @method('DELETE')
-
-                <p>Apakah Anda yakin ingin menghapus program <strong>{{ $program->nama_program }}</strong>?</p>
-
-                <div class="flex justify-end space-x-2 pt-4 border-t">
-                    <x-button type="button" @click="showDelete = false" variant="secondary">Batal</x-button>
-                    <x-button type="submit" variant="danger">Hapus</x-button>
-                </div>
-            </form>
-        </x-modal>
     </section>
 </x-admin-layout>
