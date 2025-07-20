@@ -74,8 +74,8 @@ class AdminKeluargaController extends Controller
                     'kode_keluarga' => 'required|digits:16|unique:keluarga,kode_keluarga',
                     'nik_kepala_keluarga' => 'required|digits:16',
                     'alamat' => 'required|string',
-                    'rt' => 'required|digits:3',
-                    'rw' => 'required|digits:3',
+                    'rt' => 'required|numeric|digits_between:1,3',
+                    'rw' => 'required|numeric|digits_between:1,3',
                 ],
                 [
                     'kode_keluarga.unique' => 'Kode Keluarga sudah terdaftar. Mohon gunakan kode yang lain.',
