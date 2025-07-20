@@ -86,6 +86,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     Route::get('/profil-desa', [AdminProfilDesaController::class, 'index'])->name('profildesa.index');
     Route::put('/profil/sejarah', [AdminProfilDesaController::class, 'updateSejarah'])->name('sejarah.update');
+    Route::put('/profil/sejarah/wilayah', [AdminProfilDesaController::class, 'updateWilayah'])->name('wilayah.update');
     Route::put('/profil/visimisi', [AdminProfilDesaController::class, 'updateVisimisi'])->name('visimisi.update');
     Route::post('/admin/struktur/create', [AdminProfilDesaController::class, 'strukturCreate'])->name('admin.struktur.create');
     Route::put('/struktur/{id}/update', [AdminProfilDesaController::class, 'strukturUpdate'])->name('admin.struktur.update');

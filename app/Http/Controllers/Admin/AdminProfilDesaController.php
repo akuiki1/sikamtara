@@ -47,6 +47,7 @@ class AdminProfilDesaController extends Controller
         $visimisi = Visimisi::first();
         $users = User::with('penduduk')->get();
         $programs = ProgramPembangunanDesa::orderByDesc('tanggal_mulai')->get();
+        $wilayah = \App\Models\LuasWilayah::first();
 
         return view('admin.profil-desa', [
             'strukturPemerintahan' => $strukturPemerintahan,
@@ -55,7 +56,8 @@ class AdminProfilDesaController extends Controller
             'sejarah' => $sejarah,
             'visimisi' => $visimisi,
             'users' => $users,
-            'programs' => $programs
+            'programs' => $programs,
+            'wilayah' => $wilayah,
         ]);
     }
 
@@ -87,6 +89,33 @@ class AdminProfilDesaController extends Controller
         }
     }
 
+    public function updateWilayah(Request $request)
+    {
+        $request->validate([
+            'luas' => 'required|numeric|min:0.01',
+        ]);
+
+        try {
+            // Ambil entri pertama (asumsi cuma satu baris data)
+            $wilayah = \App\Models\LuasWilayah::first();
+
+            if ($wilayah) {
+                $wilayah->update([
+                    'luas' => $request->luas,
+                ]);
+            } else {
+                // Kalau belum ada, buat baru
+                \App\Models\LuasWilayah::create([
+                    'luas' => $request->luas,
+                ]);
+            }
+
+            return redirect()->to(route('profildesa.index') . '#dataWilayah')->with('success', 'Data luas wilayah berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->to(route('profildesa.index') . '#dataWilayah')->with('error', 'Gagal memperbarui data wilayah: ' . $e->getMessage());
+        }
+    }
+
     public function updateVisimisi(Request $request)
     {
         $request->validate([
@@ -112,6 +141,34 @@ class AdminProfilDesaController extends Controller
             return redirect()->to(route('profildesa.index') . '#visimisi')->with('success', 'Visi dan misi berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->to(route('profildesa.index') . '#visimisi')->with('error', 'Gagal memperbarui: ' . $e->getMessage());
+        }
+    }
+
+    public function updateLuasWilayah(Request $request)
+    {
+        $request->validate([
+            'luas' => 'required|numeric|min:0',
+            'satuan' => 'required|string|max:10',
+        ]);
+
+        try {
+            $luasWilayah = \App\Models\LuasWilayah::first();
+
+            if ($luasWilayah) {
+                $luasWilayah->update([
+                    'luas' => $request->luas,
+                    'satuan' => $request->satuan,
+                ]);
+            } else {
+                \App\Models\LuasWilayah::create([
+                    'luas' => $request->luas,
+                    'satuan' => $request->satuan,
+                ]);
+            }
+
+            return redirect()->to(route('profildesa.index') . '#datawilayah')->with('success', 'Data luas wilayah berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->to(route('profildesa.index') . '#datawilayah')->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
 

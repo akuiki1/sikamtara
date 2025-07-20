@@ -51,7 +51,8 @@
             <!-- Statistik Wilayah -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto mb-16">
                 <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
-                    <div class="text-2xl font-bold text-green-600">6.5 <span class="text-sm align-super">Km</span>
+                    <div class="text-2xl font-bold text-green-600">{{ $luasWilayah?->luas ?? '-' }}
+                        <span class="text-sm align-super">Km</span>
                     </div>
                     <div class="text-gray-500 mt-2">Luas Wilayah</div>
                 </div>
@@ -60,12 +61,12 @@
                     <div class="text-gray-500 mt-2">Jumlah Penduduk</div>
                 </div>
                 <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
-                    <div class="text-2xl font-bold text-green-600">3</div>
-                    <div class="text-gray-500 mt-2">Jumlah Dusun</div>
+                    <div class="text-2xl font-bold text-green-600">6</div>
+                    <div class="text-gray-500 mt-2">Jumlah Rt</div>
                 </div>
                 <div class="text-center bg-white rounded-xl p-6 shadow transition hover:shadow-lg duration-300">
-                    <div class="text-2xl font-bold text-green-600">8</div>
-                    <div class="text-gray-500 mt-2">RT/RW</div>
+                    <div class="text-2xl font-bold text-green-600">3</div>
+                    <div class="text-gray-500 mt-2">Jumlah Rw</div>
                 </div>
             </div>
 

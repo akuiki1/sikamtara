@@ -126,6 +126,63 @@
         </form>
     </section>
 
+    {{-- data wilayah --}}
+    <section id="dataWilayah" x-data="{
+        editing: false,
+        luas: @js($wilayah?->luas ?? ''),
+        editedLuas: @js($wilayah?->luas ?? '')
+    }" class="py-16 px-6 md:px-16 bg-gray-50">
+        <div class="max-w-xl mx-auto text-center">
+            {{-- Judul --}}
+            <h2 class="text-2xl md:text-3xl font-semibold mb-8">Luas Wilayah</h2>
+
+            {{-- Jika belum ada data dan tidak sedang mengedit --}}
+            <div x-show="!luas && !editing" x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95" class="rounded-lg p-6 text-center">
+
+                <p class="text-gray-700 mb-4">Belum ada data luas wilayah</p>
+                <x-button @click="editing = true">Tambahkan Data</x-button>
+            </div>
+        </div>
+
+        {{-- Jika ada data dan tidak sedang mengedit --}}
+        <div x-show="luas && !editing" class="max-w-3xl mx-auto text-center text-gray-700 leading-relaxed">
+            <p class="text-lg font-medium" x-text="`${luas} km²`"></p>
+            <button @click="editing = true" class="text-blue-600 hover:underline text-sm mt-2">Edit</button>
+        </div>
+
+        {{-- Form edit luas wilayah --}}
+        <form x-show="editing" x-transition method="POST" action="{{ route('wilayah.update') }}"
+            class="max-w-3xl mx-auto space-y-4 mt-6">
+            @csrf
+            @method('PUT')
+
+            <input type="number" name="luas" x-model="editedLuas" step="0.01" min="0"
+                class="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200 text-gray-800"
+                placeholder="Masukkan luas wilayah dalam km²...">
+
+            <div class="flex justify-end space-x-4">
+                <x-button type="button" @click="editing = false; editedLuas = luas" variant="secondary">
+                    Batal
+                </x-button>
+                <x-button type="submit"
+                    @click.prevent="
+                    if (isNaN(parseFloat(editedLuas)) || parseFloat(editedLuas) <= 0) {
+                        alert('Luas wilayah harus berupa angka lebih dari 0.');
+                    } else {
+                        luas = editedLuas;
+                        editing = false;
+                        $el.closest('form').submit();
+                    }
+                ">
+                    Simpan
+                </x-button>
+            </div>
+        </form>
+    </section>
+
     {{-- Struktur Pemerintahan --}}
     <section id="struktur" class="py-16 px-6 md:px-16 bg-gray-100" x-data="{
         showDetailModal: false,

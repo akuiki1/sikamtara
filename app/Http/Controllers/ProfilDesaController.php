@@ -47,8 +47,6 @@ class ProfilDesaController extends Controller
         $visimisi = Visimisi::first();
         $users = User::with('penduduk')->get();
         $programs = ProgramPembangunanDesa::orderByDesc('tanggal_mulai')->get();
-        $jumlahRt = Rt::count();
-        $jumlahRw = Rw::count();
         $luasWilayah = LuasWilayah::first();
 
         return view('user.profil-desa', [
@@ -60,9 +58,7 @@ class ProfilDesaController extends Controller
             'visimisi' => $visimisi,
             'users' => $users,
             'programs' => $programs,
-            'jumlahRt' => $jumlahRt,
-            'jumlahRw' => $jumlahRw,
-            'luasWilayah' => $luasWilayah ? $luasWilayah->luas . ' ' . $luasWilayah->satuan : '0 Ha',
+            'luasWilayah' => $luasWilayah,
         ]);
     }
 }
