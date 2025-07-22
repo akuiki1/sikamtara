@@ -149,14 +149,6 @@
 
                     {{-- RIGHT SECTION: Tambah Layanan --}}
                     <div>
-                        <x-button @click="selectedLayanan = null; showApplyModal = true">
-                            {{-- Plus Icon --}}
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <span>Ajukan Layanan</span>
-                        </x-button>
                         <x-button @click="selectedLayanan = null; showAddModal = true">
                             {{-- Plus Icon --}}
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
