@@ -97,6 +97,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
     // halaman kelola layanan admin
     Route::get('/layanan/administrasi', [AdminAdministrasiController::class, 'index'])->name('adminadministrasi.index');
+    Route::post('/layanan/administrasi/apply/{id_administrasi}', [AdminAdministrasiController::class, 'apply'])
+        ->name('adminadministrasi.apply');
+    Route::put('/pengajuan/{id}', [AdministrasiController::class, 'update'])->name('admin.pengajuan.update');
+    Route::delete('/pengajuan/{id}', [AdministrasiController::class, 'destroy'])->name('admin.pengajuan.destroy');
     Route::get('/layanan/administrasi/preview-form/{filename}', [AdminAdministrasiController::class, 'previewForm']);
     Route::post('/layanan/administrasi', [AdminAdministrasiController::class, 'store'])->name('adminadministrasi.store');
     Route::put('/layanan/administrasi/{id}', [AdminAdministrasiController::class, 'update'])->name('adminadministrasi.update');

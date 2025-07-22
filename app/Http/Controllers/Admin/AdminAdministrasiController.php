@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\Administrasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Models\PengajuanAdministrasi;
 
 
@@ -292,6 +294,52 @@ class AdminAdministrasiController extends Controller
 
             // Untuk error lainnya
             return redirect()->back()->with('error', 'Gagal menghapus layanan: ' . $e->getMessage());
+        }
+    }
+
+    public function apply(Request $request, $id_administrasi)
+    {
+        $request->validate([
+            'form' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        try {
+            $user = Auth::user();
+
+            // Cek status verifikasi user
+            if ($user->status_verifikasi !== 'Terverifikasi') {
+                return redirect()->back()->with('error', 'Anda belum terverifikasi dan tidak dapat mengajukan administrasi.');
+            }
+
+            // Simpan file form
+            if ($request->hasFile('form')) {
+                $formFile = $request->file('form');
+                $formFilename = time() . '_' . $formFile->getClientOriginalName();
+                $formPath = $formFile->storeAs('formulir', $formFilename, 'public');
+            }
+
+            // Simpan file lampiran jika ada
+            $lampiranPath = null;
+            if ($request->hasFile('lampiran')) {
+                $lampiranFile = $request->file('lampiran');
+                $lampiranFilename = time() . '_' . $lampiranFile->getClientOriginalName();
+                $lampiranPath = $lampiranFile->storeAs('lampiran', $lampiranFilename, 'public');
+            }
+
+            // Simpan data ke DB
+            PengajuanAdministrasi::create([
+                'id_user' => $user->id_user,
+                'id_administrasi' => $id_administrasi,
+                'form' => $formPath,
+                'lampiran' => $lampiranPath,
+                'status' => 'diajukan',
+                'tanggal_pengajuan' => now(),
+            ]);
+
+            return redirect()->back()->with('success', 'Berhasil membuat pengajuan!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 }

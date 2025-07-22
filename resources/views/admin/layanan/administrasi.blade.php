@@ -6,8 +6,7 @@
         filterRole: '',
         filterStatus: '',
         email: '',
-        showPassword: false,
-        showPassword2: false,
+        showApplyModal: false,
         showAddModal: false,
         showEditModal: false,
         showDeleteModal: false,
@@ -23,7 +22,6 @@
             });
         }
     }">
-
         {{-- section card --}}
         <section>
             {{-- container card --}}
@@ -151,6 +149,14 @@
 
                     {{-- RIGHT SECTION: Tambah Layanan --}}
                     <div>
+                        <x-button @click="selectedLayanan = null; showApplyModal = true">
+                            {{-- Plus Icon --}}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>Ajukan Layanan</span>
+                        </x-button>
                         <x-button @click="selectedLayanan = null; showAddModal = true">
                             {{-- Plus Icon --}}
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
@@ -323,6 +329,9 @@
 
                 <!-- Tombol Aksi -->
                 <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                    <x-button type="button" @click="showDetailModal = false; showApplyModal = true">
+                        Apply
+                    </x-button>
                     <x-button type="button" @click="showDetailModal = false" variant="secondary">
                         Tutup
                     </x-button>
@@ -523,11 +532,199 @@
                     </div>
                 </form>
             </x-modal>
+
+            {{-- modal apply --}}
+            <x-modal show="showApplyModal">
+
+                <form x-data="{
+                    formFile: null,
+                    lampiranFile: null,
+                
+                    checkFileSize(file) {
+                        return file && file.size <= 2 * 1024 * 1024; // Max 2MB
+                    },
+                
+                    handleSubmit(event) {
+                        if (!this.checkFileSize(this.formFile)) {
+                            alert('Ukuran file Formulir melebihi 2MB.');
+                            event.preventDefault();
+                            return;
+                        }
+                        if (!this.checkFileSize(this.lampiranFile)) {
+                            alert('Ukuran file Lampiran melebihi 2MB.');
+                            event.preventDefault();
+                            return;
+                        }
+                    }
+                }" @submit="handleSubmit" method="POST"
+                    :action="`{{ url('admin/layanan/administrasi/apply') }}/${selectedAdministrasi.id_administrasi}`"
+                    enctype="multipart/form-data">
+
+                    @csrf
+
+                    <!-- Header -->
+                    <div class="mb-6 space-y-1">
+                        <h2 class="text-2xl font-bold text-gray-900">
+                            Formulir pengajuan surat <span x-text="selectedAdministrasi.nama_administrasi"></span>
+                        </h2>
+                        <p class="text-sm text-gray-500">Pastikan anda sudah mengunduh dan mengisi formulir di bawah
+                            ini.
+                        </p>
+                        <div class="">
+                            <a :href="'/storage/' + selectedAdministrasi.form" download
+                                class="inline-flex items-center rounded-full focus:outline-none transition duration-150 ease-in-out bg-indigo-400 hover:bg-indigo-600 text-white text-sm px-4 py-2">
+                                <!-- Icon Download -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+                                </svg>
+                                Unduh Formulir Pengisian
+                            </a>
+                            <div class="py-4">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">Persyaratan</h3>
+                                <p class="text-gray-700 leading-relaxed"
+                                    x-html="selectedAdministrasi.persyaratan.replaceAll('\n', '<br>')">
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- File Form --}}
+                        <div x-data="{
+                            fileName: '',
+                            clearFile() {
+                                this.fileName = '';
+                                this.$refs.fileInput.value = '';
+                            }
+                        }" class="py-4">
+
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Formulir yang sudah diisi<span class="text-red-600">*</span>
+                                <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
+                            </label>
+
+                            <!-- Input File (Hidden) -->
+                            <input x-ref="fileInput" type="file" name="form" accept=".pdf,.doc,.docx"
+                                class="hidden"
+                                @change="fileName = $refs.fileInput.files[0]?.name; formFile = $refs.fileInput.files[0]">
+
+
+                            <!-- Baris Tombol & Info -->
+                            <div class="flex items-center gap-4">
+                                <!-- Tombol Upload -->
+                                <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
+                                    class="flex items-center">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    </svg>
+                                    <span class="ml-2">Upload Form</span>
+                                </x-button>
+
+                                <!-- Info File Baru -->
+                                <template x-if="fileName">
+                                    <div
+                                        class="flex items-center gap-2 px-2 py-1 text-sm text-blue-700 bg-blue-50 rounded-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-paperclip-icon lucide-paperclip">
+                                            <path d="M13.234 20.252 21 12.3" />
+                                            <path
+                                                d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+                                        </svg>
+                                        <span class="font-medium"
+                                            x-text="fileName.length > 25 ? fileName.slice(0, 25) + '...' : fileName"></span>
+
+                                        <!-- Tombol X -->
+                                        <button type="button" @click="clearFile()"
+                                            class="text-blue-400 hover:text-red-500 transition">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        {{-- File Lampiran --}}
+                        <div x-data="{
+                            fileName: '',
+                            clearFile() {
+                                this.fileName = '';
+                                this.$refs.fileInput.value = '';
+                            }
+                        }" class="py-4">
+
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Lampirkan persyaratan<span class="text-red-600">*</span>
+                                <span class="text-xs text-gray-400 font-normal">(pdf, doc, docx. maks 2mb)</span>
+                            </label>
+
+                            <!-- Input File (Hidden) -->
+                            <input x-ref="fileInput" type="file" name="lampiran" accept=".pdf,.doc,.docx"
+                                class="hidden"
+                                @change="fileName = $refs.fileInput.files[0]?.name; lampiranFile = $refs.fileInput.files[0]">
+
+                            <!-- Baris Tombol & Info -->
+                            <div class="flex items-center gap-4">
+                                <!-- Tombol Upload -->
+                                <x-button type="button" variant="primary" @click="$refs.fileInput.click()"
+                                    class="flex items-center">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path d="M12 3v12m5-7-5-5-5 5M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    </svg>
+                                    <span class="ml-2">Upload Lampiran</span>
+                                </x-button>
+
+                                <!-- Info File Baru -->
+                                <template x-if="fileName">
+                                    <div
+                                        class="flex items-center gap-2 px-2 py-1 text-sm text-blue-700 bg-blue-50 rounded-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-paperclip-icon lucide-paperclip">
+                                            <path d="M13.234 20.252 21 12.3" />
+                                            <path
+                                                d="m16 6-8.414 8.586a2 2 0 0 0 0 2.828 2 2 0 0 0 2.828 0l8.414-8.586a4 4 0 0 0 0-5.656 4 4 0 0 0-5.656 0l-8.415 8.585a6 6 0 1 0 8.486 8.486" />
+                                        </svg>
+                                        <span class="font-medium"
+                                            x-text="fileName.length > 25 ? fileName.slice(0, 25) + '...' : fileName"></span>
+
+                                        <!-- Tombol X -->
+                                        <button type="button" @click="clearFile()"
+                                            class="text-blue-400 hover:text-red-500 transition">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <!-- CTA -->
+                        <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
+                            <x-button type="button" @click="showApplyModal = false" variant="secondary"
+                                class="flex items-center gap-2">
+                                Batal
+                            </x-button>
+
+                            <x-button type="submit" variant="primary" class="flex items-center gap-2">
+                                Ajukan Sekarang
+                            </x-button>
+                        </div>
+                </form>
+            </x-modal>
         </section>
 
         {{-- section layanan masuk & riwayat layanan --}}
         <section id="riwayatLayanan">
-            {{-- container tabel belah 2 --}}
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
 
                 {{-- container tabel pengajuan Masuk --}}
@@ -669,7 +866,8 @@
                             <!-- Actions -->
                             <div class="flex justify-end gap-3 pt-6 mt-8 border-t border-gray-200">
                                 <!-- Form tersembunyi -->
-                                <form x-ref="statusForm" method="POST" action="{{ route('layanan.updateStatus') }}">
+                                <form x-ref="statusForm" method="POST"
+                                    action="{{ route('layanan.updateStatus') }}">
                                     @csrf
                                     <input type="hidden" name="id" :value="selected?.id">
                                     <input type="hidden" name="status" x-ref="statusInput">
